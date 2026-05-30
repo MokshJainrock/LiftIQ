@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { playCountdownTick, playSuccessChime, playStartGong, speakCue, speakCountdown } from "@/lib/audio-cues";
 import { GhostCoachOverlay } from "@/components/exercise-guide/ghost-coach-overlay";
 import { ReadinessPill } from "@/components/workout/readiness-pill";
+import { drawRecordingHud } from "@/lib/pose/recording-hud";
 
 const FORM_CHECK_REQUIRED_FRAMES = 15;
 
@@ -480,6 +481,24 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
           if (ghostCoachEnabled && ghost && ghost.width > 0 && ghost.height > 0) {
             ctx.drawImage(ghost, 0, 0, composite.width, composite.height);
           }
+
+          // 4) Stats HUD (score / reps / phase / timer / cue). Drawn last, in
+          // the default un-mirrored transform so the text reads correctly.
+          // Pulled straight from the store each frame so values stay live
+          // without re-subscribing the compositor effect.
+          const st = useWorkoutStore.getState();
+          const elapsed = st.sessionStartTime
+            ? Math.floor((Date.now() - st.sessionStartTime) / 1000)
+            : 0;
+          drawRecordingHud(ctx, composite.width, composite.height, {
+            score: st.currentScore,
+            reps: st.repCount,
+            phase: st.currentPhase?.trim() || "Ready",
+            elapsedSeconds: elapsed,
+            recording: true,
+            cue: st.currentCues[0],
+            bestRep: st.bestRepScore,
+          });
         }
       }
       compositorRafRef.current = requestAnimationFrame(tick);
