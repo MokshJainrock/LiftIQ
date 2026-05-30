@@ -26,6 +26,12 @@ import {
   Loader2,
   Zap,
   Scale,
+  Camera,
+  Upload,
+  Sparkles,
+  Check,
+  Pencil,
+  AlertTriangle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -39,6 +45,55 @@ interface FoodSearchItem {
   fat: number;
   servingSize: number | null;
   servingSizeUnit: string | null;
+}
+
+interface ScannedFoodItem {
+  name: string;
+  portion: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  confidence: "high" | "medium" | "low";
+}
+
+/** Read a file, downscale to <=1024px, and return a JPEG data URL to keep the
+ *  payload to the vision API small and fast. */
+async function fileToCompressedDataURL(
+  file: File,
+  maxDim = 1024,
+  quality = 0.8
+): Promise<string> {
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("read failed"));
+    reader.readAsDataURL(file);
+  });
+
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const i = new window.Image();
+    i.onload = () => resolve(i);
+    i.onerror = () => reject(new Error("decode failed"));
+    i.src = dataUrl;
+  });
+
+  let { width, height } = img;
+  if (width >= height && width > maxDim) {
+    height = Math.round((height * maxDim) / width);
+    width = maxDim;
+  } else if (height > width && height > maxDim) {
+    width = Math.round((width * maxDim) / height);
+    height = maxDim;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return dataUrl;
+  ctx.drawImage(img, 0, 0, width, height);
+  return canvas.toDataURL("image/jpeg", quality);
 }
 
 const MEAL_OPTIONS = [
@@ -214,7 +269,17 @@ function AddFoodForm({ onClose, onAdded }: { onClose: () => void; onAdded: () =>
   const [carbs, setCarbs] = useState("");
   const [fat, setFat] = useState("");
   const [meal, setMeal] = useState<FoodEntry["meal"]>("snack");
-  const [mode, setMode] = useState<"search" | "manual">("search");
+  const [mode, setMode] = useState<"search" | "scan" | "manual">("search");
+
+  // ── AI food scan state ──────────────────────────────────────────────
+  const [scanImage, setScanImage] = useState<string | null>(null);
+  const [scanLoading, setScanLoading] = useState(false);
+  const [scanError, setScanError] = useState("");
+  const [scanItems, setScanItems] = useState<ScannedFoodItem[]>([]);
+  const [scanNote, setScanNote] = useState("");
+  const [addedScanKeys, setAddedScanKeys] = useState<Set<string>>(new Set());
+  const cameraInputRef = useRef<HTMLInputElement | null>(null);
+  const uploadInputRef = useRef<HTMLInputElement | null>(null);
 
   // Portion state
   const [servings, setServings] = useState("1");
@@ -320,6 +385,89 @@ function AddFoodForm({ onClose, onAdded }: { onClose: () => void; onAdded: () =>
     setMode("manual");
   };
 
+  const runScan = async (file: File) => {
+    setScanError("");
+    setScanItems([]);
+    setScanNote("");
+    setAddedScanKeys(new Set());
+    setScanLoading(true);
+    try {
+      const dataUrl = await fileToCompressedDataURL(file);
+      setScanImage(dataUrl);
+      const res = await fetch("/api/food-scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: dataUrl }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setScanError(data?.error || "Couldn't analyze that image.");
+        return;
+      }
+      const items: ScannedFoodItem[] = data.items ?? [];
+      setScanItems(items);
+      setScanNote(data.note || "");
+      if (items.length === 0) {
+        setScanError(data.note || "No food detected. Try a clearer, closer photo.");
+      }
+    } catch {
+      setScanError("Something went wrong analyzing the image.");
+    } finally {
+      setScanLoading(false);
+    }
+  };
+
+  const handleScanFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file
+    if (file) void runScan(file);
+  };
+
+  const resetScan = () => {
+    setScanImage(null);
+    setScanItems([]);
+    setScanError("");
+    setScanNote("");
+    setAddedScanKeys(new Set());
+  };
+
+  const addScannedItem = (item: ScannedFoodItem, idx: number) => {
+    const entry: FoodEntry = {
+      id: `food-${Date.now()}-${idx}-${Math.random().toString(36).slice(2, 6)}`,
+      name: item.name,
+      calories: Math.round(item.calories),
+      protein: item.protein || undefined,
+      carbs: item.carbs || undefined,
+      fat: item.fat || undefined,
+      servings: 1,
+      date: new Date().toISOString().split("T")[0],
+      timestamp: Date.now(),
+      meal,
+    };
+    addFoodEntry(entry);
+    onAdded();
+    setAddedScanKeys((prev) => new Set(prev).add(`${idx}-${item.name}`));
+  };
+
+  const addAllScanned = () => {
+    scanItems.forEach((item, idx) => {
+      if (!addedScanKeys.has(`${idx}-${item.name}`)) addScannedItem(item, idx);
+    });
+  };
+
+  const editScannedItem = (item: ScannedFoodItem) => {
+    setName(item.name);
+    setBaseCals(item.calories);
+    setBaseProtein(item.protein);
+    setBaseCarbs(item.carbs);
+    setBaseFat(item.fat);
+    setServingSize("1");
+    setServingUnit("piece");
+    setServings("1");
+    updatePortionValues(1, item.calories, item.protein, item.carbs, item.fat);
+    setMode("manual");
+  };
+
   return (
     <Card className="bg-card border-border">
       <CardHeader className="px-4 pt-4 pb-2 flex flex-row items-center justify-between">
@@ -341,7 +489,19 @@ function AddFoodForm({ onClose, onAdded }: { onClose: () => void; onAdded: () =>
             )}
           >
             <Search className="h-3 w-3" />
-            Food Search
+            Search
+          </button>
+          <button
+            onClick={() => setMode("scan")}
+            className={cn(
+              "flex-1 text-xs font-medium py-1.5 rounded-md transition-colors flex items-center justify-center gap-1.5",
+              mode === "scan"
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground"
+            )}
+          >
+            <Sparkles className="h-3 w-3" />
+            Scan
           </button>
           <button
             onClick={() => setMode("manual")}
@@ -479,6 +639,197 @@ function AddFoodForm({ onClose, onAdded }: { onClose: () => void; onAdded: () =>
               </div>
             )}
           </>
+        ) : mode === "scan" ? (
+          <>
+            {/* Hidden inputs: camera (mobile) + gallery/upload */}
+            <input
+              ref={cameraInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handleScanFileChange}
+              className="hidden"
+            />
+            <input
+              ref={uploadInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleScanFileChange}
+              className="hidden"
+            />
+
+            {!scanImage && !scanLoading && (
+              <div className="rounded-xl border border-dashed border-primary/25 bg-primary/[0.03] p-4 text-center space-y-3">
+                <div className="mx-auto h-11 w-11 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <div className="text-sm font-semibold">Scan your food</div>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    Snap or upload a photo — AI estimates the calories &amp; macros.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    className="flex-1 min-h-[44px]"
+                    onClick={() => cameraInputRef.current?.click()}
+                  >
+                    <Camera className="h-4 w-4" />
+                    Take Photo
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="flex-1 min-h-[44px]"
+                    onClick={() => uploadInputRef.current?.click()}
+                  >
+                    <Upload className="h-4 w-4" />
+                    Upload
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {scanImage && (
+              <div className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={scanImage}
+                  alt="Food to analyze"
+                  className="w-full max-h-52 object-cover rounded-xl border border-border"
+                />
+                <button
+                  onClick={resetScan}
+                  className="absolute top-2 right-2 h-7 w-7 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/80"
+                  title="Remove photo"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+                {scanLoading && (
+                  <div className="absolute inset-0 rounded-xl bg-black/55 flex flex-col items-center justify-center gap-2">
+                    <Loader2 className="h-6 w-6 text-primary animate-spin" />
+                    <span className="text-xs text-white/90 font-medium">Analyzing food…</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {scanLoading && !scanImage && (
+              <div className="flex items-center justify-center gap-2 py-6 text-muted-foreground">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="text-sm">Analyzing food…</span>
+              </div>
+            )}
+
+            {scanError && !scanLoading && (
+              <div className="flex items-start gap-2 rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2.5">
+                <AlertTriangle className="h-3.5 w-3.5 text-amber-400 mt-0.5 shrink-0" />
+                <span className="text-xs text-amber-300">{scanError}</span>
+              </div>
+            )}
+
+            {scanItems.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
+                    <Sparkles className="h-3 w-3 text-primary" />
+                    Detected ({scanItems.length})
+                  </div>
+                  <span className="text-[11px] font-semibold text-primary tabular-nums">
+                    ~{scanItems.reduce((s, it) => s + it.calories, 0)} cal total
+                  </span>
+                </div>
+
+                {scanItems.map((item, idx) => {
+                  const key = `${idx}-${item.name}`;
+                  const added = addedScanKeys.has(key);
+                  return (
+                    <div
+                      key={key}
+                      className="rounded-xl border border-border bg-secondary/30 p-3"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className="text-sm font-semibold capitalize truncate">
+                            {item.name}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1.5 flex-wrap">
+                            {item.portion && <span>{item.portion}</span>}
+                            <ConfidencePill level={item.confidence} />
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <div className="text-sm font-bold text-primary tabular-nums">
+                            {item.calories}
+                          </div>
+                          <div className="text-[9px] text-muted-foreground">cal</div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 mt-2 text-[10px] text-muted-foreground">
+                        <span>P {item.protein}g</span>
+                        <span>·</span>
+                        <span>C {item.carbs}g</span>
+                        <span>·</span>
+                        <span>F {item.fat}g</span>
+                      </div>
+
+                      <div className="flex gap-2 mt-2.5">
+                        <Button
+                          size="sm"
+                          className="flex-1 min-h-[38px]"
+                          disabled={added}
+                          onClick={() => addScannedItem(item, idx)}
+                        >
+                          {added ? (
+                            <>
+                              <Check className="h-3.5 w-3.5" />
+                              Added
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="h-3.5 w-3.5" />
+                              Add
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="min-h-[38px] px-3"
+                          onClick={() => editScannedItem(item)}
+                          title="Adjust before adding"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {scanNote && (
+                  <p className="text-[10px] text-muted-foreground/70 italic px-1">
+                    {scanNote}
+                  </p>
+                )}
+
+                <Button
+                  variant="outline"
+                  className="w-full min-h-[42px]"
+                  onClick={addAllScanned}
+                  disabled={scanItems.every((it, idx) => addedScanKeys.has(`${idx}-${it.name}`))}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add All to {MEAL_OPTIONS.find((m) => m.value === meal)?.label}
+                </Button>
+
+                <p className="text-[9px] text-center text-muted-foreground/50">
+                  AI estimates are approximate — adjust if needed.
+                </p>
+              </div>
+            )}
+          </>
         ) : (
           <>
             {/* Manual entry with portion */}
@@ -603,14 +954,18 @@ function AddFoodForm({ onClose, onAdded }: { onClose: () => void; onAdded: () =>
           </>
         )}
 
-        <Button onClick={handleSubmit} disabled={!name.trim() || !calories} className="w-full min-h-[44px]">
-          <Plus className="h-4 w-4" />
-          Add to Log
-        </Button>
+        {mode !== "scan" && (
+          <Button onClick={handleSubmit} disabled={!name.trim() || !calories} className="w-full min-h-[44px]">
+            <Plus className="h-4 w-4" />
+            Add to Log
+          </Button>
+        )}
 
         <div className="text-center">
           <span className="text-[9px] text-muted-foreground/50">
-            Food data from FoodData Central (USDA)
+            {mode === "scan"
+              ? "AI food scan powered by Gemini"
+              : "Food data from FoodData Central (USDA)"}
           </span>
         </div>
       </CardContent>
@@ -725,6 +1080,19 @@ function PortionEditor({
         />
       </div>
     </div>
+  );
+}
+
+function ConfidencePill({ level }: { level: "high" | "medium" | "low" }) {
+  const styles = {
+    high: "bg-green-500/10 text-green-400 border-green-500/20",
+    medium: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    low: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+  }[level];
+  return (
+    <span className={cn("inline-flex items-center rounded-full border px-1.5 py-0.5 text-[9px] font-medium capitalize", styles)}>
+      {level} confidence
+    </span>
   );
 }
 
