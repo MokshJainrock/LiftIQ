@@ -1,8 +1,31 @@
-import { type NextRequest } from "next/server";
-import { updateSession } from "@/utils/supabase/middleware";
+import { NextRequest, NextResponse } from "next/server";
+import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth/jwt";
+
+/** Routes that never require a session (auth pages, OAuth return, API routes). */
+const PUBLIC_PATH_PREFIXES = ["/login", "/auth/callback", "/api"];
+
+function isPublicPath(pathname: string) {
+  return PUBLIC_PATH_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request);
+  const pathname = request.nextUrl.pathname;
+  const token = request.cookies.get(SESSION_COOKIE)?.value;
+  const session = await verifySessionToken(token);
+
+  if (!session && !isPublicPath(pathname)) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  if (session && pathname === "/login") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {

@@ -1,5 +1,5 @@
 import { WorkoutSession, DailyLog, StreakData, UserSettings, UserProfile, FoodEntry, UserExercise, WorkoutRoutine } from "@/types";
-import * as db from "@/lib/supabase-db";
+import * as db from "@/lib/api-db";
 import { clearAllRecordings } from "@/lib/storage/recordings-db";
 
 const STORAGE_KEYS = {

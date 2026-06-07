@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Activity, BarChart3, Brain, Dumbbell, LogOut, Settings, Video } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
 import { clearAllStorage } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 
@@ -27,8 +26,11 @@ export function Navbar() {
   const router = useRouter();
 
   const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    try {
+      await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+    } catch {
+      // ignore — still clear local state and redirect
+    }
     clearAllStorage();
     router.push("/login");
     router.refresh();

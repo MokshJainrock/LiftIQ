@@ -4,7 +4,7 @@ import {
   dbGetRecordingBlob as dbDownloadBlob,
   dbDeleteRecording,
   type DbRecordingMeta,
-} from "@/lib/supabase-db";
+} from "@/lib/api-db";
 
 const DB_NAME = "liftiq-recordings";
 const DB_VERSION = 1;

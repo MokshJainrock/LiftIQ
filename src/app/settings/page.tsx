@@ -11,7 +11,6 @@ import { useWorkoutStore } from "@/lib/store";
 import { getSettings, saveSettings, getUserProfile, saveUserProfile, clearAllStorage } from "@/lib/storage";
 import { UserProfile, Gender, ActivityLevel, WeightGoal } from "@/types";
 import { getActivityLabel, getGoalLabel, calculateRecommendedCalories } from "@/lib/calories";
-import { createClient } from "@/utils/supabase/client";
 import { Volume2, VolumeX, Camera, Gauge, Info, CheckCircle2, Shield, Monitor, User, Pencil, LogOut, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -58,7 +57,7 @@ export default function SettingsPage() {
     saveUserProfile(up); setProfile(up); setUserProfile(up); setEditing(false);
   };
 
-  const handleLogout = async () => { const sb = createClient(); await sb.auth.signOut(); clearAllStorage(); router.push("/login"); router.refresh(); };
+  const handleLogout = async () => { try { await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" }); } catch {} clearAllStorage(); router.push("/login"); router.refresh(); };
   const fmtH = (i: number) => `${Math.floor(i / 12)}'${i % 12}"`;
 
   const inp = "w-full h-11 rounded-xl bg-white/[0.03] border border-white/[0.06] px-4 text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-colors";

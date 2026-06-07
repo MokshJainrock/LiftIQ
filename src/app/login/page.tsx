@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { createClient } from "@/utils/supabase/client";
 import { GlassCard } from "@/components/ui/glass-card";
 import Image from "next/image";
 import { ArrowRight, Mail, Lock, User, Eye, EyeOff, Loader2 } from "lucide-react";
@@ -23,14 +22,18 @@ export default function LoginPage() {
     setError("");
     setMessage("");
     try {
-      const supabase = createClient();
-      const { error: err } = await supabase.auth.signInWithPassword({ email, password });
-      if (err) {
-        setError(err.message);
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Sign in failed");
         return;
       }
-      // Full page load so auth cookies are on the request before middleware runs.
-      // (Soft router.push can race middleware → bounce to /login with loading still true = stuck spinner.)
+      // Full page load so the session cookie is on the request before middleware
+      // runs. (A soft router.push can race middleware → bounce back to /login.)
       window.location.assign("/");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Sign in failed");
@@ -44,17 +47,18 @@ export default function LoginPage() {
     setError("");
     setMessage("");
     try {
-      const supabase = createClient();
-      const { error: err } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { full_name: fullName } },
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, fullName }),
       });
-      if (err) {
-        setError(err.message);
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data.error || "Sign up failed");
         return;
       }
-      setMessage("You are now registered! You can sign in now.");
+      // Signup creates a session immediately — go straight in.
+      window.location.assign("/");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Sign up failed");
     } finally {
