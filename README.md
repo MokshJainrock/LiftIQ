@@ -5,7 +5,6 @@
 | | |
 |--|--|
 | **Live app** | [lift-iq-eta.vercel.app](https://lift-iq-eta.vercel.app) |
-| **Source** | [github.com/agransh/LiftIQ](https://github.com/agransh/LiftIQ) |
 
 Real-time AI-powered workout form analysis that uses your webcam to track body joints, score every rep out of 100, and deliver instant corrective coaching — like having a personal trainer in your browser.
 
@@ -58,7 +57,7 @@ Real-time AI-powered workout form analysis that uses your webcam to track body j
 ### Installation
 
 ```bash
-git clone https://github.com/agransh/LiftIQ.git
+git clone https://github.com/MokshJainrock/LiftIQ.git
 cd LiftIQ
 npm install
 npm run dev
