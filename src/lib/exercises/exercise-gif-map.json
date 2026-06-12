@@ -2,713 +2,2182 @@
   "bench-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/barbell-bench-press.gif",
     "sourceName": "Barbell Bench Press",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "incline-bench-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/barbell-incline-bench-press.gif",
     "sourceName": "Barbell Incline Bench Press",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "decline-bench-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/barbell-decline-bench-press.gif",
     "sourceName": "Barbell Decline Bench Press",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "dumbbell-bench-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/dumbbell-bench-press.gif",
     "sourceName": "Dumbbell Bench Press",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "incline-dumbbell-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/dumbbell-incline-alternate-press.gif",
     "sourceName": "Dumbbell Incline Alternate Press",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "dumbbell-fly": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/dumbbell-fly.gif",
     "sourceName": "Dumbbell Fly",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "cable-fly": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/cable-cross-over-revers-fly.gif",
     "sourceName": "Cable Cross Over Revers Fly",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "low-to-high-cable-fly": null,
-  "pec-deck": null,
+  "low-to-high-cable-fly": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/cable-low-fly.gif",
+    "sourceName": "Cable Low Fly",
+    "score": 830,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "pec-deck": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/lever-chest-press-0577.gif",
+    "sourceName": "Lever Chest Press 0577",
+    "score": 100,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "machine-chest-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/machine-inner-chest-press.gif",
     "sourceName": "Machine Inner Chest Press",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "push-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/push-up.gif",
     "sourceName": "Push Up",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "incline-push-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/incline-push-up.gif",
     "sourceName": "Incline Push Up",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "decline-push-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/decline-push-up.gif",
     "sourceName": "Decline Push Up",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "dip-chest": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/assisted-chest-dip-kneeling.gif",
     "sourceName": "Assisted Chest Dip Kneeling",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "machine-incline-press": null,
+  "machine-incline-press": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/lever-seated-squat-calf-raise-on-leg-press-machine.gif",
+    "sourceName": "Lever Seated Squat Calf Raise On Leg Press Machine",
+    "score": 350,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "dumbbell-pullover": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/dumbbell-pullover.gif",
     "sourceName": "Dumbbell Pullover",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "svend-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/weighted-svend-press.gif",
     "sourceName": "Weighted Svend Press",
-    "score": 610
+    "score": 660,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "banded-chest-press": null,
+  "banded-chest-press": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/band-one-arm-twisting-chest-press.gif",
+    "sourceName": "Band One Arm Twisting Chest Press",
+    "score": 830,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "deadlift": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/barbell-deadlift.gif",
     "sourceName": "Barbell Deadlift",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "barbell-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/barbell-rear-delt-row.gif",
     "sourceName": "Barbell Rear Delt Row",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "pendlay-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/barbell-pendlay-row.gif",
     "sourceName": "Barbell Pendlay Row",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the upper back before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "t-bar-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/lever-reverse-t-bar-row.gif",
     "sourceName": "Lever Reverse T Bar Row",
-    "score": 615
+    "score": 665,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the upper back before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "dumbbell-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-one-arm-upright-row.gif",
     "sourceName": "Dumbbell One Arm Upright Row",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "chest-supported-row": null,
+  "chest-supported-row": {
+    "gifUrl": "https://static.exercisedb.dev/media/7vGUGco.gif",
+    "sourceName": "dumbbell incline row",
+    "score": 90
+  },
   "seated-cable-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/lats/cable-seated-high-row-v-bar.gif",
     "sourceName": "Cable Seated High Row V Bar",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the lats before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "lat-pulldown": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/lats/cable-lat-pulldown-full-range-of-motion.gif",
     "sourceName": "Cable Lat Pulldown Full Range Of Motion",
-    "score": 900
+    "score": 900,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the lats before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "straight-arm-pulldown": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/lats/cable-straight-arm-pulldown.gif",
     "sourceName": "Cable Straight Arm Pulldown",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the lats before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "pull-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/lats/pull-up.gif",
     "sourceName": "Pull Up",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the lats before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "chin-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/lats/chin-up.gif",
     "sourceName": "Chin Up",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the lats before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "inverted-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/inverted-row.gif",
     "sourceName": "Inverted Row",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the upper back before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "machine-row": null,
+  "machine-row": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/smith-machine-bicep-curl.gif",
+    "sourceName": "Smith Machine Bicep Curl",
+    "score": 235,
+    "instructions": [
+      "Set the bar on the Smith machine at the right height.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "rack-pull": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/barbell-rack-pull.gif",
     "sourceName": "Barbell Rack Pull",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "single-arm-lat-pulldown": null,
-  "meadows-row": null,
+  "single-arm-lat-pulldown": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/lats/cable-lat-pulldown-full-range-of-motion.gif",
+    "sourceName": "Cable Lat Pulldown Full Range Of Motion",
+    "score": 900,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the lats before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "meadows-row": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/barbell-rear-delt-row.gif",
+    "sourceName": "Barbell Rear Delt Row",
+    "score": 235,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "renegade-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/kettlebell-alternating-renegade-row.gif",
     "sourceName": "Kettlebell Alternating Renegade Row",
-    "score": 610
+    "score": 660,
+    "instructions": [
+      "Grab the kettlebell with an appropriate weight and adopt the position.",
+      "Pre-engage the upper back before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "band-pull-down": null,
-  "superman-hold": null,
-  "seal-row": null,
+  "band-pull-down": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/band-pull-through.gif",
+    "sourceName": "Band Pull Through",
+    "score": 350,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "superman-hold": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/superman-push-up.gif",
+    "sourceName": "Superman Push Up",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the chest before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "seal-row": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/barbell-rear-delt-row.gif",
+    "sourceName": "Barbell Rear Delt Row",
+    "score": 235,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "overhead-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/barbell-seated-overhead-press.gif",
     "sourceName": "Barbell Seated Overhead Press",
-    "score": 820
+    "score": 900,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "push-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-push-press.gif",
     "sourceName": "Dumbbell Push Press",
-    "score": 610
+    "score": 660,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "dumbbell-shoulder-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-seated-biceps-curl-to-shoulder-press.gif",
     "sourceName": "Dumbbell Seated Biceps Curl To Shoulder Press",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "arnold-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-arnold-press.gif",
     "sourceName": "Dumbbell Arnold Press",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "lateral-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-lateral-raise.gif",
     "sourceName": "Dumbbell Lateral Raise",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "cable-lateral-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/cable-lateral-raise.gif",
     "sourceName": "Cable Lateral Raise",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "front-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-front-raise.gif",
     "sourceName": "Dumbbell Front Raise",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "rear-delt-fly": null,
-  "face-pull": null,
-  "machine-shoulder-press": null,
+  "rear-delt-fly": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-lying-on-floor-rear-delt-raise.gif",
+    "sourceName": "Dumbbell Lying On Floor Rear Delt Raise",
+    "score": 900,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "face-pull": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/cable-pull-through-with-rope.gif",
+    "sourceName": "Cable Pull Through With Rope",
+    "score": 235,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "machine-shoulder-press": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/lever-seated-squat-calf-raise-on-leg-press-machine.gif",
+    "sourceName": "Lever Seated Squat Calf Raise On Leg Press Machine",
+    "score": 350,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "upright-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/barbell-upright-row.gif",
     "sourceName": "Barbell Upright Row",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "pike-push-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/pike-to-cobra-push-up.gif",
     "sourceName": "Pike To Cobra Push Up",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "cable-rear-delt-fly": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/cable-kneeling-rear-delt-row-with-rope-male.gif",
     "sourceName": "Cable Kneeling Rear Delt Row With Rope Male",
-    "score": 360
+    "score": 375,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "landmine-press": null,
+  "landmine-press": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/barbell-press-sit-up.gif",
+    "sourceName": "Barbell Press Sit Up",
+    "score": 235,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "dumbbell-y-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/dumbbell-incline-y-raise.gif",
     "sourceName": "Dumbbell Incline Y Raise",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the upper back before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "plate-front-raise": null,
+  "plate-front-raise": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-front-raise.gif",
+    "sourceName": "Dumbbell Front Raise",
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "handstand-push-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/handstand-push-up.gif",
     "sourceName": "Handstand Push Up",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "barbell-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/barbell-curl.gif",
     "sourceName": "Barbell Curl",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "dumbbell-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-alternate-biceps-curl-with-arm-blaster.gif",
     "sourceName": "Dumbbell Alternate Biceps Curl With Arm Blaster",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "hammer-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-hammer-curl.gif",
     "sourceName": "Dumbbell Hammer Curl",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "incline-dumbbell-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-incline-biceps-curl.gif",
     "sourceName": "Dumbbell Incline Biceps Curl",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "preacher-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/barbell-preacher-curl.gif",
     "sourceName": "Barbell Preacher Curl",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "cable-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/cable-curl.gif",
     "sourceName": "Cable Curl",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "concentration-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-concentration-curl.gif",
     "sourceName": "Dumbbell Concentration Curl",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "ez-bar-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/ez-bar-biceps-curl-with-arm-blaster.gif",
     "sourceName": "Ez Bar Biceps Curl With Arm Blaster",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Load the EZ-bar with an appropriate weight and grip it firmly.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "spider-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-one-arm-reverse-spider-curl.gif",
     "sourceName": "Dumbbell One Arm Reverse Spider Curl",
-    "score": 820
+    "score": 900,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "zottman-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-zottman-curl.gif",
     "sourceName": "Dumbbell Zottman Curl",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "rope-hammer-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/cable-hammer-curl-with-rope.gif",
     "sourceName": "Cable Hammer Curl With Rope",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "band-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/band-alternating-biceps-curl.gif",
     "sourceName": "Band Alternating Biceps Curl",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "close-grip-bench-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/barbell-close-grip-bench-press.gif",
     "sourceName": "Barbell Close Grip Bench Press",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "skull-crusher": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/barbell-lying-triceps-extension-skull-crusher.gif",
     "sourceName": "Barbell Lying Triceps Extension Skull Crusher",
-    "score": 820
+    "score": 900,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "tricep-pushdown": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/cable-one-arm-tricep-pushdown.gif",
     "sourceName": "Cable One Arm Tricep Pushdown",
-    "score": 820
+    "score": 900,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "overhead-tricep-extension": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/dumbbell-seated-reverse-grip-one-arm-overhead-tricep-extension.gif",
     "sourceName": "Dumbbell Seated Reverse Grip One Arm Overhead Tricep Extension",
-    "score": 830
+    "score": 900,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "cable-overhead-extension": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/cable-high-pulley-overhead-tricep-extension.gif",
     "sourceName": "Cable High Pulley Overhead Tricep Extension",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "dip-triceps": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/assisted-triceps-dip-kneeling.gif",
     "sourceName": "Assisted Triceps Dip Kneeling",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "bench-dip": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/bench-dip-knees-bent.gif",
     "sourceName": "Bench Dip Knees Bent",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "diamond-push-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/diamond-push-up.gif",
     "sourceName": "Diamond Push Up",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "rope-pushdown": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/cable-pushdown-with-rope-attachment.gif",
     "sourceName": "Cable Pushdown With Rope Attachment",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "tricep-kickback": {
-    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/dumbbell-tricep-kickback-with-stork-stance.gif",
-    "sourceName": "Dumbbell Tricep Kickback With Stork Stance",
-    "score": 900
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/dumbbell-standing-alternating-tricep-kickback.gif",
+    "sourceName": "Dumbbell Standing Alternating Tricep Kickback",
+    "score": 900,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "machine-tricep-extension": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/smith-machine-incline-tricep-extension.gif",
     "sourceName": "Smith Machine Incline Tricep Extension",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Set the bar on the Smith machine at the right height.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "wrist-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-over-bench-neutral-wrist-curl.gif",
     "sourceName": "Dumbbell Over Bench Neutral Wrist Curl",
-    "score": 820
+    "score": 900,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "reverse-wrist-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/forearms/dumbbell-reverse-wrist-curl.gif",
     "sourceName": "Dumbbell Reverse Wrist Curl",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the forearms before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "reverse-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/barbell-reverse-curl.gif",
     "sourceName": "Barbell Reverse Curl",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "farmer-walk": null,
-  "dead-hang": null,
-  "plate-pinch-hold": null,
-  "behind-the-back-wrist-curl": null,
+  "farmer-walk": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/forearms/dumbbell-finger-curls.gif",
+    "sourceName": "Dumbbell Finger Curls",
+    "score": 100,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the forearms before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "dead-hang": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/dead-bug.gif",
+    "sourceName": "Dead Bug",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "plate-pinch-hold": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/forearms/dumbbell-finger-curls.gif",
+    "sourceName": "Dumbbell Finger Curls",
+    "score": 100,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the forearms before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "behind-the-back-wrist-curl": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/forearms/barbell-standing-back-wrist-curl.gif",
+    "sourceName": "Barbell Standing Back Wrist Curl",
+    "score": 375,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the forearms before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "back-squat": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/barbell-full-squat-back-pov.gif",
     "sourceName": "Barbell Full Squat Back Pov",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "front-squat": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/barbell-front-squat.gif",
     "sourceName": "Barbell Front Squat",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "bodyweight-squat": {
-    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/bodyweight-drop-jump-squat.gif",
-    "sourceName": "Bodyweight Drop Jump Squat",
-    "score": 820
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/bodyweight-squatting-row-with-towel.gif",
+    "sourceName": "Bodyweight Squatting Row With Towel",
+    "score": 900,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the upper back before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "goblet-squat": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/quads/dumbbell-goblet-squat.gif",
     "sourceName": "Dumbbell Goblet Squat",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the quadriceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "leg-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/smith-leg-press.gif",
     "sourceName": "Smith Leg Press",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Set the bar on the Smith machine at the right height.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "hack-squat": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/sled-hack-squat.gif",
     "sourceName": "Sled Hack Squat",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "bulgarian-split-squat": null,
+  "bulgarian-split-squat": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/quads/dumbbell-single-leg-split-squat.gif",
+    "sourceName": "Dumbbell Single Leg Split Squat",
+    "score": 350,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the quadriceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "lunge": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/lunge-with-twist.gif",
     "sourceName": "Lunge With Twist",
-    "score": 810
+    "score": 810,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "walking-lunge": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/walking-lunge.gif",
     "sourceName": "Walking Lunge",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "leg-extension": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/quads/lever-leg-extension.gif",
     "sourceName": "Lever Leg Extension",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the quadriceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "step-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/dumbbell-step-up.gif",
     "sourceName": "Dumbbell Step Up",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "wall-sit": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/march-sit-wall.gif",
     "sourceName": "March Sit Wall",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "reverse-lunge": null,
+  "reverse-lunge": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-bicep-curl-lunge-with-bowling-motion.gif",
+    "sourceName": "Dumbbell Bicep Curl Lunge With Bowling Motion",
+    "score": 235,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "jump-squat": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/jump-squat.gif",
     "sourceName": "Jump Squat",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Perform a brief dip to load tension.",
+      "Execute the movement explosively and land under control.",
+      "Land softly absorbing with legs and core, then chain the next rep."
+    ]
   },
   "pistol-squat": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/single-leg-squat-pistol-male.gif",
     "sourceName": "Single Leg Squat Pistol Male",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "sissy-squat": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/quads/sissy-squat.gif",
     "sourceName": "Sissy Squat",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the quadriceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "romanian-deadlift": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/barbell-romanian-deadlift.gif",
     "sourceName": "Barbell Romanian Deadlift",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "stiff-leg-deadlift": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/band-stiff-leg-deadlift.gif",
     "sourceName": "Band Stiff Leg Deadlift",
-    "score": 615
+    "score": 665,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "dumbbell-rdl": null,
+  "dumbbell-rdl": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/dumbbell-side-bend.gif",
+    "sourceName": "Dumbbell Side Bend",
+    "score": 235,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "lying-leg-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/hamstrings/lever-lying-leg-curl.gif",
     "sourceName": "Lever Lying Leg Curl",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the hamstrings before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "seated-leg-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/hamstrings/lever-seated-leg-curl.gif",
     "sourceName": "Lever Seated Leg Curl",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the hamstrings before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "nordic-curl": null,
+  "nordic-curl": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/curl-up.gif",
+    "sourceName": "Curl Up",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "good-morning": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/hamstrings/barbell-good-morning.gif",
     "sourceName": "Barbell Good Morning",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the hamstrings before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "glute-ham-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/hamstrings/glute-ham-raise.gif",
     "sourceName": "Glute Ham Raise",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the hamstrings before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "single-leg-rdl": null,
+  "single-leg-rdl": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-step-up-single-leg-balance-with-bicep-curl.gif",
+    "sourceName": "Dumbbell Step Up Single Leg Balance With Bicep Curl",
+    "score": 350,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "back-extension": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/spine/lever-back-extension.gif",
     "sourceName": "Lever Back Extension",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the lower back before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "banded-leg-curl": null,
+  "banded-leg-curl": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/biceps-leg-concentration-curl.gif",
+    "sourceName": "Biceps Leg Concentration Curl",
+    "score": 200,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "hip-thrust": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/resistance-band-hip-thrusts-on-knees-female.gif",
     "sourceName": "Resistance Band Hip Thrusts On Knees Female",
-    "score": 400
+    "score": 420,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "glute-bridge": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/glute-bridge-march.gif",
     "sourceName": "Glute Bridge March",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "cable-kickback": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/cable-kickback.gif",
     "sourceName": "Cable Kickback",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "cable-pull-through": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/cable-pull-through-with-rope.gif",
     "sourceName": "Cable Pull Through With Rope",
-    "score": 830
+    "score": 900,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "sumo-deadlift": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/barbell-sumo-deadlift.gif",
     "sourceName": "Barbell Sumo Deadlift",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "curtsy-lunge": null,
+  "curtsy-lunge": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-bicep-curl-lunge-with-bowling-motion.gif",
+    "sourceName": "Dumbbell Bicep Curl Lunge With Bowling Motion",
+    "score": 235,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "hip-abduction": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abductors/lever-seated-hip-abduction.gif",
     "sourceName": "Lever Seated Hip Abduction",
-    "score": 820
+    "score": 900,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the abductors before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "frog-pump": null,
-  "single-leg-hip-thrust": null,
-  "donkey-kick": null,
-  "banded-lateral-walk": null,
+  "frog-pump": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/frog-crunch.gif",
+    "sourceName": "Frog Crunch",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "single-leg-hip-thrust": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abductors/straight-leg-outer-hip-abductor.gif",
+    "sourceName": "Straight Leg Outer Hip Abductor",
+    "score": 250,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the abductors before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "donkey-kick": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/donkey-calf-raise.gif",
+    "sourceName": "Donkey Calf Raise",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "banded-lateral-walk": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/band-bent-over-hip-extension.gif",
+    "sourceName": "Band Bent Over Hip Extension",
+    "score": 100,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "reverse-hyperextension": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/lever-reverse-hyperextension.gif",
     "sourceName": "Lever Reverse Hyperextension",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "standing-calf-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/lever-standing-calf-raise.gif",
     "sourceName": "Lever Standing Calf Raise",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "seated-calf-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/lever-seated-calf-raise.gif",
     "sourceName": "Lever Seated Calf Raise",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "single-leg-calf-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/band-single-leg-calf-raise.gif",
     "sourceName": "Band Single Leg Calf Raise",
-    "score": 620
+    "score": 670,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "donkey-calf-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/donkey-calf-raise.gif",
     "sourceName": "Donkey Calf Raise",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "leg-press-calf-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/lever-seated-squat-calf-raise-on-leg-press-machine.gif",
     "sourceName": "Lever Seated Squat Calf Raise On Leg Press Machine",
-    "score": 840
+    "score": 840,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "tibialis-raise": null,
+  "tibialis-raise": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/assisted-hanging-knee-raise-with-throw-down.gif",
+    "sourceName": "Assisted Hanging Knee Raise With Throw Down",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "plank": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/bodyweight-incline-side-plank.gif",
     "sourceName": "Bodyweight Incline Side Plank",
-    "score": 810
+    "score": 900,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "side-plank": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/bodyweight-incline-side-plank.gif",
     "sourceName": "Bodyweight Incline Side Plank",
-    "score": 820
+    "score": 900,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "sit-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/3-4-sit-up.gif",
     "sourceName": "3 4 Sit Up",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "crunch": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/cross-body-crunch.gif",
     "sourceName": "Cross Body Crunch",
-    "score": 810
+    "score": 810,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "bicycle-crunch": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/band-bicycle-crunch.gif",
     "sourceName": "Band Bicycle Crunch",
-    "score": 610
+    "score": 660,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "russian-twist": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/russian-twist.gif",
     "sourceName": "Russian Twist",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "hanging-leg-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/hanging-leg-raise.gif",
     "sourceName": "Hanging Leg Raise",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "hanging-knee-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/assisted-hanging-knee-raise-with-throw-down.gif",
     "sourceName": "Assisted Hanging Knee Raise With Throw Down",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "ab-wheel-rollout": null,
+  "ab-wheel-rollout": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/standing-wheel-rollerout.gif",
+    "sourceName": "Standing Wheel Rollerout",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "cable-crunch": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/cable-kneeling-crunch.gif",
     "sourceName": "Cable Kneeling Crunch",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "cable-woodchopper": null,
+  "cable-woodchopper": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/cable-judo-flip.gif",
+    "sourceName": "Cable Judo Flip",
+    "score": 100,
+    "instructions": [
+      "Set the pulley at the required height and select the weight.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "dead-bug": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/dead-bug.gif",
     "sourceName": "Dead Bug",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "mountain-climber": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/mountain-climber.gif",
     "sourceName": "Mountain Climber",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
   },
   "flutter-kick": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/flutter-kicks.gif",
     "sourceName": "Flutter Kicks",
-    "score": 500
+    "score": 500,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "v-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/band-alternating-v-up.gif",
     "sourceName": "Band Alternating V Up",
-    "score": 610
+    "score": 660,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "leg-raise": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/assisted-lying-leg-raise-with-lateral-throw-down.gif",
     "sourceName": "Assisted Lying Leg Raise With Lateral Throw Down",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "hollow-body-hold": null,
+  "hollow-body-hold": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/3-4-sit-up.gif",
+    "sourceName": "3 4 Sit Up",
+    "score": 100,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "pallof-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/band-horizontal-pallof-press.gif",
     "sourceName": "Band Horizontal Pallof Press",
-    "score": 610
+    "score": 660,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "suitcase-carry": null,
-  "toes-to-bar": null,
+  "suitcase-carry": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-single-arm-overhead-carry.gif",
+    "sourceName": "Dumbbell Single Arm Overhead Carry",
+    "score": 235,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "toes-to-bar": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/3-4-sit-up.gif",
+    "sourceName": "3 4 Sit Up",
+    "score": 100,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "plank-shoulder-tap": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/kneeling-plank-tap-shoulder-male.gif",
     "sourceName": "Kneeling Plank Tap Shoulder Male",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "bird-dog": null,
-  "copenhagen-plank": null,
-  "jumping-jack": null,
+  "bird-dog": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/spine/upward-facing-dog.gif",
+    "sourceName": "Upward Facing Dog",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the lower back before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "copenhagen-plank": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/bodyweight-incline-side-plank.gif",
+    "sourceName": "Bodyweight Incline Side Plank",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "jumping-jack": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/jack-burpee.gif",
+    "sourceName": "Jack Burpee",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
+  },
   "burpee": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/burpee.gif",
     "sourceName": "Burpee",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
   },
   "high-knees": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/walking-high-knees-lunge.gif",
     "sourceName": "Walking High Knees Lunge",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
   },
   "jump-rope": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/jump-rope.gif",
     "sourceName": "Jump Rope",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
   },
   "box-jump": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/box-jump-down-with-one-leg-stabilization.gif",
     "sourceName": "Box Jump Down With One Leg Stabilization",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Perform a brief dip to load tension.",
+      "Execute the movement explosively and land under control.",
+      "Land softly absorbing with legs and core, then chain the next rep."
+    ]
   },
-  "rowing-machine": null,
-  "assault-bike": null,
-  "treadmill-run": null,
-  "stair-climber": null,
-  "sprint-interval": null,
-  "cycling": null,
+  "rowing-machine": {
+    "gifUrl": "https://static.exercisedb.dev/media/7i4MS6X.gif",
+    "sourceName": "stationary bike run",
+    "score": 90
+  },
+  "assault-bike": {
+    "gifUrl": "https://static.exercisedb.dev/media/a8VDgLw.gif",
+    "sourceName": "stationary bike walk",
+    "score": 90
+  },
+  "treadmill-run": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/walking-on-incline-treadmill.gif",
+    "sourceName": "Walking On Incline Treadmill",
+    "score": 655,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
+  },
+  "stair-climber": {
+    "gifUrl": "https://static.exercisedb.dev/media/3eGE2JC.gif",
+    "sourceName": "walking on stepmill",
+    "score": 90
+  },
+  "sprint-interval": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/astride-jumps-male.gif",
+    "sourceName": "Astride Jumps Male",
+    "score": 100,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
+  },
+  "cycling": {
+    "gifUrl": "https://static.exercisedb.dev/media/a8VDgLw.gif",
+    "sourceName": "stationary bike walk",
+    "score": 90
+  },
   "elliptical": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/walk-elliptical-cross-trainer.gif",
     "sourceName": "Walk Elliptical Cross Trainer",
-    "score": 605
+    "score": 655,
+    "instructions": [
+      "Adjust the machine to your size and select the load.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
   },
-  "swimming": null,
-  "incline-walk": null,
+  "swimming": {
+    "gifUrl": "https://static.exercisedb.dev/media/9ApP01R.gif",
+    "sourceName": "swimmer kicks",
+    "score": 90
+  },
+  "incline-walk": {
+    "gifUrl": "https://static.exercisedb.dev/media/3eGE2JC.gif",
+    "sourceName": "walking on stepmill",
+    "score": 90
+  },
   "ski-erg": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/ski-ergometer.gif",
     "sourceName": "Ski Ergometer",
-    "score": 400
+    "score": 420,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the triceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "shadow-boxing": null,
+  "shadow-boxing": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/left-hook-boxing.gif",
+    "sourceName": "Left Hook Boxing",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "bear-crawl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/bear-crawl.gif",
     "sourceName": "Bear Crawl",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
   },
-  "shuttle-run": null,
+  "shuttle-run": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/cardio/push-to-run.gif",
+    "sourceName": "Push To Run",
+    "score": 235,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Keep a steady pace adapted to your fitness level.",
+      "Engage your core and keep an upright posture throughout.",
+      "Continue for the planned time or repetitions."
+    ]
+  },
   "kettlebell-swing": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/kettlebell-swing.gif",
     "sourceName": "Kettlebell Swing",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Grab the kettlebell with an appropriate weight and adopt the position.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "kettlebell-clean-press": null,
-  "kettlebell-goblet-carry": null,
+  "kettlebell-clean-press": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/kettlebell-bent-press.gif",
+    "sourceName": "Kettlebell Bent Press",
+    "score": 350,
+    "instructions": [
+      "Grab the kettlebell with an appropriate weight and adopt the position.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "kettlebell-goblet-carry": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/kettlebell-goblet-squat.gif",
+    "sourceName": "Kettlebell Goblet Squat",
+    "score": 350,
+    "instructions": [
+      "Grab the kettlebell with an appropriate weight and adopt the position.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "clean-jerk": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/kettlebell-one-arm-clean-and-jerk.gif",
     "sourceName": "Kettlebell One Arm Clean And Jerk",
-    "score": 610
+    "score": 660,
+    "instructions": [
+      "Grab the kettlebell with an appropriate weight and adopt the position.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "snatch": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/barbell-one-arm-snatch.gif",
     "sourceName": "Barbell One Arm Snatch",
-    "score": 810
+    "score": 900,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "thruster": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/barbell-thruster.gif",
     "sourceName": "Barbell Thruster",
-    "score": 950
+    "score": 950,
+    "instructions": [
+      "Load the bar with an appropriate weight and adopt the starting position.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "man-maker": null,
+  "man-maker": {
+    "gifUrl": "https://static.exercisedb.dev/media/qPEzJjA.gif",
+    "sourceName": "burpee",
+    "score": 90
+  },
   "turkish-get-up": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/kettlebell-turkish-get-up-squat-style.gif",
     "sourceName": "Kettlebell Turkish Get Up Squat Style",
-    "score": 900
+    "score": 900,
+    "instructions": [
+      "Grab the kettlebell with an appropriate weight and adopt the position.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "sled-push": null,
-  "battle-ropes": null,
-  "band-pull-apart": null,
+  "sled-push": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/sled-45-calf-press.gif",
+    "sourceName": "Sled 45 Calf Press",
+    "score": 235,
+    "instructions": [
+      "Prepare the equipment and adopt the starting position.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
+  "battle-ropes": {
+    "gifUrl": "https://static.exercisedb.dev/media/hVzPY5j.gif",
+    "sourceName": "athletic style battling ropes",
+    "score": 90
+  },
+  "band-pull-apart": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/band-pull-through.gif",
+    "sourceName": "Band Pull Through",
+    "score": 350,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "resistance-band-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/resistance-band-seated-straight-back-row.gif",
     "sourceName": "Resistance Band Seated Straight Back Row",
-    "score": 830
+    "score": 830,
+    "instructions": [
+      "Anchor the resistance band and maintain initial tension.",
+      "Pre-engage the upper back before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "wall-ball": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/calves/exercise-ball-on-the-wall-calf-raise-tennis-ball-between-ankles.gif",
     "sourceName": "Exercise Ball On The Wall Calf Raise Tennis Ball Between Ankles",
-    "score": 610
+    "score": 660,
+    "instructions": [
+      "Adopt the starting position with proper body alignment.",
+      "Pre-engage the calves before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "dumbbell-snatch": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/dumbbell-one-arm-snatch.gif",
     "sourceName": "Dumbbell One Arm Snatch",
-    "score": 820
+    "score": 820,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the glutes before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
-  "devil-press": null,
+  "devil-press": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/biceps/dumbbell-seated-biceps-curl-to-shoulder-press.gif",
+    "sourceName": "Dumbbell Seated Biceps Curl To Shoulder Press",
+    "score": 235,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the biceps before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
+  },
   "overhead-carry": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/dumbbell-single-arm-overhead-carry.gif",
     "sourceName": "Dumbbell Single Arm Overhead Carry",
-    "score": 610
+    "score": 660,
+    "instructions": [
+      "Grab a dumbbell in each hand (or the indicated one) with an appropriate weight.",
+      "Pre-engage the shoulders before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   },
   "kettlebell-windmill": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/kettlebell-windmill.gif",
     "sourceName": "Kettlebell Windmill",
-    "score": 1000
+    "score": 1000,
+    "instructions": [
+      "Grab the kettlebell with an appropriate weight and adopt the position.",
+      "Pre-engage the core before initiating the movement.",
+      "Perform the movement in a controlled manner, keeping good form.",
+      "Return to the starting position controlling the eccentric phase.",
+      "Breathe: exhale on effort, inhale on the way back."
+    ]
   }
 }

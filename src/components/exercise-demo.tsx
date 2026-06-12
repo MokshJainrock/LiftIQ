@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatedSkeleton } from "@/components/exercise-guide/animated-skeleton";
+import { GifPoster, LazyGifPlayer } from "@/components/exercise-guide/gif-player";
 import { resolveExerciseDemo } from "@/lib/exercises/exercise-demo-map";
 import { resolveExerciseGif } from "@/lib/exercises/exercise-gif";
 import { cn } from "@/lib/utils";
@@ -10,14 +11,13 @@ interface ExerciseDemoProps {
   exerciseId?: string;
   exerciseName?: string;
   className?: string;
-  /** Icon thumbnail vs full how-to panel. */
-  variant?: "icon" | "panel";
+  variant?: "icon" | "panel" | "preview";
   compact?: boolean;
   width?: number;
   height?: number;
 }
 
-/** Real human GIF demo when available; skeleton animation as fallback. */
+/** Human GIF demo (lazy / static poster on lists; full player in modal). */
 export function ExerciseDemo({
   exerciseId,
   exerciseName,
@@ -45,18 +45,16 @@ export function ExerciseDemo({
       const w = width ?? 48;
       const h = height ?? 48;
       return (
-        <div
-          className={cn("relative overflow-hidden bg-[#0a0a0f]", className)}
-          style={{ width: w, height: h }}
-          aria-hidden="true"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={gif.gifUrl}
-            alt=""
-            className="h-full w-full object-cover object-center scale-110"
-            loading="lazy"
-          />
+        <div className={cn("relative overflow-hidden bg-[#0a0a0f]", className)} style={{ width: w, height: h }}>
+          <GifPoster src={gif.gifUrl} className="w-full h-full" />
+        </div>
+      );
+    }
+
+    if (variant === "preview") {
+      return (
+        <div className={cn("relative overflow-hidden bg-[#0a0a0f] rounded-xl", compact ? "h-28" : "h-36", className)}>
+          <GifPoster src={gif.gifUrl} className="w-full h-full" />
         </div>
       );
     }
@@ -64,13 +62,7 @@ export function ExerciseDemo({
     return (
       <div className={cn("rounded-xl border border-white/[0.06] bg-[#040408] overflow-hidden", className)}>
         <div className={cn("relative bg-[#0a0a0f]", compact ? "h-28" : "h-36 sm:h-44")}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={gif.gifUrl}
-            alt={`${exerciseName ?? "Exercise"} demonstration`}
-            className="h-full w-full object-contain object-center"
-            loading="lazy"
-          />
+          <LazyGifPlayer src={gif.gifUrl} autoplay showControls={false} className="w-full h-full" />
         </div>
         {!compact && (
           <p className="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/[0.04] leading-relaxed">
@@ -81,27 +73,19 @@ export function ExerciseDemo({
     );
   }
 
-  // Skeleton fallback
   if (variant === "icon") {
     const w = width ?? 48;
     const h = height ?? 48;
     return (
       <div className={cn("overflow-hidden bg-[#040408]", className)} style={{ width: w, height: h }}>
-        <AnimatedSkeleton
-          guide={guide}
-          demoSpec={spec}
-          width={w}
-          height={h}
-          ghost
-          view={skeletonView}
-        />
+        <AnimatedSkeleton guide={guide} demoSpec={spec} width={w} height={h} ghost view={skeletonView} />
       </div>
     );
   }
 
   return (
     <div className={cn("rounded-xl border border-white/[0.06] bg-[#040408] overflow-hidden", className)}>
-      {hasFront && (
+      {hasFront && variant === "panel" && (
         <div className="flex border-b border-white/[0.04]">
           {(["side", "front"] as const).map((v) => (
             <button
@@ -121,11 +105,6 @@ export function ExerciseDemo({
       <div className={cn("relative", compact ? "h-28" : "h-36 sm:h-44")}>
         <AnimatedSkeleton guide={guide} demoSpec={spec} ghost view={view} />
       </div>
-      {!compact && guide.steps[0] && (
-        <p className="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/[0.04] leading-relaxed">
-          {guide.description}
-        </p>
-      )}
     </div>
   );
 }

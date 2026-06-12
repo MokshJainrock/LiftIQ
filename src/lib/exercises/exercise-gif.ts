@@ -5,6 +5,7 @@ export interface ExerciseGifEntry {
   gifUrl: string;
   sourceName: string;
   score: number;
+  instructions?: string[];
 }
 
 type GifMap = Record<string, ExerciseGifEntry | null>;

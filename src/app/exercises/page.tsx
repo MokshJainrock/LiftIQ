@@ -2,20 +2,23 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/layout/navbar";
 import { GlassCard } from "@/components/ui/glass-card";
 import {
   EXERCISE_LIBRARY,
   EQUIPMENT_LABELS,
   Equipment,
+  LibraryExercise,
   MUSCLE_GROUPS,
   MuscleGroup,
   searchLibrary,
 } from "@/lib/exercises/library";
-import { Camera, Play, Search } from "lucide-react";
+import { Camera, ChevronRight, Play, Search } from "lucide-react";
 import { ExerciseIcon } from "@/components/exercise-icon";
-import { ExerciseHowTo } from "@/components/exercise-how-to";
+import { ExerciseDemo } from "@/components/exercise-demo";
+import { ExerciseDetailModal } from "@/components/exercise-detail-modal";
+import { resolveExerciseGif } from "@/lib/exercises/exercise-gif";
 import { cn } from "@/lib/utils";
 
 const EQUIPMENT_FILTERS: (Equipment | "all")[] = [
@@ -34,6 +37,7 @@ export default function ExercisesPage() {
   const [query, setQuery] = useState("");
   const [muscle, setMuscle] = useState<MuscleGroup | "all">("all");
   const [equipment, setEquipment] = useState<Equipment | "all">("all");
+  const [selected, setSelected] = useState<LibraryExercise | null>(null);
 
   const results = useMemo(() => searchLibrary(query, muscle, equipment), [query, muscle, equipment]);
 
@@ -57,11 +61,10 @@ export default function ExercisesPage() {
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <h1 className="text-4xl md:text-5xl font-black tracking-[-0.04em]">Exercises</h1>
           <p className="text-zinc-500 mt-2">
-            {EXERCISE_LIBRARY.length} movements — tap any to start a live, timed session
+            {EXERCISE_LIBRARY.length} movements — tap any for demo, steps & form tips
           </p>
         </motion.div>
 
-        {/* Search + filters */}
         <div className="space-y-3 mb-6">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
@@ -92,7 +95,6 @@ export default function ExercisesPage() {
           </div>
         </div>
 
-        {/* Grouped list */}
         {grouped.length === 0 ? (
           <GlassCard className="p-10 text-center text-zinc-500 text-sm">No exercises match your filters.</GlassCard>
         ) : (
@@ -105,46 +107,7 @@ export default function ExercisesPage() {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                   {group.items.map((e) => (
-                    <GlassCard key={e.id} className="p-4 flex flex-col justify-between gap-3 hover:bg-white/[0.03] transition-colors">
-                      <div className="flex items-start gap-3">
-                        <ExerciseIcon exerciseId={e.id} exerciseName={e.name} size="lg" />
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-start justify-between gap-2">
-                            <span className="font-semibold text-sm text-zinc-100">{e.name}</span>
-                            {e.trackingId && (
-                              <span
-                                className="inline-flex items-center gap-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-cyan-300 shrink-0"
-                                title="Supports camera form tracking"
-                              >
-                                <Camera className="h-2.5 w-2.5" /> AI
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-[10px] uppercase tracking-wider text-zinc-600 mt-1">
-                            {EQUIPMENT_LABELS[e.equipment]} · rest {e.defaultRestSec}s
-                          </div>
-                          <p className="text-[11px] text-zinc-500 mt-1.5 leading-relaxed">{e.cue}</p>
-                        </div>
-                      </div>
-                      <ExerciseHowTo exerciseId={e.id} exerciseName={e.name} compact className="mb-3" />
-                      <div className="flex gap-2">
-                        <Link
-                          href={`/workout/live?exercise=${e.id}`}
-                          className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/15 transition-colors min-h-[38px]"
-                        >
-                          <Play className="h-3 w-3" /> Start
-                        </Link>
-                        {e.trackingId && (
-                          <Link
-                            href={`/workout?exercise=${e.trackingId}`}
-                            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white/[0.02] border border-white/[0.08] px-3 py-2 text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition-colors min-h-[38px]"
-                            title="Train with camera form analysis"
-                          >
-                            <Camera className="h-3 w-3" />
-                          </Link>
-                        )}
-                      </div>
-                    </GlassCard>
+                    <ExerciseCard key={e.id} exercise={e} onOpen={() => setSelected(e)} />
                   ))}
                 </div>
               </section>
@@ -152,7 +115,79 @@ export default function ExercisesPage() {
           </div>
         )}
       </div>
+
+      <AnimatePresence>
+        {selected && (
+          <ExerciseDetailModal exercise={selected} onClose={() => setSelected(null)} />
+        )}
+      </AnimatePresence>
     </div>
+  );
+}
+
+function ExerciseCard({
+  exercise: e,
+  onOpen,
+}: {
+  exercise: LibraryExercise;
+  onOpen: () => void;
+}) {
+  const hasGif = !!resolveExerciseGif(e.id, e.name);
+
+  return (
+    <GlassCard className="p-4 flex flex-col justify-between gap-3 hover:bg-white/[0.03] transition-colors">
+      <button type="button" onClick={onOpen} className="text-left flex flex-col gap-3 group">
+        <div className="flex items-start gap-3">
+          <ExerciseIcon exerciseId={e.id} exerciseName={e.name} size="lg" />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-start justify-between gap-2">
+              <span className="font-semibold text-sm text-zinc-100 group-hover:text-cyan-200 transition-colors">
+                {e.name}
+              </span>
+              {e.trackingId && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-cyan-300 shrink-0">
+                  <Camera className="h-2.5 w-2.5" /> AI
+                </span>
+              )}
+            </div>
+            <div className="text-[10px] uppercase tracking-wider text-zinc-600 mt-1">
+              {EQUIPMENT_LABELS[e.equipment]} · rest {e.defaultRestSec}s
+            </div>
+            <p className="text-[11px] text-zinc-500 mt-1.5 leading-relaxed line-clamp-2">{e.cue}</p>
+          </div>
+        </div>
+
+        <div className="relative rounded-xl border border-white/[0.06] overflow-hidden bg-[#0a0a0f]">
+          <ExerciseDemo exerciseId={e.id} exerciseName={e.name} variant="preview" compact />
+          <div className="absolute inset-0 flex items-end justify-between p-2 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+              {hasGif ? "Human demo" : "Form guide"}
+            </span>
+            <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-cyan-400">
+              Steps & tips <ChevronRight className="h-3 w-3" />
+            </span>
+          </div>
+        </div>
+      </button>
+
+      <div className="flex gap-2">
+        <Link
+          href={`/workout/live?exercise=${e.id}`}
+          className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/15 transition-colors min-h-[38px]"
+        >
+          <Play className="h-3 w-3" /> Start
+        </Link>
+        {e.trackingId && (
+          <Link
+            href={`/workout?exercise=${e.trackingId}`}
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white/[0.02] border border-white/[0.08] px-3 py-2 text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition-colors min-h-[38px]"
+            title="Train with camera form analysis"
+          >
+            <Camera className="h-3 w-3" />
+          </Link>
+        )}
+      </div>
+    </GlassCard>
   );
 }
 
