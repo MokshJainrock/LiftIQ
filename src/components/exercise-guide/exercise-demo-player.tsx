@@ -111,7 +111,7 @@ export function ExerciseDemoPlayer({
   }
 
   const mediaClass =
-    "absolute inset-0 w-full h-full object-cover object-center scale-[1.45] origin-center";
+    "absolute inset-0 w-full h-full object-contain object-center";
 
   return (
     <div className={cn("relative w-full h-full overflow-hidden bg-[#050508]", className)}>

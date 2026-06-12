@@ -54,10 +54,12 @@ const MANUAL_SEARCH = {
   "banded-chest-press": "band chest press",
 };
 
+const GYM = "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0";
+
 const HARDCODED_GIFS = {
   "rowing-machine": {
-    gifUrl: "https://static.exercisedb.dev/media/7i4MS6X.gif",
-    sourceName: "stationary bike run",
+    gifUrl: `${GYM}/upper-back/lever-seated-row.gif`,
+    sourceName: "Lever Seated Row",
     score: 90,
   },
   "assault-bike": {
@@ -76,8 +78,8 @@ const HARDCODED_GIFS = {
     score: 90,
   },
   "swimming": {
-    gifUrl: "https://static.exercisedb.dev/media/9ApP01R.gif",
-    sourceName: "swimmer kicks",
+    gifUrl: `${GYM}/glutes/swimmer-kicks-v-2-male.gif`,
+    sourceName: "Swimmer Kicks",
     score: 90,
   },
   "incline-walk": {
@@ -91,8 +93,8 @@ const HARDCODED_GIFS = {
     score: 90,
   },
   "battle-ropes": {
-    gifUrl: "https://static.exercisedb.dev/media/hVzPY5j.gif",
-    sourceName: "athletic style battling ropes",
+    gifUrl: `${GYM}/delts/battling-ropes.gif`,
+    sourceName: "Battling Ropes",
     score: 90,
   },
 };
@@ -213,15 +215,16 @@ async function searchExerciseDb(query) {
 }
 
 async function fetchGifForExercise(lib, gymGifs) {
+  // GymGifsDB is 360×360 — sharper than 180px ExerciseDB when shown in wide cards.
+  if (gymGifs?.length) {
+    const hit = pickBestGymGif(gymGifs, lib);
+    if (hit) return hit;
+  }
+
   const searchName = MANUAL_SEARCH[lib.id] ?? lib.name;
   const results = await searchExerciseDb(searchName);
   if (results.length) {
     const hit = pickBest(results, lib, 150);
-    if (hit) return hit;
-  }
-
-  if (gymGifs?.length) {
-    const hit = pickBestGymGif(gymGifs, lib);
     if (hit) return hit;
   }
 
@@ -296,7 +299,7 @@ async function main() {
   console.log("Loading GymGifsDB fallback…");
   const gymRes = await fetch(GIF_DB_FALLBACK);
   const { exercises: gymGifs } = await gymRes.json();
-  console.log(`Matching library → ExerciseDB (${gymGifs.length} fallbacks ready)…`);
+  console.log(`Matching library → GymGifsDB primary, ExerciseDB fallback (${gymGifs.length} gym gifs)…`);
   const library = parseLibrary();
 
   const map = {};

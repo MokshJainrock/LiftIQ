@@ -141,7 +141,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
                 <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
                   <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-sm border border-white/[0.06] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-cyan-300">
                     <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                    {gif ? "Human demo" : `${skeletonView} view`}
+                    {gif ? "Exercise demo" : `${skeletonView} view`}
                   </span>
                 </div>
               </div>

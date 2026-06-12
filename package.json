@@ -9,6 +9,9 @@
     "lint": "eslint",
     "generate:gifs": "node scripts/generate-exercise-gifs.mjs",
     "generate:videos": "node scripts/convert-exercise-videos.mjs",
+    "generate:videos:force": "node scripts/convert-exercise-videos.mjs --force",
+    "migrate:exercisedb": "node scripts/migrate-to-exercisedb.mjs",
+    "hd:overrides": "node scripts/hd-video-overrides.mjs",
     "generate:posters": "node scripts/generate-posters.mjs"
   },
   "dependencies": {

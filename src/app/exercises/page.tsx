@@ -171,7 +171,7 @@ const ExerciseCard = memo(function ExerciseCard({
           <ExerciseDemo exerciseId={e.id} exerciseName={e.name} variant="preview" compact />
           <div className="absolute inset-0 flex items-end justify-between p-2 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none">
             <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-              {hasDemo ? "Human demo" : "Form guide"}
+              {hasDemo ? "Exercise demo" : "Form guide"}
             </span>
             <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-cyan-400">
               Steps & tips <ChevronRight className="h-3 w-3" />

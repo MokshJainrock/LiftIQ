@@ -1,6 +1,7 @@
 /**
- * Converts exercise GIFs → smooth MP4 loops (~15s) in public/exercise-videos/.
+ * Converts exercise GIFs or HD source MP4s → smooth loops (≤20s) in public/exercise-videos/.
  * Run: npm run generate:videos
+ * Force re-encode: npm run generate:videos:force
  */
 
 import { spawnSync } from "child_process";
@@ -12,8 +13,13 @@ import ffmpegPath from "ffmpeg-static";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const MAP_PATH = join(__dirname, "../src/lib/exercises/exercise-gif-map.json");
 const OUT_DIR = join(__dirname, "../public/exercise-videos");
-const TARGET_SEC = 15;
+const TARGET_SEC = 20;
 const DOWNLOAD_DELAY_MS = 250;
+const FORCE = process.argv.includes("--force");
+
+/** Fit media in 16:9 without cropping — avoids the “zoomed in” look on wide cards. */
+const VF =
+  "scale='min(1280,iw)':-2:flags=lanczos,pad=1280:720:(ow-iw)/2:(oh-ih)/2:color=0x050508";
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
@@ -35,29 +41,33 @@ async function download(url, dest) {
 
 function posterFor(mp4Path) {
   const jpgPath = mp4Path.replace(/\.mp4$/i, ".jpg");
-  spawnSync(ffmpegPath, ["-y", "-i", mp4Path, "-vframes", "1", "-q:v", "4", jpgPath], {
-    encoding: "utf8",
-  });
+  spawnSync(
+    ffmpegPath,
+    ["-y", "-i", mp4Path, "-vframes", "1", "-q:v", "2", jpgPath],
+    { encoding: "utf8" },
+  );
 }
 
-function convert(gifPath, mp4Path) {
+function encodeToLoop(inputPath, mp4Path) {
   const args = [
     "-y",
     "-stream_loop",
     "-1",
     "-i",
-    gifPath,
+    inputPath,
     "-t",
     String(TARGET_SEC),
     "-an",
     "-c:v",
     "libx264",
+    "-crf",
+    "18",
     "-pix_fmt",
     "yuv420p",
     "-movflags",
     "+faststart",
     "-vf",
-    "scale='min(720,iw)':-2,crop=trunc(iw*0.82/2)*2:trunc(ih*0.82/2)*2:(iw-iw*0.82)/2:(ih-ih*0.82)/2",
+    VF,
     mp4Path,
   ];
   const r = spawnSync(ffmpegPath, args, { encoding: "utf8" });
@@ -74,7 +84,7 @@ async function main() {
   const tmpDir = join(OUT_DIR, ".tmp");
   mkdirSync(tmpDir, { recursive: true });
 
-  const ids = Object.keys(map).filter((id) => map[id]?.gifUrl);
+  const ids = Object.keys(map).filter((id) => map[id]?.gifUrl || map[id]?.sourceVideoUrl);
   let done = 0;
   let skipped = 0;
   let failed = 0;
@@ -84,19 +94,28 @@ async function main() {
     const entry = map[id];
     const mp4Name = `${id}.mp4`;
     const mp4Path = join(OUT_DIR, mp4Name);
+    const jpgPath = mp4Path.replace(/\.mp4$/i, ".jpg");
     const videoUrl = `/exercise-videos/${mp4Name}`;
-    const gifTmp = join(tmpDir, `${id}.gif`);
+    const srcTmp = join(tmpDir, `${id}.src`);
 
     process.stdout.write(`\r  ${i + 1}/${ids.length} ${id.slice(0, 36).padEnd(36)}`);
 
-    if (existsSync(mp4Path) && entry.videoUrl === videoUrl) {
+    if (!FORCE && existsSync(mp4Path) && existsSync(jpgPath) && entry.videoUrl === videoUrl) {
       skipped++;
       continue;
     }
 
     try {
-      await download(entry.gifUrl, gifTmp);
-      convert(gifTmp, mp4Path);
+      if (entry.sourceVideoUrl) {
+        await download(entry.sourceVideoUrl, `${srcTmp}.mp4`);
+        encodeToLoop(`${srcTmp}.mp4`, mp4Path);
+      } else if (entry.gifUrl) {
+        await download(entry.gifUrl, `${srcTmp}.gif`);
+        encodeToLoop(`${srcTmp}.gif`, mp4Path);
+      } else {
+        throw new Error("no gifUrl or sourceVideoUrl");
+      }
+
       posterFor(mp4Path);
       map[id] = {
         ...entry,
@@ -104,10 +123,12 @@ async function main() {
         posterUrl: `/exercise-videos/${id}.jpg`,
       };
       done++;
-      try {
-        unlinkSync(gifTmp);
-      } catch {
-        /* ignore */
+      for (const ext of [".gif", ".mp4"]) {
+        try {
+          unlinkSync(`${srcTmp}${ext}`);
+        } catch {
+          /* ignore */
+        }
       }
     } catch (e) {
       failed++;

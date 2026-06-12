@@ -41,7 +41,7 @@ export function ExerciseDemoPoster({
         if (gifFallback && src !== gifFallback) setSrc(gifFallback);
       }}
       className={cn(
-        "h-full w-full object-cover object-center scale-[1.45] origin-center bg-[#050508]",
+        "h-full w-full object-contain object-center bg-[#050508]",
         className,
       )}
     />
