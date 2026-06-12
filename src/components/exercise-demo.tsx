@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatedSkeleton } from "@/components/exercise-guide/animated-skeleton";
-import { GifPoster, LazyGifPlayer } from "@/components/exercise-guide/gif-player";
+import { ExerciseDemoPlayer } from "@/components/exercise-guide/exercise-demo-player";
 import { resolveExerciseDemo } from "@/lib/exercises/exercise-demo-map";
 import { resolveExerciseGif } from "@/lib/exercises/exercise-gif";
 import { cn } from "@/lib/utils";
@@ -40,29 +40,35 @@ export function ExerciseDemo({
   const [view, setView] = useState<"side" | "front">(defaultView);
   const skeletonView = spec.preferFront && guide.frontKeyframes?.length ? "front" : "side";
 
-  if (gif?.gifUrl) {
-    if (variant === "icon") {
-      const w = width ?? 48;
-      const h = height ?? 48;
-      return (
-        <div className={cn("relative overflow-hidden bg-[#0a0a0f]", className)} style={{ width: w, height: h }}>
-          <GifPoster src={gif.gifUrl} className="w-full h-full" />
-        </div>
-      );
-    }
+  // Grid / icon: skeleton only — keeps lists smooth (human GIF plays in modal).
+  if ((gif?.gifUrl || gif?.videoUrl) && (variant === "icon" || variant === "preview")) {
+    const w = width ?? (variant === "icon" ? 48 : undefined);
+    const h = height ?? (variant === "icon" ? 48 : undefined);
+    return (
+      <div
+        className={cn(
+          "relative overflow-hidden bg-[#0a0a0f]",
+          variant === "preview" && cn("rounded-xl", compact ? "h-28" : "h-36"),
+          className,
+        )}
+        style={w && h ? { width: w, height: h } : undefined}
+      >
+        <AnimatedSkeleton guide={guide} demoSpec={spec} ghost view={skeletonView} />
+      </div>
+    );
+  }
 
-    if (variant === "preview") {
-      return (
-        <div className={cn("relative overflow-hidden bg-[#0a0a0f] rounded-xl", compact ? "h-28" : "h-36", className)}>
-          <GifPoster src={gif.gifUrl} className="w-full h-full" />
-        </div>
-      );
-    }
-
+  if (gif?.gifUrl || gif?.videoUrl) {
     return (
       <div className={cn("rounded-xl border border-white/[0.06] bg-[#040408] overflow-hidden", className)}>
         <div className={cn("relative bg-[#0a0a0f]", compact ? "h-28" : "h-36 sm:h-44")}>
-          <LazyGifPlayer src={gif.gifUrl} autoplay showControls={false} className="w-full h-full" />
+          <ExerciseDemoPlayer
+            videoSrc={gif.videoUrl}
+            gifSrc={gif.gifUrl}
+            autoplay
+            showControls={false}
+            className="w-full h-full"
+          />
         </div>
         {!compact && (
           <p className="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/[0.04] leading-relaxed">

@@ -3,6 +3,8 @@ import { findLibraryByKey, findLibraryExerciseByName } from "@/lib/exercises/lib
 
 export interface ExerciseGifEntry {
   gifUrl: string;
+  /** Local MP4 loop (~15s), generated from gif via npm run generate:videos */
+  videoUrl?: string;
   sourceName: string;
   score: number;
   instructions?: string[];

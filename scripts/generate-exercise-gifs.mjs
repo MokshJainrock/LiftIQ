@@ -1,5 +1,5 @@
 /**
- * Maps LiftIQ library exercises → real human demo GIFs (ExerciseGymGifsDB, CDN).
+ * Maps LiftIQ library exercises → real human demo GIFs (ExerciseDB primary).
  * Run: npm run generate:gifs
  */
 
@@ -8,7 +8,8 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const GIF_DB =
+const EXERCISEDB = "https://oss.exercisedb.dev/api/v1/exercises";
+const GIF_DB_FALLBACK =
   "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/api/en/exercises.json";
 
 const EQUIP_ALIASES = {
@@ -22,7 +23,6 @@ const EQUIP_ALIASES = {
   cardio: ["cardio", "stationary", "treadmill", "elliptical", "assault", "bike", "rower"],
 };
 
-/** LiftIQ id → search phrase in GIF DB */
 const MANUAL_SEARCH = {
   "pec-deck": "pec deck",
   "low-to-high-cable-fly": "low cable fly",
@@ -54,13 +54,7 @@ const MANUAL_SEARCH = {
   "banded-chest-press": "band chest press",
 };
 
-/** Fallback GIFs from ExerciseDB when not in GymGifsDB */
 const HARDCODED_GIFS = {
-  "chest-supported-row": {
-    gifUrl: "https://static.exercisedb.dev/media/7vGUGco.gif",
-    sourceName: "dumbbell incline row",
-    score: 90,
-  },
   "rowing-machine": {
     gifUrl: "https://static.exercisedb.dev/media/7i4MS6X.gif",
     sourceName: "stationary bike run",
@@ -115,6 +109,22 @@ const MUSCLE_TO_GIF = {
   glutes: "glutes",
   calves: "calves",
   core: "abs",
+  cardio: "cardio",
+  "full-body": "full body",
+};
+
+const MUSCLE_TO_BODY = {
+  chest: "chest",
+  back: "back",
+  shoulders: "shoulders",
+  biceps: "upper arms",
+  triceps: "upper arms",
+  forearms: "lower arms",
+  quads: "upper legs",
+  hamstrings: "upper legs",
+  glutes: "upper legs",
+  calves: "lower legs",
+  core: "waist",
   cardio: "cardio",
   "full-body": "full body",
 };
@@ -181,7 +191,44 @@ function parseLibrary() {
   return exercises;
 }
 
-function pickBest(gifs, lib, minScore = 180) {
+async function searchExerciseDb(query) {
+  const url = `${EXERCISEDB}?name=${encodeURIComponent(query)}&limit=15`;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const res = await fetch(url);
+    if (res.status === 429) {
+      await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+      continue;
+    }
+    if (!res.ok) throw new Error(`ExerciseDB search failed: ${res.status}`);
+    const json = await res.json();
+    return (json.data ?? []).map((e) => ({
+      name: e.name,
+      gifUrl: e.gifUrl,
+      equipment: (e.equipments ?? [])[0] ?? "",
+      bodyParts: e.bodyParts ?? [],
+      instructions: e.instructions,
+    }));
+  }
+  return [];
+}
+
+async function fetchGifForExercise(lib, gymGifs) {
+  const searchName = MANUAL_SEARCH[lib.id] ?? lib.name;
+  const results = await searchExerciseDb(searchName);
+  if (results.length) {
+    const hit = pickBest(results, lib, 150);
+    if (hit) return hit;
+  }
+
+  if (gymGifs?.length) {
+    const hit = pickBestGymGif(gymGifs, lib);
+    if (hit) return hit;
+  }
+
+  return null;
+}
+
+function pickBestGymGif(gifs, lib, minScore = 180) {
   const searchName = MANUAL_SEARCH[lib.id] ?? lib.name;
   let best = null;
   let bestScore = 0;
@@ -192,9 +239,8 @@ function pickBest(gifs, lib, minScore = 180) {
       best = gif;
     }
   }
-  if (best && bestScore >= minScore) return { gif: best, score: bestScore };
+  if (best && bestScore >= minScore) return { gif: best, score: bestScore - 50 };
 
-  // Muscle-group fallback: same equipment + shared muscle folder
   const folder = MUSCLE_TO_GIF[lib.muscle];
   if (folder) {
     const candidates = gifs.filter(
@@ -207,16 +253,39 @@ function pickBest(gifs, lib, minScore = 180) {
         best = gif;
       }
     }
-    if (best && bestScore >= 150) return { gif: best, score: bestScore };
+    if (best && bestScore >= 150) return { gif: best, score: bestScore - 50 };
   }
 
-  // Last resort: any gif with equipment match in muscle folder
-  if (folder) {
-    const eqMatch = gifs.find(
-      (g) =>
-        (g.muscle === folder || g.file?.startsWith(`${folder}/`)) &&
-        equipMatches(lib.equipment, g.equipment),
-    );
+  return null;
+}
+
+function pickBest(gifs, lib, minScore = 180) {
+  const searchName = MANUAL_SEARCH[lib.id] ?? lib.name;
+  let best = null;
+  let bestScore = 0;
+
+  for (const gif of gifs) {
+    const s = scoreMatch(searchName, lib.equipment, gif);
+    if (s > bestScore) {
+      bestScore = s;
+      best = gif;
+    }
+  }
+  if (best && bestScore >= minScore) return { gif: best, score: bestScore };
+
+  const bodyPart = MUSCLE_TO_BODY[lib.muscle];
+  if (bodyPart) {
+    const candidates = gifs.filter((g) => g.bodyParts.includes(bodyPart));
+    for (const gif of candidates) {
+      const s = scoreMatch(searchName, lib.equipment, gif) + 50;
+      if (s > bestScore) {
+        bestScore = s;
+        best = gif;
+      }
+    }
+    if (best && bestScore >= 150) return { gif: best, score: bestScore };
+
+    const eqMatch = candidates.find((g) => equipMatches(lib.equipment, g.equipment));
     if (eqMatch) return { gif: eqMatch, score: 100 };
   }
 
@@ -224,22 +293,26 @@ function pickBest(gifs, lib, minScore = 180) {
 }
 
 async function main() {
-  console.log("Fetching GIF database…");
-  const res = await fetch(GIF_DB);
-  const { exercises: gifs } = await res.json();
+  console.log("Loading GymGifsDB fallback…");
+  const gymRes = await fetch(GIF_DB_FALLBACK);
+  const { exercises: gymGifs } = await gymRes.json();
+  console.log(`Matching library → ExerciseDB (${gymGifs.length} fallbacks ready)…`);
   const library = parseLibrary();
 
   const map = {};
   let matched = 0;
 
-  for (const lib of library) {
+  for (let i = 0; i < library.length; i++) {
+    const lib = library[i];
+    process.stdout.write(`\r  ${i + 1}/${library.length} ${lib.name.slice(0, 40).padEnd(40)}`);
+
     if (HARDCODED_GIFS[lib.id]) {
       map[lib.id] = { ...HARDCODED_GIFS[lib.id] };
       matched++;
       continue;
     }
 
-    const hit = pickBest(gifs, lib);
+    const hit = await fetchGifForExercise(lib, gymGifs);
     if (hit) {
       map[lib.id] = {
         gifUrl: hit.gif.gifUrl,
@@ -250,8 +323,10 @@ async function main() {
       matched++;
     } else {
       map[lib.id] = null;
-      console.warn(`  No match: ${lib.name} (${lib.equipment})`);
+      console.warn(`\n  No match: ${lib.name} (${lib.equipment})`);
     }
+
+    await new Promise((r) => setTimeout(r, 180));
   }
 
   const out = join(__dirname, "../src/lib/exercises/exercise-gif-map.json");

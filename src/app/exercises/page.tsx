@@ -19,6 +19,7 @@ import { ExerciseIcon } from "@/components/exercise-icon";
 import { ExerciseDemo } from "@/components/exercise-demo";
 import { ExerciseDetailModal } from "@/components/exercise-detail-modal";
 import { resolveExerciseGif } from "@/lib/exercises/exercise-gif";
+import { preloadExerciseDemo } from "@/components/exercise-guide/exercise-demo-player";
 import { cn } from "@/lib/utils";
 
 const EQUIPMENT_FILTERS: (Equipment | "all")[] = [
@@ -107,7 +108,15 @@ export default function ExercisesPage() {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                   {group.items.map((e) => (
-                    <ExerciseCard key={e.id} exercise={e} onOpen={() => setSelected(e)} />
+                    <ExerciseCard
+                      key={e.id}
+                      exercise={e}
+                      onOpen={() => {
+                        const g = resolveExerciseGif(e.id, e.name);
+                        if (g) preloadExerciseDemo(g.videoUrl, g.gifUrl);
+                        setSelected(e);
+                      }}
+                    />
                   ))}
                 </div>
               </section>
@@ -132,7 +141,8 @@ function ExerciseCard({
   exercise: LibraryExercise;
   onOpen: () => void;
 }) {
-  const hasGif = !!resolveExerciseGif(e.id, e.name);
+  const media = resolveExerciseGif(e.id, e.name);
+  const hasDemo = !!(media?.videoUrl || media?.gifUrl);
 
   return (
     <GlassCard className="p-4 flex flex-col justify-between gap-3 hover:bg-white/[0.03] transition-colors">
@@ -161,7 +171,7 @@ function ExerciseCard({
           <ExerciseDemo exerciseId={e.id} exerciseName={e.name} variant="preview" compact />
           <div className="absolute inset-0 flex items-end justify-between p-2 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none">
             <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-              {hasGif ? "Human demo" : "Form guide"}
+              {hasDemo ? "Human demo" : "Form guide"}
             </span>
             <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-cyan-400">
               Steps & tips <ChevronRight className="h-3 w-3" />

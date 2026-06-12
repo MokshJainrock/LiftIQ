@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { GifPlayer } from "@/components/exercise-guide/gif-player";
+import { ExerciseDemoPlayer, preloadExerciseDemo } from "@/components/exercise-guide/exercise-demo-player";
 import { AnimatedSkeleton } from "@/components/exercise-guide/animated-skeleton";
 import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
@@ -58,6 +58,10 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
     [rawGuide, gif?.instructions],
   );
 
+  useEffect(() => {
+    if (gif) preloadExerciseDemo(gif.videoUrl, gif.gifUrl);
+  }, [gif]);
+
   const isFrontOnly = !!guide.keyframes[0]?.leftShoulder;
   const skeletonView =
     (spec.preferFront || isFrontOnly) && (guide.frontKeyframes?.length || isFrontOnly) ? "front" : "side";
@@ -72,7 +76,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-start justify-center bg-black/85 backdrop-blur-md overflow-y-auto"
+        className="fixed inset-0 z-50 flex items-start justify-center bg-black/90 overflow-y-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -120,8 +124,13 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
               <div className="relative rounded-2xl bg-[#050508] border border-white/[0.04] overflow-hidden mb-5">
                 <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/[0.02] to-transparent pointer-events-none z-10" />
                 <div className="aspect-[16/10] sm:aspect-[16/9]">
-                  {gif?.gifUrl ? (
-                    <GifPlayer src={gif.gifUrl} showControls autoplay />
+                  {gif?.gifUrl || gif?.videoUrl ? (
+                    <ExerciseDemoPlayer
+                      videoSrc={gif.videoUrl}
+                      gifSrc={gif.gifUrl}
+                      showControls
+                      autoplay
+                    />
                   ) : (
                     <AnimatedSkeleton guide={guide} demoSpec={spec} ghost view={skeletonView} showControls />
                   )}
