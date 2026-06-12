@@ -38,12 +38,15 @@ export function generateWorkoutFeedback(input: WorkoutSummaryInput): string {
   const mins = Math.floor(duration / 60);
   lines.push(`You completed ${reps.length} reps in ${mins > 0 ? `${mins}m` : "under a minute"}.`);
 
-  // Top issues
+  // Top issues — counts are "reps affected" since each rep records a
+  // confirmed issue at most once.
   if (topIssues.length > 0) {
     lines.push("\nKey areas to work on:");
     for (const [issue, count] of topIssues) {
-      lines.push(`• ${issue} (flagged ${count} times)`);
+      lines.push(`• ${issue} (in ${count} of ${reps.length} reps)`);
     }
+  } else {
+    lines.push("\nNo form issues were detected — clean reps across the set.");
   }
 
   // Score trend

@@ -94,26 +94,6 @@ export class FeedbackAggregator {
     return out;
   }
 
-  /**
-   * Snapshot of stable issues seen across the current rep — used to populate
-   * the rep result's `issues` field after a rep completes. Equivalent to
-   * `push([], frameAccepted)` but without rolling the window.
-   */
-  snapshot(): JointFeedback[] {
-    const out: JointFeedback[] = [];
-    for (const [key, window] of this.occurrences) {
-      const count = window.reduce((s, v) => s + v, 0);
-      if (count < FeedbackAggregator.MIN_OCCURRENCES) continue;
-      const base = this.latest.get(key);
-      if (!base) continue;
-      out.push({
-        ...base,
-        status: this.peakStatus.get(key) ?? base.status,
-      });
-    }
-    return out;
-  }
-
   reset(): void {
     this.occurrences.clear();
     this.latest.clear();
@@ -125,7 +105,7 @@ export class FeedbackAggregator {
   }
 }
 
-function severityRank(status: JointFeedback["status"]): number {
+export function severityRank(status: JointFeedback["status"]): number {
   switch (status) {
     case "poor": return 3;
     case "moderate": return 2;

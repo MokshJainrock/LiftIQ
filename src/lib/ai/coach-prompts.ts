@@ -54,12 +54,14 @@ export function buildCoachPrompt(input: CoachFeedbackInput): string {
   }
   if (mistakes.length > 0) {
     lines.push(
-      `Form issues detected by the pose tracker (issue x times flagged): ${mistakes
-        .map((m) => `"${m.issue}" x${m.count}`)
+      `Form issues confirmed by the pose tracker (each count = number of reps where the issue was sustained across multiple frames, out of ${repScores.length} reps): ${mistakes
+        .map((m) => `"${m.issue}" in ${m.count} rep${m.count === 1 ? "" : "s"}`)
         .join("; ")}`,
     );
   } else {
-    lines.push("No form issues were flagged by the pose tracker.");
+    lines.push(
+      "No form issues were confirmed by the pose tracker — this was a clean session; do not invent any problems.",
+    );
   }
 
   return `You are an expert, encouraging personal trainer reviewing a workout that was analyzed by a computer-vision form tracker.
@@ -69,9 +71,9 @@ ${lines.join("\n")}
 
 Write a short coaching analysis (3-5 sentences, plain text, no markdown, no headings, no emoji) that:
 1. Opens with an honest one-line read on the session quality grounded in the average score.
-2. Calls out the single most important form issue (use the flagged issues; reference how often it happened) and gives ONE concrete fix to try next session.
+2. If issues were confirmed: calls out the single most frequent one, states exactly how many of the ${repScores.length} reps it appeared in, and gives ONE concrete fix to try next session. If no issues were confirmed: acknowledge the clean form instead.
 3. Notes the score trend across the set (improving, fading, or steady — use the first/second half averages) and what that suggests (warmup, fatigue, pacing).
 4. Ends with one specific, motivating next step.
 
-Rules: be specific to ${exerciseName}; never invent issues that are not in the data; never give medical advice; keep it under 110 words.`;
+Rules: be specific to ${exerciseName}; ONLY mention issues listed in the data above, with their exact rep counts — never speculate about problems the tracker did not confirm; never give medical advice; keep it under 110 words.`;
 }

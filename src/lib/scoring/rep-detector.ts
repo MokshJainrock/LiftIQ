@@ -2,7 +2,7 @@ import { ExerciseConfig, Landmark, RepResult, JointFeedback, RepCycleConfig } fr
 import { getCommonAngles, POSE_LANDMARKS as L } from "@/lib/pose/angle-utils";
 import { classifyPoseFamily, PoseFamily } from "@/lib/pose/pose-family";
 import { REQUIRED_FAMILY } from "@/lib/exercises/start-validators";
-import { FeedbackAggregator, CueStabilizer } from "@/lib/scoring/feedback-aggregator";
+import { FeedbackAggregator, CueStabilizer, severityRank } from "@/lib/scoring/feedback-aggregator";
 import { frameTrust } from "@/lib/pose/landmark-quality";
 
 /**
@@ -40,7 +40,13 @@ export class RepDetector {
   private lastRepTime = 0;
   private angleHistory: Record<string, number>[] = [];
 
-  private currentIssues: JointFeedback[] = [];
+  /**
+   * Issues CONFIRMED by the stability vote at any point during the current
+   * rep (key → feedback with peak severity). This — and only this — becomes
+   * the rep's recorded issue list, so summaries and the AI coach can never
+   * report a single-frame false positive the user never saw on screen.
+   */
+  private repConfirmedIssues = new Map<string, JointFeedback>();
   private scoreAccumulator: number[] = [];
   /** Per-frame trust weights matching scoreAccumulator entries 1:1. */
   private trustAccumulator: number[] = [];
@@ -82,7 +88,7 @@ export class RepDetector {
     this.repCount = 0;
     this.lastRepTime = 0;
     this.angleHistory = [];
-    this.currentIssues = [];
+    this.repConfirmedIssues.clear();
     this.scoreAccumulator = [];
     this.trustAccumulator = [];
     this.feedbackAggregator.reset();
@@ -164,7 +170,7 @@ export class RepDetector {
           this.peakAngle = this.isInverted
             ? Math.min(this.peakAngle || angle, angle)
             : Math.max(this.peakAngle || angle, angle);
-          this.currentIssues = [];
+          this.repConfirmedIssues.clear();
           this.scoreAccumulator = [];
           this.trustAccumulator = [];
         } else {
@@ -265,7 +271,7 @@ export class RepDetector {
       this.inRep = true;
       this.reachedDeepPhase = false;
       this.deepFrameCount = 0;
-      this.currentIssues = [];
+      this.repConfirmedIssues.clear();
       this.scoreAccumulator = [score];
       this.trustAccumulator = [1];
     }
@@ -324,7 +330,17 @@ export class RepDetector {
     const stableIssues = this.feedbackAggregator.push(rawIssues, frameAccepted);
     const stableCues = this.cueStabilizer.push(rawCues, frameAccepted);
 
-    this.currentIssues = [...this.currentIssues, ...rawIssues];
+    // Remember every issue that passed the stability vote at ANY point in
+    // this rep, keeping the most severe status. The rep summary is built
+    // exclusively from these — raw single-frame issues never get recorded.
+    for (const issue of stableIssues) {
+      const key = `${issue.joint}::${issue.message}`;
+      const prev = this.repConfirmedIssues.get(key);
+      if (!prev || severityRank(issue.status) > severityRank(prev.status)) {
+        this.repConfirmedIssues.set(key, issue);
+      }
+    }
+
     this.scoreAccumulator.push(score);
     this.trustAccumulator.push(frameAccepted ? trust : 0);
 
@@ -391,20 +407,21 @@ export class RepDetector {
           : score;
       }
 
-      // Use the aggregator's confirmed issues for the rep summary instead
-      // of every per-frame raw issue — this is what the user actually sees
-      // in the rep card, and we want it to match what was on screen.
-      const repIssues = this.feedbackAggregator.snapshot();
+      // The rep's issues are exactly the ones the stability vote confirmed
+      // during the rep — the same issues the user saw live on screen. A rep
+      // with no confirmed issues is recorded as clean; we never fall back to
+      // raw per-frame readings, which is where false positives came from.
+      const repIssues = Array.from(this.repConfirmedIssues.values());
       // Roll the windows over so we don't carry stale state into the next rep.
       this.feedbackAggregator.reset();
       this.cueStabilizer.reset();
 
       repResult = {
         score: avgScore,
-        issues: this.deduplicateIssues(repIssues.length > 0 ? repIssues : this.currentIssues),
+        issues: repIssues,
         timestamp: Date.now(),
       };
-      this.currentIssues = [];
+      this.repConfirmedIssues.clear();
       this.scoreAccumulator = [];
       this.trustAccumulator = [];
     }
@@ -419,15 +436,6 @@ export class RepDetector {
       repCount: this.repCount,
       familyMismatch: this.familyMismatch,
     };
-  }
-
-  private deduplicateIssues(issues: JointFeedback[]): JointFeedback[] {
-    const seen = new Map<string, JointFeedback>();
-    for (const issue of issues) {
-      const key = `${issue.joint}-${issue.message}`;
-      if (!seen.has(key) || issue.status === "poor") seen.set(key, issue);
-    }
-    return Array.from(seen.values());
   }
 
   getRepCount(): number {
