@@ -3,8 +3,9 @@
 import { useMemo, useState } from "react";
 import { AnimatedSkeleton } from "@/components/exercise-guide/animated-skeleton";
 import { ExerciseDemoPlayer } from "@/components/exercise-guide/exercise-demo-player";
+import { ExerciseDemoPoster } from "@/components/exercise-guide/exercise-demo-poster";
 import { resolveExerciseDemo } from "@/lib/exercises/exercise-demo-map";
-import { resolveExerciseGif } from "@/lib/exercises/exercise-gif";
+import { posterUrlForMedia, resolveExerciseGif } from "@/lib/exercises/exercise-gif";
 import { cn } from "@/lib/utils";
 
 interface ExerciseDemoProps {
@@ -17,7 +18,7 @@ interface ExerciseDemoProps {
   height?: number;
 }
 
-/** Human GIF demo (lazy / static poster on lists; full player in modal). */
+/** Human demo — static poster on lists; full video in modal. */
 export function ExerciseDemo({
   exerciseId,
   exerciseName,
@@ -27,7 +28,8 @@ export function ExerciseDemo({
   width,
   height,
 }: ExerciseDemoProps) {
-  const gif = useMemo(() => resolveExerciseGif(exerciseId, exerciseName), [exerciseId, exerciseName]);
+  const media = useMemo(() => resolveExerciseGif(exerciseId, exerciseName), [exerciseId, exerciseName]);
+  const poster = posterUrlForMedia(media);
   const { guide, spec } = useMemo(
     () => resolveExerciseDemo(exerciseId, exerciseName),
     [exerciseId, exerciseName],
@@ -40,40 +42,61 @@ export function ExerciseDemo({
   const [view, setView] = useState<"side" | "front">(defaultView);
   const skeletonView = spec.preferFront && guide.frontKeyframes?.length ? "front" : "side";
 
-  if ((gif?.gifUrl || gif?.videoUrl) && (variant === "icon" || variant === "preview")) {
+  if (variant === "icon" || variant === "preview") {
     const w = width ?? (variant === "icon" ? 48 : undefined);
     const h = height ?? (variant === "icon" ? 48 : undefined);
+
+    if (poster || media?.gifUrl) {
+      return (
+        <div
+          className={cn(
+            "overflow-hidden bg-[#050508]",
+            variant === "preview" && cn("w-full", compact ? "h-28" : "h-36"),
+            className,
+          )}
+          style={w && h ? { width: w, height: h } : undefined}
+        >
+          <ExerciseDemoPoster
+            posterSrc={poster}
+            gifFallback={media?.gifUrl}
+            eager={variant === "icon"}
+            className="h-full w-full"
+          />
+        </div>
+      );
+    }
+
     return (
       <div
         className={cn(
-          "relative overflow-hidden bg-[#050508]",
-          variant === "preview" && cn("rounded-xl", compact ? "h-28" : "h-36"),
+          "overflow-hidden bg-[#040408]",
+          variant === "preview" && cn("w-full", compact ? "h-28" : "h-36"),
           className,
         )}
         style={w && h ? { width: w, height: h } : undefined}
       >
-        <ExerciseDemoPlayer
-          videoSrc={gif.videoUrl}
-          gifSrc={gif.gifUrl}
-          autoplay
-          showControls={false}
-          playWhenVisible={variant === "preview"}
-          className="absolute inset-0"
+        <AnimatedSkeleton
+          guide={guide}
+          demoSpec={spec}
+          width={w}
+          height={h}
+          ghost
+          view={skeletonView}
         />
       </div>
     );
   }
 
-  if (gif?.gifUrl || gif?.videoUrl) {
+  if (media?.videoUrl || media?.gifUrl) {
     return (
       <div className={cn("rounded-xl border border-white/[0.06] bg-[#040408] overflow-hidden", className)}>
         <div className={cn("relative bg-[#050508]", compact ? "h-28" : "h-36 sm:h-44")}>
           <ExerciseDemoPlayer
-            videoSrc={gif.videoUrl}
-            gifSrc={gif.gifUrl}
+            videoSrc={media.videoUrl}
+            gifSrc={media.gifUrl}
+            posterSrc={poster}
             autoplay
             showControls={false}
-            playWhenVisible
             className="absolute inset-0"
           />
         </div>
@@ -86,19 +109,9 @@ export function ExerciseDemo({
     );
   }
 
-  if (variant === "icon") {
-    const w = width ?? 48;
-    const h = height ?? 48;
-    return (
-      <div className={cn("overflow-hidden bg-[#040408]", className)} style={{ width: w, height: h }}>
-        <AnimatedSkeleton guide={guide} demoSpec={spec} width={w} height={h} ghost view={skeletonView} />
-      </div>
-    );
-  }
-
   return (
     <div className={cn("rounded-xl border border-white/[0.06] bg-[#040408] overflow-hidden", className)}>
-      {hasFront && variant === "panel" && (
+      {hasFront && (
         <div className="flex border-b border-white/[0.04]">
           {(["side", "front"] as const).map((v) => (
             <button

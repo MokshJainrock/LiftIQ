@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/layout/navbar";
@@ -59,12 +59,12 @@ export default function ExercisesPage() {
     <div className="min-h-[100dvh] has-bottom-nav md:pb-0">
       <Navbar />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+        <div className="mb-6">
           <h1 className="text-4xl md:text-5xl font-black tracking-[-0.04em]">Exercises</h1>
           <p className="text-zinc-500 mt-2">
             {EXERCISE_LIBRARY.length} movements — tap any for demo, steps & form tips
           </p>
-        </motion.div>
+        </div>
 
         <div className="space-y-3 mb-6">
           <div className="relative">
@@ -112,9 +112,9 @@ export default function ExercisesPage() {
                       key={e.id}
                       exercise={e}
                       onOpen={() => {
+                        setSelected(e);
                         const g = resolveExerciseGif(e.id, e.name);
                         if (g) preloadExerciseDemo(g.videoUrl, g.gifUrl);
-                        setSelected(e);
                       }}
                     />
                   ))}
@@ -134,14 +134,14 @@ export default function ExercisesPage() {
   );
 }
 
-function ExerciseCard({
+const ExerciseCard = memo(function ExerciseCard({
   exercise: e,
   onOpen,
 }: {
   exercise: LibraryExercise;
   onOpen: () => void;
 }) {
-  const media = resolveExerciseGif(e.id, e.name);
+  const media = useMemo(() => resolveExerciseGif(e.id, e.name), [e.id, e.name]);
   const hasDemo = !!(media?.videoUrl || media?.gifUrl);
 
   return (
@@ -199,7 +199,7 @@ function ExerciseCard({
       </div>
     </GlassCard>
   );
-}
+});
 
 function Chip({
   active,

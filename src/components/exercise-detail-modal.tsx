@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import type { LibraryExercise } from "@/lib/exercises/library";
 import { EQUIPMENT_LABELS } from "@/lib/exercises/library";
 import { resolveExerciseDemo } from "@/lib/exercises/exercise-demo-map";
-import { resolveExerciseGif } from "@/lib/exercises/exercise-gif";
+import { posterUrlForMedia, resolveExerciseGif } from "@/lib/exercises/exercise-gif";
 import type { ExerciseVisualGuide } from "@/lib/exercises/exercise-visual-guides";
 
 type Tab = "steps" | "mistakes" | "cues" | "focus";
@@ -49,6 +49,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
   const [activeTab, setActiveTab] = useState<Tab>("steps");
 
   const gif = useMemo(() => resolveExerciseGif(exercise.id, exercise.name), [exercise.id, exercise.name]);
+  const poster = posterUrlForMedia(gif);
   const { guide: rawGuide, spec } = useMemo(
     () => resolveExerciseDemo(exercise.id, exercise.name),
     [exercise.id, exercise.name],
@@ -128,6 +129,7 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
                     <ExerciseDemoPlayer
                       videoSrc={gif.videoUrl}
                       gifSrc={gif.gifUrl}
+                      posterSrc={poster}
                       showControls
                       autoplay
                       className="absolute inset-0"

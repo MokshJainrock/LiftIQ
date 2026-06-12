@@ -33,6 +33,13 @@ async function download(url, dest) {
   throw new Error("download rate limited");
 }
 
+function posterFor(mp4Path) {
+  const jpgPath = mp4Path.replace(/\.mp4$/i, ".jpg");
+  spawnSync(ffmpegPath, ["-y", "-i", mp4Path, "-vframes", "1", "-q:v", "4", jpgPath], {
+    encoding: "utf8",
+  });
+}
+
 function convert(gifPath, mp4Path) {
   const args = [
     "-y",
@@ -90,7 +97,12 @@ async function main() {
     try {
       await download(entry.gifUrl, gifTmp);
       convert(gifTmp, mp4Path);
-      map[id] = { ...entry, videoUrl };
+      posterFor(mp4Path);
+      map[id] = {
+        ...entry,
+        videoUrl,
+        posterUrl: `/exercise-videos/${id}.jpg`,
+      };
       done++;
       try {
         unlinkSync(gifTmp);

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "generate:gifs": "node scripts/generate-exercise-gifs.mjs",
-    "generate:videos": "node scripts/convert-exercise-videos.mjs"
+    "generate:videos": "node scripts/convert-exercise-videos.mjs",
+    "generate:posters": "node scripts/generate-posters.mjs"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",

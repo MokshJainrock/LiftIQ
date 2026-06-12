@@ -5,9 +5,16 @@ export interface ExerciseGifEntry {
   gifUrl: string;
   /** Local MP4 loop (~15s), generated from gif via npm run generate:videos */
   videoUrl?: string;
+  /** Static JPEG poster — derived from videoUrl if omitted */
+  posterUrl?: string;
   sourceName: string;
   score: number;
   instructions?: string[];
+}
+
+export function posterUrlForMedia(entry: Pick<ExerciseGifEntry, "videoUrl" | "posterUrl"> | null | undefined) {
+  if (!entry) return undefined;
+  return entry.posterUrl ?? entry.videoUrl?.replace(/\.mp4$/i, ".jpg");
 }
 
 type GifMap = Record<string, ExerciseGifEntry | null>;
