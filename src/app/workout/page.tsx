@@ -34,6 +34,7 @@ import {
   Video,
   LayoutList,
   NotebookPen,
+  Timer,
   Zap,
   Radio,
   HelpCircle,
@@ -279,6 +280,15 @@ export default function WorkoutPage() {
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => router.push("/workout/live")}
+                  className="min-h-[40px] border-white/[0.08] bg-white/[0.02]"
+                  title="Live workout with set logging and rest timers"
+                >
+                  <Timer className="h-3.5 w-3.5 text-emerald-400" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => setShowManualLog(true)}
                   className="min-h-[40px] border-white/[0.08] bg-white/[0.02]"
                   title="Log workout without camera"
@@ -383,6 +393,14 @@ export default function WorkoutPage() {
                   <HelpCircle className="h-4 w-4" /> How To
                 </Button>
               )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push("/workout/live")}
+                className="border-white/[0.08] bg-white/[0.02] text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/20"
+              >
+                <Timer className="h-4 w-4" /> Live Workout
+              </Button>
               <Button
                 variant="outline"
                 size="sm"

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { LoggedSet, RepResult, WorkoutSession } from "@/types";
+import { LoggedSet } from "@/types";
 import { getSessions, saveSession, updateStreak } from "@/lib/storage";
-import { rateManualWorkout, ManualRating } from "@/lib/manual-rating";
-import { KNOWN_EXERCISES, TRACKING_MAP } from "@/components/workout/exercise-manager";
+import { ManualRating } from "@/lib/manual-rating";
+import { buildManualSession } from "@/lib/manual-session";
+import { searchLibrary, EXERCISE_LIBRARY } from "@/lib/exercises/library";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,10 +23,6 @@ interface SetDraft {
   weight: string;
 }
 
-function slugify(name: string): string {
-  return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
-
 export function ManualLog({ onClose, onLogged }: ManualLogProps) {
   const [step, setStep] = useState<"pick" | "sets" | "done">("pick");
   const [query, setQuery] = useState("");
@@ -33,10 +30,10 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
   const [sets, setSets] = useState<SetDraft[]>([{ reps: "", weight: "" }]);
   const [rating, setRating] = useState<ManualRating | null>(null);
 
-  const filtered = KNOWN_EXERCISES.filter((n) => n.toLowerCase().includes(query.toLowerCase()));
+  const filtered = searchLibrary(query);
   const customName = query.trim();
   const showCustomOption =
-    customName.length > 1 && !KNOWN_EXERCISES.some((n) => n.toLowerCase() === customName.toLowerCase());
+    customName.length > 1 && !EXERCISE_LIBRARY.some((e) => e.name.toLowerCase() === customName.toLowerCase());
 
   const pickExercise = (name: string) => {
     setExerciseName(name);
@@ -67,40 +64,7 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
 
   const handleSave = () => {
     if (!canSave) return;
-    const exerciseKey = TRACKING_MAP[exerciseName] || slugify(exerciseName);
-    const history = getSessions();
-    const result = rateManualWorkout(exerciseKey, parsedSets, history);
-
-    const totalReps = parsedSets.reduce((n, s) => n + s.reps, 0);
-    const isWeighted = parsedSets.some((s) => (s.weight ?? 0) > 0);
-    const now = Date.now();
-    const repDurationMs = 4000;
-    const start = now - totalReps * repDurationMs;
-
-    const reps: RepResult[] = [];
-    let t = start;
-    parsedSets.forEach((s, setIndex) => {
-      for (let r = 0; r < s.reps; r++) {
-        reps.push({ score: result.score, issues: [], timestamp: t, setIndex, weight: s.weight });
-        t += repDurationMs;
-      }
-    });
-
-    const topWeight = Math.max(0, ...parsedSets.map((s) => s.weight ?? 0));
-    const session: WorkoutSession = {
-      id: `manual-${crypto.randomUUID()}`,
-      exercise: exerciseKey,
-      exerciseName,
-      weight: topWeight > 0 ? topWeight : undefined,
-      startTime: start,
-      endTime: now,
-      reps,
-      totalScore: result.score,
-      caloriesBurned: Math.round(totalReps * (isWeighted ? 0.6 : 0.4)),
-      source: "manual",
-      sets: parsedSets,
-    };
-
+    const { session, rating: result } = buildManualSession(exerciseName, parsedSets, getSessions());
     saveSession(session);
     void updateStreak();
     setRating(result);
@@ -159,13 +123,14 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
                     <Badge variant="outline" className="text-[9px]">Custom</Badge>
                   </button>
                 )}
-                {filtered.map((name) => (
+                {filtered.map((e) => (
                   <button
-                    key={name}
-                    onClick={() => pickExercise(name)}
-                    className="w-full flex items-center justify-between rounded-lg bg-secondary/30 px-3 py-2.5 text-sm hover:bg-secondary active:bg-secondary text-left"
+                    key={e.id}
+                    onClick={() => pickExercise(e.name)}
+                    className="w-full flex items-center justify-between gap-2 rounded-lg bg-secondary/30 px-3 py-2.5 text-sm hover:bg-secondary active:bg-secondary text-left"
                   >
-                    <span>{name}</span>
+                    <span className="truncate">{e.name}</span>
+                    <span className="text-[9px] uppercase tracking-wider text-zinc-600 shrink-0">{e.muscle}</span>
                   </button>
                 ))}
                 {filtered.length === 0 && !showCustomOption && (
