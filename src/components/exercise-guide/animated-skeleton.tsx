@@ -4,9 +4,13 @@ import { useRef, useEffect, useCallback, useState, type RefObject } from "react"
 import { Play, Pause, Gauge } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PoseFrame, ExerciseVisualGuide } from "@/lib/exercises/exercise-visual-guides";
+import type { ExerciseDemoSpec } from "@/lib/exercises/demo-spec";
+import { drawEquipment } from "@/lib/exercises/equipment-draw";
 
 interface AnimatedSkeletonProps {
   guide: ExerciseVisualGuide;
+  /** Equipment + position props drawn on the skeleton. */
+  demoSpec?: ExerciseDemoSpec;
   width?: number;
   height?: number;
   className?: string;
@@ -71,6 +75,7 @@ function drawArrow(
 
 export function AnimatedSkeleton({
   guide,
+  demoSpec,
   width,
   height,
   className,
@@ -284,6 +289,18 @@ export function AnimatedSkeleton({
         ctx.restore();
       }
 
+      // equipment props (barbell, dumbbells, cable, machine, etc.)
+      if (demoSpec) {
+        const skeletonView = useFront ? "front" : "side";
+        drawEquipment(
+          { ctx, toCanvas, scale, ghost: !!ghost },
+          pose,
+          skeletonView,
+          demoSpec.equipment,
+          demoSpec.position,
+        );
+      }
+
       // step label
       if (!ghost) {
         const stepLabel = guide.steps[Math.min(s.frameIdx, guide.steps.length - 1)]?.title;
@@ -310,7 +327,7 @@ export function AnimatedSkeleton({
 
       animRef.current = requestAnimationFrame(draw);
     },
-    [guide, view],
+    [guide, view, demoSpec, ghost],
   );
 
   useEffect(() => {
@@ -322,7 +339,7 @@ export function AnimatedSkeleton({
     setSpeedIdx(1);
     animRef.current = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(animRef.current);
-  }, [draw, view]);
+  }, [draw, view, demoSpec]);
 
   return (
     <div className="relative" style={{ width: width ?? "100%", height: height ?? "100%" }}>

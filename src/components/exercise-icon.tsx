@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { AnimatedSkeleton } from "@/components/exercise-guide/animated-skeleton";
-import { resolveDemoGuide } from "@/lib/exercises/exercise-demo-map";
+import { resolveExerciseDemo } from "@/lib/exercises/exercise-demo-map";
 import { cn } from "@/lib/utils";
 
 /**
@@ -23,10 +23,12 @@ export function ExerciseIcon({
   size?: "sm" | "md" | "lg";
   className?: string;
 }) {
-  const guide = useMemo(
-    () => resolveDemoGuide(exerciseId, exerciseName),
+  const { guide, spec } = useMemo(
+    () => resolveExerciseDemo(exerciseId, exerciseName),
     [exerciseId, exerciseName],
   );
+
+  const view = spec.preferFront && guide.frontKeyframes?.length ? "front" : "side";
 
   const dim =
     size === "sm" ? { w: 32, h: 32 } : size === "lg" ? { w: 48, h: 48 } : { w: 40, h: 40 };
@@ -41,7 +43,7 @@ export function ExerciseIcon({
       style={{ width: dim.w, height: dim.h }}
       aria-hidden="true"
     >
-      <AnimatedSkeleton guide={guide} width={dim.w} height={dim.h} ghost view="side" />
+      <AnimatedSkeleton guide={guide} demoSpec={spec} width={dim.w} height={dim.h} ghost view={view} />
     </div>
   );
 }

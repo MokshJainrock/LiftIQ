@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { AnimatedSkeleton } from "@/components/exercise-guide/animated-skeleton";
-import { resolveDemoGuide } from "@/lib/exercises/exercise-demo-map";
+import { resolveExerciseDemo } from "@/lib/exercises/exercise-demo-map";
 import { cn } from "@/lib/utils";
 
 /** ~12 second looping demo with side + front views. */
@@ -18,12 +18,13 @@ export function ExerciseHowTo({
   /** Smaller layout for inline cards. */
   compact?: boolean;
 }) {
-  const guide = useMemo(
-    () => resolveDemoGuide(exerciseId, exerciseName),
+  const { guide, spec } = useMemo(
+    () => resolveExerciseDemo(exerciseId, exerciseName),
     [exerciseId, exerciseName],
   );
-  const hasFront = !!guide.frontKeyframes?.length;
-  const [view, setView] = useState<"side" | "front">("side");
+  const hasFront = !!guide.frontKeyframes?.length || spec.preferFront;
+  const defaultView = spec.preferFront && guide.frontKeyframes?.length ? "front" : "side";
+  const [view, setView] = useState<"side" | "front">(defaultView);
 
   return (
     <div className={cn("rounded-xl border border-white/[0.06] bg-[#040408] overflow-hidden", className)}>
@@ -45,7 +46,7 @@ export function ExerciseHowTo({
         </div>
       )}
       <div className={cn("relative", compact ? "h-28" : "h-36 sm:h-44")}>
-        <AnimatedSkeleton guide={guide} ghost view={view} />
+        <AnimatedSkeleton guide={guide} demoSpec={spec} ghost view={view} />
       </div>
       {!compact && guide.steps[0] && (
         <p className="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/[0.04] leading-relaxed">
