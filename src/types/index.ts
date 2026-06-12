@@ -186,6 +186,8 @@ export interface UserSettings {
    * surfaces a compact readiness pill instead — better suited to phones.
    */
   coachingMode: "ghost" | "minimal";
+  /** Display unit for weights. Data is always stored in lbs. */
+  units?: "lbs" | "kg";
 }
 
 export type PoseDetectionStatus = "loading" | "ready" | "detecting" | "error" | "no-camera";

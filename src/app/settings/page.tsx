@@ -11,7 +11,7 @@ import { useWorkoutStore } from "@/lib/store";
 import { getSettings, saveSettings, getUserProfile, saveUserProfile, clearAllStorage } from "@/lib/storage";
 import { UserProfile, Gender, ActivityLevel, WeightGoal } from "@/types";
 import { getActivityLabel, getGoalLabel, calculateRecommendedCalories } from "@/lib/calories";
-import { Volume2, VolumeX, Camera, Gauge, Info, CheckCircle2, Shield, Monitor, User, Pencil, LogOut, Flame } from "lucide-react";
+import { Volume2, VolumeX, Camera, Gauge, Info, CheckCircle2, Shield, Monitor, User, Pencil, LogOut, Flame, Scale } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
@@ -136,6 +136,15 @@ export default function SettingsPage() {
             <p className="text-xs text-zinc-600 mb-4">Higher sensitivity flags more form issues</p>
             <div className="grid grid-cols-3 gap-2 glass-card rounded-xl p-1.5">
               {(["low","medium","high"] as const).map(l => <button key={l} onClick={() => updateSettings({ sensitivity: l })} className={cn("rounded-lg px-3 py-2.5 text-sm font-semibold transition-all min-h-[40px]", settings.sensitivity === l ? "bg-cyan-500/10 text-cyan-300" : "text-zinc-500 hover:text-zinc-300")}>{l.charAt(0).toUpperCase()+l.slice(1)}</button>)}
+            </div>
+          </GlassCard>
+
+          {/* Weight Units */}
+          <GlassCard className="p-5">
+            <div className="flex items-center gap-2 mb-1"><Scale className="h-4 w-4 text-cyan-400" /><h3 className="text-base font-bold text-zinc-200">Weight Units</h3></div>
+            <p className="text-xs text-zinc-600 mb-4">Used everywhere weights are shown or entered</p>
+            <div className="grid grid-cols-2 gap-2 glass-card rounded-xl p-1.5">
+              {(["lbs","kg"] as const).map(u => <button key={u} onClick={() => updateSettings({ units: u })} className={cn("rounded-lg px-3 py-2.5 text-sm font-semibold transition-all min-h-[40px]", (settings.units ?? "lbs") === u ? "bg-cyan-500/10 text-cyan-300" : "text-zinc-500 hover:text-zinc-300")}>{u === "lbs" ? "Pounds (lbs)" : "Kilograms (kg)"}</button>)}
             </div>
           </GlassCard>
 

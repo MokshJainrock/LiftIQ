@@ -104,6 +104,10 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Incline Push-Up", "chest", "bodyweight", "Hands elevated — easier; great for volume."),
   ex("Decline Push-Up", "chest", "bodyweight", "Feet elevated — biases upper chest."),
   ex("Dip (Chest)", "chest", "bodyweight", "Lean forward, elbows flare slightly.", { rest: 90 }),
+  ex("Machine Incline Press", "chest", "machine", "Drive up and slightly back, slow negative."),
+  ex("Dumbbell Pullover", "chest", "dumbbell", "Big stretch over the head, ribs stay down."),
+  ex("Svend Press", "chest", "dumbbell", "Squeeze a plate between palms, press straight out."),
+  ex("Banded Chest Press", "chest", "band", "Anchor behind you, press to full lockout."),
 
   // ── Back ──────────────────────────────────────────────────────
   ex("Deadlift", "back", "barbell", "Brace hard, push the floor away, bar stays close.", { rest: 180 }),
@@ -120,6 +124,12 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Inverted Row", "back", "bodyweight", "Body rigid, chest to the bar."),
   ex("Machine Row", "back", "machine", "Control the negative for a full stretch."),
   ex("Rack Pull", "back", "barbell", "Pins at knee height, brutal upper-back loader.", { rest: 180 }),
+  ex("Single-Arm Lat Pulldown", "back", "cable", "Pull the elbow into the back pocket."),
+  ex("Meadows Row", "back", "barbell", "Landmine end, wide elbow, hip-height pull.", { rest: 120 }),
+  ex("Renegade Row", "back", "dumbbell", "Plank position, row without rotating the hips."),
+  ex("Band Pull-Down", "back", "band", "Anchor high, drive elbows to the ribs."),
+  ex("Superman Hold", "back", "bodyweight", "Arms and legs off the floor, squeeze the spine.", { rest: 45 }),
+  ex("Seal Row", "back", "barbell", "Lying flat on a high bench — zero momentum.", { rest: 120 }),
 
   // ── Shoulders ─────────────────────────────────────────────────
   ex("Overhead Press", "shoulders", "barbell", "Squeeze glutes, press in a straight line, head through.", { rest: 150 }),
@@ -134,6 +144,11 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Machine Shoulder Press", "shoulders", "machine", "Seat height so handles start at ear level."),
   ex("Upright Row", "shoulders", "barbell", "Wide grip, pull to chest height — not higher."),
   ex("Pike Push-Up", "shoulders", "bodyweight", "Hips high, head travels toward the floor."),
+  ex("Cable Rear Delt Fly", "shoulders", "cable", "Cross the cables, pull wide and back."),
+  ex("Landmine Press", "shoulders", "barbell", "One arm, press up and forward along the bar.", { rest: 90 }),
+  ex("Dumbbell Y-Raise", "shoulders", "dumbbell", "Raise into a Y — lower traps love it."),
+  ex("Plate Front Raise", "shoulders", "dumbbell", "Hold a plate at 9 and 3, raise to eye level."),
+  ex("Handstand Push-Up", "shoulders", "bodyweight", "Kick up to a wall, head to floor and press.", { rest: 120 }),
 
   // ── Biceps ────────────────────────────────────────────────────
   ex("Barbell Curl", "biceps", "barbell", "Elbows pinned to your sides, full extension."),
@@ -144,6 +159,10 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Cable Curl", "biceps", "cable", "Constant tension top to bottom."),
   ex("Concentration Curl", "biceps", "dumbbell", "Elbow braced on the thigh, peak squeeze."),
   ex("EZ-Bar Curl", "biceps", "barbell", "Angled grip is easier on the wrists."),
+  ex("Spider Curl", "biceps", "dumbbell", "Chest on an incline bench, arms hang straight down."),
+  ex("Zottman Curl", "biceps", "dumbbell", "Curl palms-up, rotate, lower palms-down."),
+  ex("Rope Hammer Curl", "biceps", "cable", "Neutral rope grip, elbows pinned."),
+  ex("Band Curl", "biceps", "band", "Stand on the band, curl against rising tension."),
 
   // ── Triceps ───────────────────────────────────────────────────
   ex("Close-Grip Bench Press", "triceps", "barbell", "Hands shoulder-width, elbows tucked.", { rest: 120 }),
@@ -154,6 +173,9 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Dip (Triceps)", "triceps", "bodyweight", "Stay upright, elbows track straight back.", { rest: 90 }),
   ex("Bench Dip", "triceps", "bodyweight", "Hands on a bench behind you, knees bent to scale."),
   ex("Diamond Push-Up", "triceps", "bodyweight", "Hands form a diamond under the chest."),
+  ex("Rope Pushdown", "triceps", "cable", "Split the rope at the bottom, full extension."),
+  ex("Tricep Kickback", "triceps", "dumbbell", "Upper arm parallel to the floor, extend back."),
+  ex("Machine Tricep Extension", "triceps", "machine", "Elbows on the pad, press to lockout."),
 
   // ── Forearms ──────────────────────────────────────────────────
   ex("Wrist Curl", "forearms", "dumbbell", "Forearms on thighs, curl with wrists only."),
@@ -161,6 +183,8 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Reverse Curl", "forearms", "barbell", "Overhand grip curl, wrists straight."),
   ex("Farmer Walk", "forearms", "dumbbell", "Heavy, tall posture, walk steady.", { rest: 120 }),
   ex("Dead Hang", "forearms", "bodyweight", "Hang from the bar, shoulders packed."),
+  ex("Plate Pinch Hold", "forearms", "dumbbell", "Pinch plates smooth-side out, hold for time."),
+  ex("Behind-the-Back Wrist Curl", "forearms", "barbell", "Bar behind you, curl with the wrists."),
 
   // ── Quads ─────────────────────────────────────────────────────
   ex("Back Squat", "quads", "barbell", "Brace, sit between your heels, drive up.", { rest: 180 }),
@@ -175,6 +199,10 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Leg Extension", "quads", "machine", "Pause one second at the top."),
   ex("Step-Up", "quads", "dumbbell", "Drive through the top heel, don't push off the back leg."),
   ex("Wall Sit", "quads", "bodyweight", "Thighs parallel, hold and breathe.", { rest: 60 }),
+  ex("Reverse Lunge", "quads", "dumbbell", "Step back, knee kisses the floor."),
+  ex("Jump Squat", "quads", "bodyweight", "Explode up, land soft into the next rep."),
+  ex("Pistol Squat", "quads", "bodyweight", "One leg, heel stays down — hold a counterweight to scale.", { rest: 90 }),
+  ex("Sissy Squat", "quads", "bodyweight", "Knees travel far forward, lean back in one line.", { rest: 90 }),
 
   // ── Hamstrings ────────────────────────────────────────────────
   ex("Romanian Deadlift", "hamstrings", "barbell", "Soft knees, push hips back until you feel the stretch.", { rest: 150 }),
@@ -185,6 +213,9 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Nordic Curl", "hamstrings", "bodyweight", "Lower as slow as possible, catch with hands.", { rest: 120 }),
   ex("Good Morning", "hamstrings", "barbell", "Bar on the back, hinge until torso near parallel.", { rest: 120 }),
   ex("Glute-Ham Raise", "hamstrings", "bodyweight", "Knees to hips in one line at the top.", { rest: 90 }),
+  ex("Single-Leg RDL", "hamstrings", "dumbbell", "Hinge on one leg, hips stay square."),
+  ex("Back Extension", "hamstrings", "machine", "Hinge at the hips, squeeze glutes at the top."),
+  ex("Banded Leg Curl", "hamstrings", "band", "Anchor low, curl the heel to the glute."),
 
   // ── Glutes ────────────────────────────────────────────────────
   ex("Hip Thrust", "glutes", "barbell", "Chin tucked, squeeze hard, full lockout.", { rest: 120 }),
@@ -195,12 +226,18 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Curtsy Lunge", "glutes", "dumbbell", "Step behind and across, knee tracks the toe."),
   ex("Hip Abduction", "glutes", "machine", "Lean slightly forward, push knees apart."),
   ex("Frog Pump", "glutes", "bodyweight", "Soles together, pump the hips up."),
+  ex("Single-Leg Hip Thrust", "glutes", "bodyweight", "One foot down, full lockout, no hip drop."),
+  ex("Donkey Kick", "glutes", "bodyweight", "On all fours, drive the heel to the ceiling."),
+  ex("Banded Lateral Walk", "glutes", "band", "Band above knees, stay low, step wide."),
+  ex("Reverse Hyperextension", "glutes", "machine", "Legs swing up behind you, pause at the top."),
 
   // ── Calves ────────────────────────────────────────────────────
   ex("Standing Calf Raise", "calves", "machine", "Full stretch at the bottom, pause at the top.", { rest: 60 }),
   ex("Seated Calf Raise", "calves", "machine", "Bent knee biases the soleus.", { rest: 60 }),
   ex("Single-Leg Calf Raise", "calves", "bodyweight", "On a step, full range, hold something to balance."),
   ex("Donkey Calf Raise", "calves", "machine", "Hips hinged — bigger gastroc stretch.", { rest: 60 }),
+  ex("Leg Press Calf Raise", "calves", "machine", "Balls of feet on the platform edge, full stretch.", { rest: 60 }),
+  ex("Tibialis Raise", "calves", "bodyweight", "Heels on a step, lift the toes — bulletproof shins.", { rest: 45 }),
 
   // ── Core ──────────────────────────────────────────────────────
   ex("Plank", "core", "bodyweight", "Squeeze glutes, ribs down, one straight line.", { trackingId: "plank", rest: 60 }),
@@ -219,6 +256,13 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Flutter Kick", "core", "bodyweight", "Legs straight, low back stays down."),
   ex("V-Up", "core", "bodyweight", "Hands meet feet over the hips."),
   ex("Leg Raise", "core", "bodyweight", "Lying flat, heels to the ceiling."),
+  ex("Hollow Body Hold", "core", "bodyweight", "Low back pressed down, arms and legs long.", { rest: 60 }),
+  ex("Pallof Press", "core", "cable", "Press out and resist the rotation."),
+  ex("Suitcase Carry", "core", "dumbbell", "Heavy on one side, walk perfectly upright.", { rest: 90 }),
+  ex("Toes to Bar", "core", "bodyweight", "Hang, sweep toes up to the bar.", { rest: 90 }),
+  ex("Plank Shoulder Tap", "core", "bodyweight", "Tap opposite shoulder, hips don't sway."),
+  ex("Bird Dog", "core", "bodyweight", "Opposite arm and leg out, slow and square."),
+  ex("Copenhagen Plank", "core", "bodyweight", "Top foot on a bench — side plank for adductors.", { rest: 60 }),
 
   // ── Cardio / conditioning ─────────────────────────────────────
   ex("Jumping Jack", "cardio", "bodyweight", "Light on the feet, full arm swing.", { trackingId: "jumping-jack" }),
@@ -231,6 +275,14 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Treadmill Run", "cardio", "cardio", "Track minutes as reps if you like."),
   ex("Stair Climber", "cardio", "cardio", "Stand tall, light grip on the rails."),
   ex("Sprint Interval", "cardio", "bodyweight", "All-out effort, full recovery between."),
+  ex("Cycling", "cardio", "cardio", "Steady cadence, log minutes as reps."),
+  ex("Elliptical", "cardio", "cardio", "Push and pull the handles — full body, low impact."),
+  ex("Swimming", "cardio", "cardio", "Log laps as reps, any stroke counts."),
+  ex("Incline Walk", "cardio", "cardio", "10-15% incline, brisk pace, no holding on."),
+  ex("Ski Erg", "cardio", "cardio", "Long pulls from the lats, hinge with each stroke."),
+  ex("Shadow Boxing", "cardio", "bodyweight", "Stay on your toes, snap the punches back."),
+  ex("Bear Crawl", "cardio", "bodyweight", "Knees an inch off the floor, opposite limbs move."),
+  ex("Shuttle Run", "cardio", "bodyweight", "Touch the line, explode out of the turn."),
 
   // ── Full body ─────────────────────────────────────────────────
   ex("Kettlebell Swing", "full-body", "kettlebell", "Hinge, snap the hips — arms are just ropes.", { rest: 90 }),
@@ -245,10 +297,40 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Battle Ropes", "full-body", "cardio", "Big waves, athletic stance."),
   ex("Band Pull-Apart", "full-body", "band", "Arms straight, pull to the chest.", { rest: 45 }),
   ex("Resistance Band Row", "full-body", "band", "Anchor at chest height, squeeze the blades."),
+  ex("Wall Ball", "full-body", "dumbbell", "Squat, drive up, throw to the target.", { rest: 90 }),
+  ex("Dumbbell Snatch", "full-body", "dumbbell", "One pull, punch the bell overhead.", { rest: 120 }),
+  ex("Devil Press", "full-body", "dumbbell", "Burpee with dumbbells straight into a double snatch.", { rest: 120 }),
+  ex("Overhead Carry", "full-body", "kettlebell", "Lock the elbow, ribs down, walk tall.", { rest: 90 }),
+  ex("Kettlebell Windmill", "full-body", "kettlebell", "Bell overhead, hinge sideways, eyes on the bell.", { rest: 90 }),
 ];
+
+/** Visual identity per muscle group — used for the exercise icon tiles. */
+export const MUSCLE_VISUALS: Record<MuscleGroup, { emoji: string; gradient: string }> = {
+  chest: { emoji: "🏋️", gradient: "from-rose-500/25 to-orange-500/15" },
+  back: { emoji: "🦾", gradient: "from-blue-500/25 to-indigo-500/15" },
+  shoulders: { emoji: "🤸", gradient: "from-amber-500/25 to-yellow-500/15" },
+  biceps: { emoji: "💪", gradient: "from-violet-500/25 to-purple-500/15" },
+  triceps: { emoji: "🔱", gradient: "from-fuchsia-500/25 to-pink-500/15" },
+  forearms: { emoji: "✊", gradient: "from-stone-500/25 to-zinc-500/15" },
+  quads: { emoji: "🦵", gradient: "from-emerald-500/25 to-green-500/15" },
+  hamstrings: { emoji: "🦿", gradient: "from-teal-500/25 to-emerald-500/15" },
+  glutes: { emoji: "🍑", gradient: "from-orange-500/25 to-amber-500/15" },
+  calves: { emoji: "🦶", gradient: "from-lime-500/25 to-green-500/15" },
+  core: { emoji: "🧱", gradient: "from-cyan-500/25 to-sky-500/15" },
+  cardio: { emoji: "🏃", gradient: "from-red-500/25 to-rose-500/15" },
+  "full-body": { emoji: "🔥", gradient: "from-yellow-500/25 to-red-500/15" },
+};
 
 const byId = new Map(EXERCISE_LIBRARY.map((e) => [e.id, e]));
 const byName = new Map(EXERCISE_LIBRARY.map((e) => [e.name.toLowerCase(), e]));
+const byTrackingId = new Map(
+  EXERCISE_LIBRARY.filter((e) => e.trackingId).map((e) => [e.trackingId!, e]),
+);
+
+/** Look up by a session's exercise key (trackingId for camera moves, else library id). */
+export function findLibraryByKey(key: string): LibraryExercise | undefined {
+  return byTrackingId.get(key) ?? byId.get(key);
+}
 
 export function getLibraryExercise(id: string): LibraryExercise | undefined {
   return byId.get(id);

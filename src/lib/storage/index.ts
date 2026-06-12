@@ -212,6 +212,7 @@ export function getSettings(): UserSettings {
     sensitivity: "medium",
     cameraFacing: "user",
     coachingMode: "ghost",
+    units: "lbs",
   });
 }
 

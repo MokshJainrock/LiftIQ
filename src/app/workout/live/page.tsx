@@ -14,10 +14,18 @@ import {
   getLibraryExercise,
   searchLibrary,
 } from "@/lib/exercises/library";
-import { buildManualSession } from "@/lib/manual-session";
+import { buildManualSession, resolveExerciseKey } from "@/lib/manual-session";
 import { getSessions, saveSession, updateStreak } from "@/lib/storage";
 import { LoggedSet } from "@/types";
 import { ManualRating } from "@/lib/manual-rating";
+import { ExerciseIcon } from "@/components/exercise-icon";
+import { findLibraryExerciseByName } from "@/lib/exercises/library";
+import { WeightUnit, getWeightUnit, toStoredLbs, formatVolume } from "@/lib/units";
+import {
+  fetchManualCoachFeedback,
+  fetchAISuggestions,
+  type AISuggestion,
+} from "@/lib/ai/manual-coach-client";
 import {
   Check,
   Plus,
@@ -31,6 +39,8 @@ import {
   Sparkles,
   ChevronDown,
   Square,
+  Bot,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -54,7 +64,7 @@ interface ExerciseResult {
   name: string;
   sets: number;
   reps: number;
-  volume: number;
+  volume: number; // lbs
   rating: ManualRating;
 }
 
@@ -94,6 +104,14 @@ export default function LiveWorkoutPage() {
   const [pickerMuscle, setPickerMuscle] = useState<MuscleGroup | "all">("all");
   const [results, setResults] = useState<ExerciseResult[] | null>(null);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
+  const [unit, setUnit] = useState<WeightUnit>("lbs");
+  /** AI coach note per finished exercise name; null = loading. */
+  const [aiNotes, setAiNotes] = useState<Record<string, string | null>>({});
+  const [aiSuggest, setAiSuggest] = useState<{
+    loading: boolean;
+    focus: string;
+    suggestions: AISuggestion[];
+  } | null>(null);
   const restoredRef = useRef(false);
 
   // Restore a draft (page refresh mid-workout) or start fresh, then apply
@@ -129,6 +147,7 @@ export default function LiveWorkoutPage() {
       setStartedAt(start);
       setNow(Date.now());
       setExercises(restored);
+      setUnit(getWeightUnit());
       if (restored.length === 0) setShowPicker(true);
     });
   }, []);
@@ -150,18 +169,20 @@ export default function LiveWorkoutPage() {
     }
   }, [startedAt, exercises, results]);
 
+  // Always in lbs (storage unit); converted for display only.
   const totalVolume = useMemo(
     () =>
       exercises.reduce(
         (sum, ex) =>
           sum +
           ex.sets.reduce(
-            (n, s) => (s.done ? n + (parseFloat(s.weight) || 0) * (parseInt(s.reps) || 0) : n),
+            (n, s) =>
+              s.done ? n + toStoredLbs(parseFloat(s.weight) || 0, unit) * (parseInt(s.reps) || 0) : n,
             0,
           ),
         0,
       ),
-    [exercises],
+    [exercises, unit],
   );
   const completedSets = exercises.reduce((n, ex) => n + ex.sets.filter((s) => s.done).length, 0);
 
@@ -242,10 +263,13 @@ export default function LiveWorkoutPage() {
     for (const ex of exercises) {
       const sets: LoggedSet[] = ex.sets
         .filter((s) => s.done && (parseInt(s.reps) || 0) > 0)
-        .map((s) => ({
-          reps: parseInt(s.reps) || 0,
-          weight: s.weight ? Math.max(0, parseFloat(s.weight)) || undefined : undefined,
-        }));
+        .map((s) => {
+          const entered = s.weight ? Math.max(0, parseFloat(s.weight)) : 0;
+          return {
+            reps: parseInt(s.reps) || 0,
+            weight: entered > 0 ? toStoredLbs(entered, unit) : undefined,
+          };
+        });
       if (sets.length === 0) continue;
       const { session, rating } = buildManualSession(ex.name, sets, history, {
         startTime: startedAt,
@@ -263,6 +287,27 @@ export default function LiveWorkoutPage() {
     }
 
     if (out.length > 0) void updateStreak();
+
+    // Kick off AI coaching for each finished exercise (async, non-blocking).
+    const loading: Record<string, string | null> = {};
+    for (const r of out) loading[r.name] = null;
+    setAiNotes(loading);
+    for (const r of out) {
+      const sets =
+        history
+          .filter((s) => s.exerciseName === r.name)
+          .slice(-1)[0]?.sets ?? [];
+      void fetchManualCoachFeedback({
+        exerciseName: r.name,
+        exerciseKey: resolveExerciseKey(r.name),
+        sets,
+        ratingScore: r.rating.score,
+        unit,
+        sessions: history,
+      }).then((text) => {
+        setAiNotes((prev) => ({ ...prev, [r.name]: text }));
+      });
+    }
     try {
       localStorage.removeItem(DRAFT_KEY);
     } catch {
@@ -279,6 +324,17 @@ export default function LiveWorkoutPage() {
       // ignore
     }
     router.push("/workout");
+  };
+
+  const handleAISuggest = async () => {
+    setAiSuggest({ loading: true, focus: "", suggestions: [] });
+    const res = await fetchAISuggestions(getSessions());
+    setAiSuggest({ loading: false, focus: res.focus, suggestions: res.suggestions });
+  };
+
+  const addSuggested = (name: string) => {
+    const lib = findLibraryExerciseByName(name);
+    if (lib) addExercise(lib);
   };
 
   const pickerResults = searchLibrary(pickerQuery, pickerMuscle);
@@ -319,7 +375,7 @@ export default function LiveWorkoutPage() {
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Dumbbell className="h-4 w-4 text-emerald-400" />{" "}
-                    {Math.round(results.reduce((n, r) => n + r.volume, 0)).toLocaleString()} lbs
+                    {formatVolume(results.reduce((n, r) => n + r.volume, 0), unit)}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Check className="h-4 w-4 text-cyan-400" /> {results.reduce((n, r) => n + r.sets, 0)} sets
@@ -331,10 +387,13 @@ export default function LiveWorkoutPage() {
                 {results.map((r) => (
                   <GlassCard key={r.name} className="p-4">
                     <div className="flex items-center justify-between gap-3">
-                      <div className="min-w-0">
-                        <div className="font-bold text-sm text-zinc-200 truncate">{r.name}</div>
-                        <div className="text-[11px] text-zinc-500 mt-0.5">
-                          {r.sets} sets · {r.reps} reps{r.volume > 0 ? ` · ${Math.round(r.volume).toLocaleString()} lbs` : ""}
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <ExerciseIcon muscle={findLibraryExerciseByName(r.name)?.muscle ?? "full-body"} size="sm" />
+                        <div className="min-w-0">
+                          <div className="font-bold text-sm text-zinc-200 truncate">{r.name}</div>
+                          <div className="text-[11px] text-zinc-500 mt-0.5">
+                            {r.sets} sets · {r.reps} reps{r.volume > 0 ? ` · ${formatVolume(r.volume, unit)}` : ""}
+                          </div>
                         </div>
                       </div>
                       <span
@@ -346,6 +405,21 @@ export default function LiveWorkoutPage() {
                         {r.rating.score}
                       </span>
                     </div>
+                    {aiNotes[r.name] !== "" && (
+                      <div className="mt-3 rounded-lg bg-cyan-500/[0.06] border border-cyan-500/15 p-3">
+                        <div className="flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.15em] text-cyan-400 mb-1.5">
+                          <Bot className="h-3 w-3" /> AI Coach
+                        </div>
+                        {aiNotes[r.name] === null ? (
+                          <div className="space-y-1.5 animate-pulse">
+                            <div className="h-2.5 rounded bg-white/[0.06] w-full" />
+                            <div className="h-2.5 rounded bg-white/[0.06] w-4/5" />
+                          </div>
+                        ) : (
+                          <p className="text-xs text-zinc-200 leading-relaxed">{aiNotes[r.name]}</p>
+                        )}
+                      </div>
+                    )}
                     {r.rating.highlights.length > 0 && (
                       <div className="mt-3 space-y-1.5">
                         {r.rating.highlights.map((h, i) => (
@@ -413,7 +487,7 @@ export default function LiveWorkoutPage() {
               </span>
               {totalVolume > 0 && (
                 <span className="flex items-center gap-1">
-                  <Dumbbell className="h-3.5 w-3.5 text-emerald-400" /> {Math.round(totalVolume).toLocaleString()} lbs
+                  <Dumbbell className="h-3.5 w-3.5 text-emerald-400" /> {formatVolume(totalVolume, unit)}
                 </span>
               )}
             </div>
@@ -443,10 +517,13 @@ export default function LiveWorkoutPage() {
           {exercises.map((ex, exIdx) => (
             <GlassCard key={`${ex.libId}-${exIdx}`} className="p-4">
               <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <div className="font-bold text-sm text-zinc-100 truncate">{ex.name}</div>
-                  <div className="text-[10px] uppercase tracking-wider text-zinc-600 mt-0.5">{ex.muscle}</div>
-                  <p className="text-[11px] text-zinc-500 mt-1">{ex.cue}</p>
+                <div className="flex items-start gap-2.5 min-w-0">
+                  <ExerciseIcon muscle={ex.muscle} size="md" />
+                  <div className="min-w-0">
+                    <div className="font-bold text-sm text-zinc-100 truncate">{ex.name}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-zinc-600 mt-0.5">{ex.muscle}</div>
+                    <p className="text-[11px] text-zinc-500 mt-1">{ex.cue}</p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <div className="relative">
@@ -477,7 +554,7 @@ export default function LiveWorkoutPage() {
 
               <div className="mt-3 grid grid-cols-[2rem_1fr_1fr_2.5rem_2.5rem] gap-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-zinc-600 px-1">
                 <span>Set</span>
-                <span>{ex.isWeighted ? "Weight (lbs)" : "Weight (opt.)"}</span>
+                <span>{ex.isWeighted ? `Weight (${unit})` : `Weight (${unit}, opt.)`}</span>
                 <span>Reps</span>
                 <span className="text-center">Done</span>
                 <span />
@@ -598,14 +675,61 @@ export default function LiveWorkoutPage() {
               </Button>
             </div>
             <div className="px-4 md:px-5 pt-3 shrink-0">
-              <input
-                type="text"
-                value={pickerQuery}
-                onChange={(e) => setPickerQuery(e.target.value)}
-                placeholder={`Search ${EXERCISE_LIBRARY.length} exercises...`}
-                className="w-full h-11 rounded-xl bg-secondary border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                autoFocus
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={pickerQuery}
+                  onChange={(e) => setPickerQuery(e.target.value)}
+                  placeholder={`Search ${EXERCISE_LIBRARY.length} exercises...`}
+                  className="flex-1 h-11 rounded-xl bg-secondary border border-border px-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  autoFocus
+                />
+                <Button
+                  variant="outline"
+                  onClick={handleAISuggest}
+                  disabled={aiSuggest?.loading}
+                  className="h-11 px-3 border-cyan-500/20 bg-cyan-500/[0.05] text-cyan-300 hover:bg-cyan-500/10 shrink-0"
+                  title="AI suggests what to train based on your history"
+                >
+                  {aiSuggest?.loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Bot className="h-4 w-4" />}
+                  <span className="hidden sm:inline">AI Suggest</span>
+                </Button>
+              </div>
+
+              {aiSuggest && !aiSuggest.loading && (
+                <div className="mt-2.5 rounded-xl bg-cyan-500/[0.05] border border-cyan-500/15 p-3">
+                  {aiSuggest.suggestions.length === 0 ? (
+                    <p className="text-xs text-zinc-500">AI suggestions unavailable right now — browse below.</p>
+                  ) : (
+                    <>
+                      {aiSuggest.focus && (
+                        <p className="text-xs text-cyan-200 mb-2 flex items-start gap-1.5">
+                          <Sparkles className="h-3.5 w-3.5 mt-px shrink-0" /> {aiSuggest.focus}
+                        </p>
+                      )}
+                      <div className="space-y-1.5">
+                        {aiSuggest.suggestions.map((s) => {
+                          const lib = findLibraryExerciseByName(s.name);
+                          return (
+                            <button
+                              key={s.name}
+                              onClick={() => addSuggested(s.name)}
+                              className="w-full flex items-center gap-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05] px-2.5 py-2 text-left hover:bg-cyan-500/10 transition-colors"
+                            >
+                              <ExerciseIcon muscle={lib?.muscle ?? "full-body"} size="sm" />
+                              <span className="min-w-0 flex-1">
+                                <span className="block text-sm text-zinc-100 truncate">{s.name}</span>
+                                <span className="block text-[10px] text-zinc-500 truncate">{s.reason}</span>
+                              </span>
+                              <Plus className="h-4 w-4 text-cyan-400 shrink-0" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
               <div className="flex gap-1.5 overflow-x-auto py-2.5 -mx-1 px-1">
                 <FilterChip active={pickerMuscle === "all"} onClick={() => setPickerMuscle("all")}>
                   All
@@ -624,9 +748,10 @@ export default function LiveWorkoutPage() {
                 <button
                   key={e.id}
                   onClick={() => addExercise(e)}
-                  className="w-full flex items-center justify-between gap-2 rounded-lg bg-secondary/30 px-3 py-2.5 text-sm hover:bg-secondary active:bg-secondary text-left"
+                  className="w-full flex items-center gap-2.5 rounded-lg bg-secondary/30 px-2.5 py-2 text-sm hover:bg-secondary active:bg-secondary text-left"
                 >
-                  <div className="min-w-0">
+                  <ExerciseIcon muscle={e.muscle} size="sm" />
+                  <div className="min-w-0 flex-1">
                     <div className="truncate text-zinc-200">{e.name}</div>
                     <div className="text-[10px] text-zinc-600 uppercase tracking-wider mt-0.5">
                       {e.muscle} · {e.equipment}

@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { FoodTracker } from "@/components/nutrition/food-tracker";
 import { ManualLog } from "@/components/workout/manual-log";
 import { getSessions, getDailyLogs, getStreakData, getTodayFoodCalories, getFoodLog, getUserProfile } from "@/lib/storage";
+import { WeightUnit, getWeightUnit, formatWeight, toDisplayWeight } from "@/lib/units";
+import Link from "next/link";
 import { WorkoutSession, DailyLog, StreakData, FoodEntry, UserProfile } from "@/types";
 import { getGoalLabel } from "@/lib/calories";
 import { BarChart3, Trophy, Flame, Target, Repeat, TrendingUp, Calendar, Zap, UtensilsCrossed, AlertTriangle, Star, Activity, Medal, Dumbbell, NotebookPen } from "lucide-react";
@@ -35,8 +37,9 @@ export default function DashboardPage() {
   const [foodLog, setFoodLog] = useState<FoodEntry[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [showManualLog, setShowManualLog] = useState(false);
+  const [unit, setUnit] = useState<WeightUnit>("lbs");
 
-  const refresh = () => { setSessions(getSessions()); setDailyLogs(getDailyLogs()); setStreak(getStreakData()); setTodayFoodCalories(getTodayFoodCalories()); setFoodLog(getFoodLog()); setProfile(getUserProfile()); };
+  const refresh = () => { setSessions(getSessions()); setDailyLogs(getDailyLogs()); setStreak(getStreakData()); setTodayFoodCalories(getTodayFoodCalories()); setFoodLog(getFoodLog()); setProfile(getUserProfile()); setUnit(getWeightUnit()); };
   useEffect(() => {
     queueMicrotask(() => { refresh(); });
     const onFoodChanged = () => { setTodayFoodCalories(getTodayFoodCalories()); setFoodLog(getFoodLog()); };
@@ -139,7 +142,7 @@ export default function DashboardPage() {
     return Object.entries(byDay)
       .sort(([a], [b]) => a.localeCompare(b))
       .slice(-14)
-      .map(([d, v]) => ({ date: d.slice(5), volume: Math.round(v) }));
+      .map(([d, v]) => ({ date: d.slice(5), volume: Math.round(toDisplayWeight(v, unit)) }));
   })();
 
   const hasData = sessions.length > 0;
@@ -286,13 +289,13 @@ export default function DashboardPage() {
                   </ChartCard>
                 )}
                 {volumePerDay.length > 0 && (
-                  <ChartCard title="Training Volume (lbs)" icon={<Dumbbell className="h-4 w-4 text-emerald-400" />}>
+                  <ChartCard title={`Training Volume (${unit})`} icon={<Dumbbell className="h-4 w-4 text-emerald-400" />}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={volumePerDay} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                         <CartesianGrid strokeDasharray="3 3" stroke={G} vertical={false} />
                         <XAxis dataKey="date" stroke={A} tick={{ fontSize: 10, fill: A }} tickLine={false} axisLine={{ stroke: G }} />
                         <YAxis stroke={A} tick={{ fontSize: 10, fill: A }} tickLine={false} axisLine={{ stroke: G }} width={44} />
-                        <Tooltip contentStyle={TT} formatter={(v) => [`${Number(v).toLocaleString()} lbs`, "Volume"]} />
+                        <Tooltip contentStyle={TT} formatter={(v) => [`${Number(v).toLocaleString()} ${unit}`, "Volume"]} />
                         <Bar dataKey="volume" fill="#34d399" radius={[4, 4, 0, 0]} maxBarSize={36} />
                       </BarChart>
                     </ResponsiveContainer>
@@ -373,7 +376,7 @@ export default function DashboardPage() {
                         {pr.maxWeight > 0 && (
                           <span className="flex items-center gap-1" title="Heaviest weight">
                             <Dumbbell className="h-3 w-3 text-emerald-400" />
-                            <span className="tabular-nums text-zinc-300 font-bold">{pr.maxWeight}</span> lbs
+                            <span className="tabular-nums text-zinc-300 font-bold">{formatWeight(pr.maxWeight, unit)}</span>
                           </span>
                         )}
                       </div>
@@ -386,9 +389,14 @@ export default function DashboardPage() {
             {/* ── Recent Sessions ── */}
             {hasData && (
               <GlassCard className="overflow-hidden">
-                <div className="px-6 py-4 border-b border-white/[0.04] flex items-center gap-2.5">
-                  <Calendar className="h-4 w-4 text-cyan-400" />
-                  <h3 className="text-sm font-bold">Recent Sessions</h3>
+                <div className="px-6 py-4 border-b border-white/[0.04] flex items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <Calendar className="h-4 w-4 text-cyan-400" />
+                    <h3 className="text-sm font-bold">Recent Sessions</h3>
+                  </div>
+                  <Link href="/history" className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
+                    View all →
+                  </Link>
                 </div>
                 <div className="p-4 space-y-2">
                   {sessions.slice(-10).reverse().map((session) => {
@@ -398,7 +406,7 @@ export default function DashboardPage() {
                       <div className="min-w-0 flex-1">
                         <div className="font-semibold text-sm truncate flex items-center gap-2 text-zinc-200">
                           {session.exerciseName || session.exercise.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
-                          {session.weight != null && <span className="text-[10px] text-zinc-600 tabular-nums">{session.weight} lbs</span>}
+                          {session.weight != null && <span className="text-[10px] text-zinc-600 tabular-nums">{formatWeight(session.weight, unit)}</span>}
                           {session.source === "manual" && <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider border border-white/[0.08] rounded px-1 py-px">LOG</span>}
                           {session.isRecorded && <span className="text-[9px] text-cyan-400/60 font-bold uppercase tracking-wider">REC</span>}
                           {hasPerfect && <span className="inline-flex items-center gap-0.5 text-[9px] text-amber-400 font-bold uppercase tracking-wider"><Flame className="h-2.5 w-2.5" />PR</span>}

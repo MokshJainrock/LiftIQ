@@ -14,6 +14,7 @@ import {
   searchLibrary,
 } from "@/lib/exercises/library";
 import { Camera, Play, Search } from "lucide-react";
+import { ExerciseIcon } from "@/components/exercise-icon";
 import { cn } from "@/lib/utils";
 
 const EQUIPMENT_FILTERS: (Equipment | "all")[] = [
@@ -104,22 +105,25 @@ export default function ExercisesPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                   {group.items.map((e) => (
                     <GlassCard key={e.id} className="p-4 flex flex-col justify-between gap-3 hover:bg-white/[0.03] transition-colors">
-                      <div>
-                        <div className="flex items-start justify-between gap-2">
-                          <span className="font-semibold text-sm text-zinc-100">{e.name}</span>
-                          {e.trackingId && (
-                            <span
-                              className="inline-flex items-center gap-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-cyan-300 shrink-0"
-                              title="Supports camera form tracking"
-                            >
-                              <Camera className="h-2.5 w-2.5" /> AI
-                            </span>
-                          )}
+                      <div className="flex items-start gap-3">
+                        <ExerciseIcon muscle={e.muscle} size="lg" />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <span className="font-semibold text-sm text-zinc-100">{e.name}</span>
+                            {e.trackingId && (
+                              <span
+                                className="inline-flex items-center gap-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-cyan-300 shrink-0"
+                                title="Supports camera form tracking"
+                              >
+                                <Camera className="h-2.5 w-2.5" /> AI
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[10px] uppercase tracking-wider text-zinc-600 mt-1">
+                            {EQUIPMENT_LABELS[e.equipment]} · rest {e.defaultRestSec}s
+                          </div>
+                          <p className="text-[11px] text-zinc-500 mt-1.5 leading-relaxed">{e.cue}</p>
                         </div>
-                        <div className="text-[10px] uppercase tracking-wider text-zinc-600 mt-1">
-                          {EQUIPMENT_LABELS[e.equipment]} · rest {e.defaultRestSec}s
-                        </div>
-                        <p className="text-[11px] text-zinc-500 mt-1.5 leading-relaxed">{e.cue}</p>
                       </div>
                       <div className="flex gap-2">
                         <Link

@@ -4,12 +4,15 @@ import { useState } from "react";
 import { LoggedSet } from "@/types";
 import { getSessions, saveSession, updateStreak } from "@/lib/storage";
 import { ManualRating } from "@/lib/manual-rating";
-import { buildManualSession } from "@/lib/manual-session";
+import { buildManualSession, resolveExerciseKey } from "@/lib/manual-session";
 import { searchLibrary, EXERCISE_LIBRARY } from "@/lib/exercises/library";
+import { ExerciseIcon } from "@/components/exercise-icon";
+import { getWeightUnit, toStoredLbs } from "@/lib/units";
+import { fetchManualCoachFeedback } from "@/lib/ai/manual-coach-client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { X, Plus, Trash2, Check, NotebookPen, Trophy, Lightbulb, Sparkles } from "lucide-react";
+import { X, Plus, Trash2, Check, NotebookPen, Trophy, Lightbulb, Sparkles, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ManualLogProps {
@@ -29,6 +32,9 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
   const [exerciseName, setExerciseName] = useState("");
   const [sets, setSets] = useState<SetDraft[]>([{ reps: "", weight: "" }]);
   const [rating, setRating] = useState<ManualRating | null>(null);
+  const [unit] = useState(() => getWeightUnit());
+  /** null = loading, "" = unavailable (fallback), text = AI feedback */
+  const [aiFeedback, setAiFeedback] = useState<string | null>(null);
 
   const filtered = searchLibrary(query);
   const customName = query.trim();
@@ -54,10 +60,13 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
   };
 
   const parsedSets: LoggedSet[] = sets
-    .map((s) => ({
-      reps: parseInt(s.reps) || 0,
-      weight: s.weight ? Math.max(0, parseFloat(s.weight)) || undefined : undefined,
-    }))
+    .map((s) => {
+      const entered = s.weight ? Math.max(0, parseFloat(s.weight)) : 0;
+      return {
+        reps: parseInt(s.reps) || 0,
+        weight: entered > 0 ? toStoredLbs(entered, unit) : undefined,
+      };
+    })
     .filter((s) => s.reps > 0);
 
   const canSave = parsedSets.length > 0;
@@ -70,6 +79,16 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
     setRating(result);
     setStep("done");
     onLogged?.();
+
+    setAiFeedback(null);
+    void fetchManualCoachFeedback({
+      exerciseName,
+      exerciseKey: resolveExerciseKey(exerciseName),
+      sets: parsedSets,
+      ratingScore: result.score,
+      unit,
+      sessions: getSessions(),
+    }).then(setAiFeedback);
   };
 
   const reset = () => {
@@ -77,6 +96,7 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
     setExerciseName("");
     setSets([{ reps: "", weight: "" }]);
     setRating(null);
+    setAiFeedback(null);
     setStep("pick");
   };
 
@@ -127,9 +147,10 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
                   <button
                     key={e.id}
                     onClick={() => pickExercise(e.name)}
-                    className="w-full flex items-center justify-between gap-2 rounded-lg bg-secondary/30 px-3 py-2.5 text-sm hover:bg-secondary active:bg-secondary text-left"
+                    className="w-full flex items-center gap-2.5 rounded-lg bg-secondary/30 px-2.5 py-2 text-sm hover:bg-secondary active:bg-secondary text-left"
                   >
-                    <span className="truncate">{e.name}</span>
+                    <ExerciseIcon muscle={e.muscle} size="sm" />
+                    <span className="truncate flex-1">{e.name}</span>
                     <span className="text-[9px] uppercase tracking-wider text-zinc-600 shrink-0">{e.muscle}</span>
                   </button>
                 ))}
@@ -145,7 +166,7 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
             <div className="space-y-3">
               <div className="grid grid-cols-[2.5rem_1fr_1fr_2.5rem] gap-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground px-1">
                 <span>Set</span>
-                <span>Weight (lbs)</span>
+                <span>Weight ({unit})</span>
                 <span>Reps</span>
                 <span />
               </div>
@@ -204,6 +225,24 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
                 <div className="text-xs text-muted-foreground mt-1">session rating</div>
                 <p className="text-sm text-zinc-300 mt-3">{rating.summary}</p>
               </div>
+
+              {/* AI coach feedback — loads async; deterministic tips remain below */}
+              {aiFeedback !== "" && (
+                <div className="rounded-xl bg-cyan-500/[0.06] border border-cyan-500/15 p-3.5">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-cyan-400 mb-2">
+                    <Bot className="h-3.5 w-3.5" /> AI Coach
+                  </div>
+                  {aiFeedback === null ? (
+                    <div className="space-y-2 animate-pulse">
+                      <div className="h-3 rounded bg-white/[0.06] w-full" />
+                      <div className="h-3 rounded bg-white/[0.06] w-11/12" />
+                      <div className="h-3 rounded bg-white/[0.06] w-3/5" />
+                    </div>
+                  ) : (
+                    <p className="text-sm text-zinc-200 leading-relaxed">{aiFeedback}</p>
+                  )}
+                </div>
+              )}
 
               {rating.highlights.length > 0 && (
                 <div className="rounded-xl bg-emerald-500/[0.06] border border-emerald-500/15 p-3.5 space-y-2">

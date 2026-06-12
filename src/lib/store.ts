@@ -259,6 +259,7 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
     sensitivity: "medium",
     cameraFacing: "environment",
     coachingMode: "ghost",
+    units: "lbs",
   },
   updateSettings: (newSettings) =>
     set((state) => ({ settings: { ...state.settings, ...newSettings } })),
