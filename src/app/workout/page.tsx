@@ -14,6 +14,7 @@ import { PostWorkoutSummary } from "@/components/workout/post-workout-summary";
 import { PerfectRepBanner } from "@/components/workout/perfect-rep-banner";
 import { AICoachBadge } from "@/components/workout/ai-coach-badge";
 import { ExerciseManager } from "@/components/workout/exercise-manager";
+import { ManualLog } from "@/components/workout/manual-log";
 import { RoutineBuilder } from "@/components/workout/routine-builder";
 import { RecommendedWorkouts } from "@/components/workout/recommended-workouts";
 import {
@@ -32,6 +33,7 @@ import {
   ListPlus,
   Video,
   LayoutList,
+  NotebookPen,
   Zap,
   Radio,
   HelpCircle,
@@ -61,6 +63,7 @@ export default function WorkoutPage() {
   const [isMobile, setIsMobile] = useState(false);
   const [showExercises, setShowExercises] = useState(false);
   const [showExerciseManager, setShowExerciseManager] = useState(false);
+  const [showManualLog, setShowManualLog] = useState(false);
   const [showRoutineBuilder, setShowRoutineBuilder] = useState(false);
   const [showExerciseGuide, setShowExerciseGuide] = useState(false);
   const [ghostCoachEnabled, setGhostCoachEnabled] = useState(false);
@@ -276,6 +279,15 @@ export default function WorkoutPage() {
                 <Button
                   variant="outline"
                   size="sm"
+                  onClick={() => setShowManualLog(true)}
+                  className="min-h-[40px] border-white/[0.08] bg-white/[0.02]"
+                  title="Log workout without camera"
+                >
+                  <NotebookPen className="h-3.5 w-3.5 text-cyan-400" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => setShowRoutineBuilder(true)}
                   className="min-h-[40px] border-white/[0.08] bg-white/[0.02]"
                   title="Routines"
@@ -374,6 +386,14 @@ export default function WorkoutPage() {
               <Button
                 variant="outline"
                 size="sm"
+                onClick={() => setShowManualLog(true)}
+                className="border-white/[0.08] bg-white/[0.02] text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-500/20"
+              >
+                <NotebookPen className="h-4 w-4" /> Log Workout
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setShowRoutineBuilder(true)}
                 className="border-white/[0.08] bg-white/[0.02] text-zinc-400 hover:bg-white/[0.04]"
               >
@@ -459,6 +479,7 @@ export default function WorkoutPage() {
           onSelectExercise={handleSelectUserExercise}
         />
       )}
+      {showManualLog && <ManualLog onClose={() => setShowManualLog(false)} />}
       {showRoutineBuilder && (
         <RoutineBuilder onClose={() => setShowRoutineBuilder(false)} onStartRoutine={handleStartRoutine} />
       )}

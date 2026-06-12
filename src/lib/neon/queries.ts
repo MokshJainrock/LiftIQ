@@ -109,18 +109,34 @@ export async function getSessions(userId: string): Promise<WorkoutSession[]> {
     `select * from workout_sessions where user_id = $1 order by start_time asc`,
     [userId]
   )) as Row[];
-  return rows.map((d) => ({
-    id: d.id as string,
-    exercise: d.exercise as string,
-    exerciseName: d.exercise_name as string,
-    weight: d.weight != null ? Number(d.weight) : undefined,
-    startTime: Number(d.start_time),
-    endTime: d.end_time != null ? Number(d.end_time) : undefined,
-    reps: d.reps as WorkoutSession["reps"],
-    totalScore: d.total_score as number,
-    caloriesBurned: Number(d.calories_burned),
-    isRecorded: d.is_recorded as boolean,
-  }));
+  return rows.map((d) => {
+    const reps = d.reps as WorkoutSession["reps"];
+    const session: WorkoutSession = {
+      id: d.id as string,
+      exercise: d.exercise as string,
+      exerciseName: d.exercise_name as string,
+      weight: d.weight != null ? Number(d.weight) : undefined,
+      startTime: Number(d.start_time),
+      endTime: d.end_time != null ? Number(d.end_time) : undefined,
+      reps,
+      totalScore: d.total_score as number,
+      caloriesBurned: Number(d.calories_burned),
+      isRecorded: d.is_recorded as boolean,
+    };
+    // Manual-log sessions carry setIndex/weight on each rep — rebuild the
+    // sets array so clients don't lose it on a server sync (no extra column).
+    if (reps?.some((r) => r.setIndex != null)) {
+      const sets: { reps: number; weight?: number }[] = [];
+      for (const r of reps) {
+        const i = r.setIndex ?? 0;
+        if (!sets[i]) sets[i] = { reps: 0, weight: r.weight };
+        sets[i].reps += 1;
+      }
+      session.source = "manual";
+      session.sets = sets.filter(Boolean);
+    }
+    return session;
+  });
 }
 
 export async function saveSession(userId: string, s: WorkoutSession): Promise<void> {

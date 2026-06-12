@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Plus, X, Pencil, Trash2, Dumbbell, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const KNOWN_EXERCISES = [
+export const KNOWN_EXERCISES = [
   "Squat", "Push-Up", "Lunge", "Plank", "Sit-Up", "Jumping Jack",
   "Mountain Climber", "Shoulder Press", "Bicep Curl", "Burpee",
   "Deadlift", "Bench Press", "Overhead Press", "Barbell Row",
@@ -23,7 +23,7 @@ const KNOWN_EXERCISES = [
 ];
 
 // Map known exercise names to tracking IDs
-const TRACKING_MAP: Record<string, string> = {
+export const TRACKING_MAP: Record<string, string> = {
   "Squat": "squat",
   "Push-Up": "pushup",
   "Lunge": "lunge",

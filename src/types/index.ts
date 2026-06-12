@@ -24,6 +24,16 @@ export interface RepResult {
   timestamp: number;
   /** Number of zero-issue frames during this rep — higher = cleaner */
   issueCount?: number;
+  /** Manual log only: which set this rep belongs to (0-based). */
+  setIndex?: number;
+  /** Manual log only: weight (lbs) used for this rep's set. */
+  weight?: number;
+}
+
+/** One set entered in the manual (no-camera) workout logger. */
+export interface LoggedSet {
+  reps: number;
+  weight?: number; // lbs; omitted for bodyweight
 }
 
 export type PerfectRepReason = "high_score" | "zero_issues" | "full_rom" | "stable_form" | "consistent_tempo";
@@ -94,6 +104,10 @@ export interface WorkoutSession {
   perfectRepCount?: number;
   scoreTimeline?: { time: number; score: number }[];
   mistakeSummary?: { issue: string; count: number }[];
+  /** "manual" = logged without camera; absent/"camera" = pose-tracked. */
+  source?: "camera" | "manual";
+  /** Manual log only: the sets as entered (reps + weight per set). */
+  sets?: LoggedSet[];
 }
 
 export interface DailyLog {

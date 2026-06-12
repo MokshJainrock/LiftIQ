@@ -8,10 +8,11 @@ import { MetricTile } from "@/components/ui/metric-tile";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { FoodTracker } from "@/components/nutrition/food-tracker";
+import { ManualLog } from "@/components/workout/manual-log";
 import { getSessions, getDailyLogs, getStreakData, getTodayFoodCalories, getFoodLog, getUserProfile } from "@/lib/storage";
 import { WorkoutSession, DailyLog, StreakData, FoodEntry, UserProfile } from "@/types";
 import { getGoalLabel } from "@/lib/calories";
-import { BarChart3, Trophy, Flame, Target, Repeat, TrendingUp, Calendar, Zap, UtensilsCrossed, AlertTriangle, Star, Activity, Medal, Dumbbell } from "lucide-react";
+import { BarChart3, Trophy, Flame, Target, Repeat, TrendingUp, Calendar, Zap, UtensilsCrossed, AlertTriangle, Star, Activity, Medal, Dumbbell, NotebookPen } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, AreaChart, Area, PieChart, Pie, Cell } from "recharts";
 import { cn } from "@/lib/utils";
 
@@ -33,6 +34,7 @@ export default function DashboardPage() {
   const [todayFoodCalories, setTodayFoodCalories] = useState(0);
   const [foodLog, setFoodLog] = useState<FoodEntry[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [showManualLog, setShowManualLog] = useState(false);
 
   const refresh = () => { setSessions(getSessions()); setDailyLogs(getDailyLogs()); setStreak(getStreakData()); setTodayFoodCalories(getTodayFoodCalories()); setFoodLog(getFoodLog()); setProfile(getUserProfile()); };
   useEffect(() => {
@@ -56,8 +58,10 @@ export default function DashboardPage() {
   for (const e of foodLog) foodCalsByDay[e.date] = (foodCalsByDay[e.date] || 0) + e.calories;
   const caloriesPerDay = Object.entries(foodCalsByDay).sort(([a], [b]) => a.localeCompare(b)).slice(-14).map(([d, c]) => ({ date: d.slice(5), calories: c }));
 
-  // Advanced analytics data
-  const allRepScores = sessions.flatMap(s => s.reps.map(r => r.score));
+  // Advanced analytics data — form metrics only make sense for camera-tracked
+  // sessions; manual logs carry synthetic per-rep scores.
+  const cameraSessions = sessions.filter(s => s.source !== "manual");
+  const allRepScores = cameraSessions.flatMap(s => s.reps.map(r => r.score));
   const scoreDistribution = (() => {
     const buckets = [
       { range: "0-40", count: 0, fill: "#f43f5e" },
@@ -78,7 +82,7 @@ export default function DashboardPage() {
 
   const mistakeFrequency = (() => {
     const counts: Record<string, number> = {};
-    for (const s of sessions) {
+    for (const s of cameraSessions) {
       for (const r of s.reps) {
         for (const iss of r.issues) {
           if (iss.message) counts[iss.message] = (counts[iss.message] || 0) + 1;
@@ -95,7 +99,7 @@ export default function DashboardPage() {
   const totalAllReps = allRepScores.length;
   const perfectRate = totalAllReps > 0 ? Math.round((perfectReps / totalAllReps) * 100) : 0;
 
-  const allTimeBestRep = sessions.reduce((best, s) => {
+  const allTimeBestRep = cameraSessions.reduce((best, s) => {
     const score = s.bestRepScore ?? 0;
     return score > best.score ? { score, exercise: s.exerciseName || s.exercise, date: s.startTime } : best;
   }, { score: 0, exercise: "", date: 0 });
@@ -109,7 +113,8 @@ export default function DashboardPage() {
         name: s.exerciseName || s.exercise.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
         maxWeight: 0, maxReps: 0, bestScore: 0, lastTrained: 0,
       };
-      rec.maxWeight = Math.max(rec.maxWeight, s.weight ?? 0);
+      const topSetWeight = s.sets?.length ? Math.max(...s.sets.map(st => st.weight ?? 0)) : 0;
+      rec.maxWeight = Math.max(rec.maxWeight, s.weight ?? 0, topSetWeight);
       rec.maxReps = Math.max(rec.maxReps, s.reps.length);
       rec.bestScore = Math.max(rec.bestScore, s.totalScore);
       rec.lastTrained = Math.max(rec.lastTrained, s.startTime);
@@ -118,13 +123,18 @@ export default function DashboardPage() {
     return Object.values(byExercise).sort((a, b) => b.lastTrained - a.lastTrained).slice(0, 6);
   })();
 
-  // Training volume (weight × reps) per day — weighted sessions only
+  // Training volume (weight × reps) per day — weighted sessions only.
+  // Manual logs sum per-set weights for accuracy; camera sessions use the
+  // single session weight.
   const volumePerDay = (() => {
     const byDay: Record<string, number> = {};
     for (const s of sessions) {
-      if (!s.weight || s.weight <= 0 || s.reps.length === 0) continue;
+      const vol = s.sets?.length
+        ? s.sets.reduce((n, st) => n + (st.weight ?? 0) * st.reps, 0)
+        : (s.weight ?? 0) * s.reps.length;
+      if (vol <= 0) continue;
       const day = new Date(s.startTime).toISOString().slice(0, 10);
-      byDay[day] = (byDay[day] || 0) + s.weight * s.reps.length;
+      byDay[day] = (byDay[day] || 0) + vol;
     }
     return Object.entries(byDay)
       .sort(([a], [b]) => a.localeCompare(b))
@@ -139,9 +149,18 @@ export default function DashboardPage() {
       <Navbar />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-          <h1 className="text-4xl md:text-5xl font-black tracking-[-0.04em]">Dashboard</h1>
-          <p className="text-zinc-500 mt-2">Your training intelligence</p>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-10 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-4xl md:text-5xl font-black tracking-[-0.04em]">Dashboard</h1>
+            <p className="text-zinc-500 mt-2">Your training intelligence</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowManualLog(true)}
+            className="inline-flex items-center gap-2 rounded-xl glass-card px-4 py-2.5 text-sm font-semibold text-cyan-300 hover:bg-cyan-500/10 transition-colors min-h-[44px]"
+          >
+            <NotebookPen className="h-4 w-4" /> Log Workout
+          </button>
         </motion.div>
 
         <div className="space-y-6">
@@ -380,10 +399,11 @@ export default function DashboardPage() {
                         <div className="font-semibold text-sm truncate flex items-center gap-2 text-zinc-200">
                           {session.exerciseName || session.exercise.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
                           {session.weight != null && <span className="text-[10px] text-zinc-600 tabular-nums">{session.weight} lbs</span>}
+                          {session.source === "manual" && <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider border border-white/[0.08] rounded px-1 py-px">LOG</span>}
                           {session.isRecorded && <span className="text-[9px] text-cyan-400/60 font-bold uppercase tracking-wider">REC</span>}
                           {hasPerfect && <span className="inline-flex items-center gap-0.5 text-[9px] text-amber-400 font-bold uppercase tracking-wider"><Flame className="h-2.5 w-2.5" />PR</span>}
                         </div>
-                        <div className="text-[10px] text-zinc-600 mt-0.5">{new Date(session.startTime).toLocaleDateString(undefined, { month: "short", day: "numeric" })} · {session.reps.length} reps{hasPerfect ? ` · Best ${session.bestRepScore}` : ""}</div>
+                        <div className="text-[10px] text-zinc-600 mt-0.5">{new Date(session.startTime).toLocaleDateString(undefined, { month: "short", day: "numeric" })} · {session.sets?.length ? `${session.sets.length} sets · ` : ""}{session.reps.length} reps{hasPerfect ? ` · Best ${session.bestRepScore}` : ""}</div>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
                         <span className={cn("text-lg font-black tabular-nums", session.totalScore >= 85 ? "text-emerald-400" : session.totalScore >= 65 ? "text-amber-400" : "text-rose-400")}>{session.totalScore}</span>
@@ -397,6 +417,8 @@ export default function DashboardPage() {
             )}
         </div>
       </div>
+
+      {showManualLog && <ManualLog onClose={() => setShowManualLog(false)} onLogged={refresh} />}
     </div>
   );
 }
