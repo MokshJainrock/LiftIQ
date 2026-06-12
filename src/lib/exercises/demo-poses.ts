@@ -97,22 +97,138 @@ const curlConcentration = miniGuide("curl-concentration", "Concentration Curl", 
   pose({ head: { x: 150, y: 55 }, shoulder: { x: 142, y: 95 }, hip: { x: 145, y: 155 }, frontKnee: { x: 175, y: 195 } }, { elbow: { x: 168, y: 155 }, hand: { x: 188, y: 145 } }),
 ]);
 
-const pressBench = getExerciseGuide("bench-press")!;
-const pressOhp = getExerciseGuide("shoulder-press")!;
+// ── Chest / bench poses (side = lying on bench, head right, feet left) ──
 
-const pressIncline = miniGuide("press-incline", "Incline Press", [
-  { head: { x: 195, y: 95 }, shoulder: { x: 175, y: 115 }, elbow: { x: 155, y: 135 }, hand: { x: 138, y: 148 }, hip: { x: 148, y: 168 }, frontKnee: { x: 152, y: 210 }, frontAnkle: { x: 152, y: 252 }, backKnee: { x: 148, y: 210 }, backAnkle: { x: 148, y: 252 } },
-  { head: { x: 195, y: 95 }, shoulder: { x: 175, y: 115 }, elbow: { x: 162, y: 118 }, hand: { x: 148, y: 108 }, hip: { x: 148, y: 168 }, frontKnee: { x: 152, y: 210 }, frontAnkle: { x: 152, y: 252 }, backKnee: { x: 148, y: 210 }, backAnkle: { x: 148, y: 252 } },
-  { head: { x: 195, y: 95 }, shoulder: { x: 175, y: 115 }, elbow: { x: 168, y: 95 }, hand: { x: 158, y: 72 }, hip: { x: 148, y: 168 }, frontKnee: { x: 152, y: 210 }, frontAnkle: { x: 152, y: 252 }, backKnee: { x: 148, y: 210 }, backAnkle: { x: 148, y: 252 } },
-  { head: { x: 195, y: 95 }, shoulder: { x: 175, y: 115 }, elbow: { x: 162, y: 118 }, hand: { x: 148, y: 108 }, hip: { x: 148, y: 168 }, frontKnee: { x: 152, y: 210 }, frontAnkle: { x: 152, y: 252 }, backKnee: { x: 148, y: 210 }, backAnkle: { x: 148, y: 252 } },
+function benchSide(
+  torso: Partial<PoseFrame>,
+  arms: Partial<PoseFrame>,
+): PoseFrame {
+  return {
+    head: { x: 218, y: 148 },
+    shoulder: { x: 192, y: 158 },
+    hip: { x: 95, y: 168 },
+    frontKnee: { x: 62, y: 172 },
+    frontAnkle: { x: 38, y: 178 },
+    backKnee: { x: 62, y: 172 },
+    backAnkle: { x: 38, y: 178 },
+    elbow: { x: 185, y: 158 },
+    hand: { x: 178, y: 172 },
+    ...torso,
+    ...arms,
+  } as PoseFrame;
+}
+
+/** Flat barbell bench — arms press straight up from chest. */
+const pressBenchFlat = miniGuide("press-bench", "Bench Press", [
+  benchSide({}, { elbow: { x: 185, y: 158 }, hand: { x: 178, y: 172 } }),
+  benchSide({}, { elbow: { x: 188, y: 138 }, hand: { x: 182, y: 118 } }),
+  benchSide({}, { elbow: { x: 192, y: 118 }, hand: { x: 198, y: 92 } }),
+  benchSide({}, { elbow: { x: 188, y: 138 }, hand: { x: 182, y: 118 } }),
+], {
+  highlightJoints: ["elbow", "shoulder", "hand"],
+  description: "Lie flat, lower the bar to mid-chest, press straight up to lockout.",
+});
+
+/** Decline bench — head lower than hips, press toward lower chest. */
+const pressDecline = miniGuide("press-decline", "Decline Bench Press", [
+  benchSide(
+    { head: { x: 228, y: 178 }, shoulder: { x: 200, y: 172 }, hip: { x: 88, y: 148 } },
+    { elbow: { x: 192, y: 168 }, hand: { x: 185, y: 182 } },
+  ),
+  benchSide(
+    { head: { x: 228, y: 178 }, shoulder: { x: 200, y: 172 }, hip: { x: 88, y: 148 } },
+    { elbow: { x: 195, y: 148 }, hand: { x: 190, y: 128 } },
+  ),
+  benchSide(
+    { head: { x: 228, y: 178 }, shoulder: { x: 200, y: 172 }, hip: { x: 88, y: 148 } },
+    { elbow: { x: 198, y: 128 }, hand: { x: 205, y: 105 } },
+  ),
+  benchSide(
+    { head: { x: 228, y: 178 }, shoulder: { x: 200, y: 172 }, hip: { x: 88, y: 148 } },
+    { elbow: { x: 195, y: 148 }, hand: { x: 190, y: 128 } },
+  ),
 ], { highlightJoints: ["elbow", "shoulder"] });
 
-const pressMachine = miniGuide("press-machine", "Machine Press", [
-  pose({ head: { x: 150, y: 42 }, shoulder: { x: 148, y: 82 }, hip: { x: 148, y: 152 } }, { elbow: { x: 175, y: 95 }, hand: { x: 198, y: 88 } }),
-  pose({ head: { x: 150, y: 42 }, shoulder: { x: 148, y: 82 }, hip: { x: 148, y: 152 } }, { elbow: { x: 168, y: 105 }, hand: { x: 188, y: 108 } }),
-  pose({ head: { x: 150, y: 42 }, shoulder: { x: 148, y: 82 }, hip: { x: 148, y: 152 } }, { elbow: { x: 158, y: 118 }, hand: { x: 172, y: 128 } }),
-  pose({ head: { x: 150, y: 42 }, shoulder: { x: 148, y: 82 }, hip: { x: 148, y: 152 } }, { elbow: { x: 168, y: 105 }, hand: { x: 188, y: 108 } }),
-]);
+/** Incline bench — torso angled up ~30-45°. */
+const pressIncline = miniGuide("press-incline", "Incline Press", [
+  benchSide(
+    { head: { x: 205, y: 118 }, shoulder: { x: 182, y: 132 }, hip: { x: 92, y: 172 } },
+    { elbow: { x: 175, y: 138 }, hand: { x: 168, y: 152 } },
+  ),
+  benchSide(
+    { head: { x: 205, y: 118 }, shoulder: { x: 182, y: 132 }, hip: { x: 92, y: 172 } },
+    { elbow: { x: 178, y: 115 }, hand: { x: 172, y: 98 } },
+  ),
+  benchSide(
+    { head: { x: 205, y: 118 }, shoulder: { x: 182, y: 132 }, hip: { x: 92, y: 172 } },
+    { elbow: { x: 182, y: 98 }, hand: { x: 188, y: 72 } },
+  ),
+  benchSide(
+    { head: { x: 205, y: 118 }, shoulder: { x: 182, y: 132 }, hip: { x: 92, y: 172 } },
+    { elbow: { x: 178, y: 115 }, hand: { x: 172, y: 98 } },
+  ),
+], { highlightJoints: ["elbow", "shoulder"] });
+
+/** Dumbbell bench press — front view, lying, press up and slightly in. */
+const pressDumbbellBenchKeyframes: PoseFrame[] = [
+  {
+    head: { x: 150, y: 52 },
+    leftShoulder: { x: 128, y: 98 }, rightShoulder: { x: 172, y: 98 },
+    leftElbow: { x: 108, y: 118 }, rightElbow: { x: 192, y: 118 },
+    leftHand: { x: 98, y: 138 }, rightHand: { x: 202, y: 138 },
+    leftHip: { x: 136, y: 158 }, rightHip: { x: 164, y: 158 },
+    leftKnee: { x: 130, y: 195 }, rightKnee: { x: 170, y: 195 },
+    leftAnkle: { x: 128, y: 238 }, rightAnkle: { x: 172, y: 238 },
+  },
+  {
+    head: { x: 150, y: 52 },
+    leftShoulder: { x: 128, y: 98 }, rightShoulder: { x: 172, y: 98 },
+    leftElbow: { x: 118, y: 105 }, rightElbow: { x: 182, y: 105 },
+    leftHand: { x: 115, y: 108 }, rightHand: { x: 185, y: 108 },
+    leftHip: { x: 136, y: 158 }, rightHip: { x: 164, y: 158 },
+    leftKnee: { x: 130, y: 195 }, rightKnee: { x: 170, y: 195 },
+    leftAnkle: { x: 128, y: 238 }, rightAnkle: { x: 172, y: 238 },
+  },
+  {
+    head: { x: 150, y: 52 },
+    leftShoulder: { x: 128, y: 98 }, rightShoulder: { x: 172, y: 98 },
+    leftElbow: { x: 128, y: 82 }, rightElbow: { x: 172, y: 82 },
+    leftHand: { x: 132, y: 58 }, rightHand: { x: 168, y: 58 },
+    leftHip: { x: 136, y: 158 }, rightHip: { x: 164, y: 158 },
+    leftKnee: { x: 130, y: 195 }, rightKnee: { x: 170, y: 195 },
+    leftAnkle: { x: 128, y: 238 }, rightAnkle: { x: 172, y: 238 },
+  },
+  {
+    head: { x: 150, y: 52 },
+    leftShoulder: { x: 128, y: 98 }, rightShoulder: { x: 172, y: 98 },
+    leftElbow: { x: 118, y: 105 }, rightElbow: { x: 182, y: 105 },
+    leftHand: { x: 115, y: 108 }, rightHand: { x: 185, y: 108 },
+    leftHip: { x: 136, y: 158 }, rightHip: { x: 164, y: 158 },
+    leftKnee: { x: 130, y: 195 }, rightKnee: { x: 170, y: 195 },
+    leftAnkle: { x: 128, y: 238 }, rightAnkle: { x: 172, y: 238 },
+  },
+];
+
+const pressDumbbellBench = miniGuide("press-dumbbell-bench", "Dumbbell Bench Press", pressDumbbellBenchKeyframes, {
+  recommendedView: "front",
+  highlightJoints: ["leftElbow", "rightElbow", "leftHand", "rightHand"],
+  frontKeyframes: pressDumbbellBenchKeyframes,
+  frontHighlightJoints: ["leftElbow", "rightElbow"],
+});
+pressDumbbellBench.connections = FRONT;
+pressDumbbellBench.frontConnections = FRONT;
+
+const pressOhp = getExerciseGuide("shoulder-press")!;
+
+const pressMachine = miniGuide("press-machine", "Machine Chest Press", [
+  pose({ head: { x: 150, y: 42 }, shoulder: { x: 148, y: 82 }, hip: { x: 148, y: 152 } }, { elbow: { x: 192, y: 98 }, hand: { x: 218, y: 95 } }),
+  pose({ head: { x: 150, y: 42 }, shoulder: { x: 148, y: 82 }, hip: { x: 148, y: 152 } }, { elbow: { x: 178, y: 108 }, hand: { x: 200, y: 112 } }),
+  pose({ head: { x: 150, y: 42 }, shoulder: { x: 148, y: 82 }, hip: { x: 148, y: 152 } }, { elbow: { x: 162, y: 118 }, hand: { x: 178, y: 128 } }),
+  pose({ head: { x: 150, y: 42 }, shoulder: { x: 148, y: 82 }, hip: { x: 148, y: 152 } }, { elbow: { x: 178, y: 108 }, hand: { x: 200, y: 112 } }),
+], {
+  description: "Seated — push handles forward to full lockout, control the return.",
+  highlightJoints: ["elbow", "shoulder", "hand"],
+});
 
 const flyPecDeckKeyframes: PoseFrame[] = [
   {
@@ -158,16 +274,104 @@ const flyPecDeckFixed = miniGuide("fly-pec-deck", "Pec Deck", flyPecDeckKeyframe
 flyPecDeckFixed.connections = FRONT;
 flyPecDeckFixed.frontConnections = FRONT;
 
-const flyDumbbell = miniGuide("fly-dumbbell", "Dumbbell Fly", [
-  pose({}, { elbow: { x: 132, y: 95 }, hand: { x: 98, y: 88 } }),
-  pose({}, { elbow: { x: 138, y: 105 }, hand: { x: 118, y: 112 } }),
-  pose({}, { elbow: { x: 148, y: 115 }, hand: { x: 148, y: 128 } }),
-  pose({}, { elbow: { x: 138, y: 105 }, hand: { x: 118, y: 112 } }),
-], {
+const flyDumbbellKeyframes: PoseFrame[] = [
+  {
+    head: { x: 150, y: 52 },
+    leftShoulder: { x: 128, y: 98 }, rightShoulder: { x: 172, y: 98 },
+    leftElbow: { x: 88, y: 112 }, rightElbow: { x: 212, y: 112 },
+    leftHand: { x: 58, y: 132 }, rightHand: { x: 242, y: 132 },
+    leftHip: { x: 136, y: 158 }, rightHip: { x: 164, y: 158 },
+    leftKnee: { x: 130, y: 195 }, rightKnee: { x: 170, y: 195 },
+    leftAnkle: { x: 128, y: 238 }, rightAnkle: { x: 172, y: 238 },
+  },
+  {
+    head: { x: 150, y: 52 },
+    leftShoulder: { x: 128, y: 98 }, rightShoulder: { x: 172, y: 98 },
+    leftElbow: { x: 102, y: 108 }, rightElbow: { x: 198, y: 108 },
+    leftHand: { x: 88, y: 118 }, rightHand: { x: 212, y: 118 },
+    leftHip: { x: 136, y: 158 }, rightHip: { x: 164, y: 158 },
+    leftKnee: { x: 130, y: 195 }, rightKnee: { x: 170, y: 195 },
+    leftAnkle: { x: 128, y: 238 }, rightAnkle: { x: 172, y: 238 },
+  },
+  {
+    head: { x: 150, y: 52 },
+    leftShoulder: { x: 128, y: 98 }, rightShoulder: { x: 172, y: 98 },
+    leftElbow: { x: 122, y: 102 }, rightElbow: { x: 178, y: 102 },
+    leftHand: { x: 132, y: 108 }, rightHand: { x: 168, y: 108 },
+    leftHip: { x: 136, y: 158 }, rightHip: { x: 164, y: 158 },
+    leftKnee: { x: 130, y: 195 }, rightKnee: { x: 170, y: 195 },
+    leftAnkle: { x: 128, y: 238 }, rightAnkle: { x: 172, y: 238 },
+  },
+  {
+    head: { x: 150, y: 52 },
+    leftShoulder: { x: 128, y: 98 }, rightShoulder: { x: 172, y: 98 },
+    leftElbow: { x: 102, y: 108 }, rightElbow: { x: 198, y: 108 },
+    leftHand: { x: 88, y: 118 }, rightHand: { x: 212, y: 118 },
+    leftHip: { x: 136, y: 158 }, rightHip: { x: 164, y: 158 },
+    leftKnee: { x: 130, y: 195 }, rightKnee: { x: 170, y: 195 },
+    leftAnkle: { x: 128, y: 238 }, rightAnkle: { x: 172, y: 238 },
+  },
+];
+
+const flyDumbbell = miniGuide("fly-dumbbell", "Dumbbell Fly", flyDumbbellKeyframes, {
   recommendedView: "front",
-  frontKeyframes: curlStanding.frontKeyframes,
-  frontHighlightJoints: ["leftElbow", "rightElbow"],
+  description: "Arms sweep in a wide arc — open at the bottom, meet above the chest.",
+  highlightJoints: ["leftHand", "rightHand", "leftElbow", "rightElbow"],
+  frontKeyframes: flyDumbbellKeyframes,
+  frontHighlightJoints: ["leftHand", "rightHand"],
 });
+flyDumbbell.connections = FRONT;
+flyDumbbell.frontConnections = FRONT;
+
+/** Standing cable fly — arms sweep from wide to center. */
+const flyCableKeyframes: PoseFrame[] = [
+  {
+    head: { x: 150, y: 30 },
+    leftShoulder: { x: 128, y: 72 }, rightShoulder: { x: 172, y: 72 },
+    leftElbow: { x: 88, y: 95 }, rightElbow: { x: 212, y: 95 },
+    leftHand: { x: 62, y: 108 }, rightHand: { x: 238, y: 108 },
+    leftHip: { x: 136, y: 142 }, rightHip: { x: 164, y: 142 },
+    leftKnee: { x: 134, y: 200 }, rightKnee: { x: 166, y: 200 },
+    leftAnkle: { x: 134, y: 252 }, rightAnkle: { x: 166, y: 252 },
+  },
+  {
+    head: { x: 150, y: 30 },
+    leftShoulder: { x: 128, y: 72 }, rightShoulder: { x: 172, y: 72 },
+    leftElbow: { x: 108, y: 98 }, rightElbow: { x: 192, y: 98 },
+    leftHand: { x: 98, y: 118 }, rightHand: { x: 202, y: 118 },
+    leftHip: { x: 136, y: 142 }, rightHip: { x: 164, y: 142 },
+    leftKnee: { x: 134, y: 200 }, rightKnee: { x: 166, y: 200 },
+    leftAnkle: { x: 134, y: 252 }, rightAnkle: { x: 166, y: 252 },
+  },
+  {
+    head: { x: 150, y: 30 },
+    leftShoulder: { x: 128, y: 72 }, rightShoulder: { x: 172, y: 72 },
+    leftElbow: { x: 132, y: 105 }, rightElbow: { x: 168, y: 105 },
+    leftHand: { x: 142, y: 128 }, rightHand: { x: 158, y: 128 },
+    leftHip: { x: 136, y: 142 }, rightHip: { x: 164, y: 142 },
+    leftKnee: { x: 134, y: 200 }, rightKnee: { x: 166, y: 200 },
+    leftAnkle: { x: 134, y: 252 }, rightAnkle: { x: 166, y: 252 },
+  },
+  {
+    head: { x: 150, y: 30 },
+    leftShoulder: { x: 128, y: 72 }, rightShoulder: { x: 172, y: 72 },
+    leftElbow: { x: 108, y: 98 }, rightElbow: { x: 192, y: 98 },
+    leftHand: { x: 98, y: 118 }, rightHand: { x: 202, y: 118 },
+    leftHip: { x: 136, y: 142 }, rightHip: { x: 164, y: 142 },
+    leftKnee: { x: 134, y: 200 }, rightKnee: { x: 166, y: 200 },
+    leftAnkle: { x: 134, y: 252 }, rightAnkle: { x: 166, y: 252 },
+  },
+];
+
+const flyCable = miniGuide("fly-cable", "Cable Fly", flyCableKeyframes, {
+  recommendedView: "front",
+  description: "Standing fly — sweep hands from wide to meet at midline.",
+  highlightJoints: ["leftHand", "rightHand"],
+  frontKeyframes: flyCableKeyframes,
+  frontHighlightJoints: ["leftHand", "rightHand"],
+});
+flyCable.connections = FRONT;
+flyCable.frontConnections = FRONT;
 
 const rowSeatedCable = miniGuide("row-seated-cable", "Seated Cable Row", [
   pose({ head: { x: 150, y: 42 }, shoulder: { x: 148, y: 82 }, hip: { x: 148, y: 152 } }, { elbow: { x: 178, y: 95 }, hand: { x: 205, y: 92 } }),
@@ -250,11 +454,13 @@ const DEMO_POSES: Record<DemoPoseId, ExerciseVisualGuide> = {
   "curl-concentration": curlConcentration,
   "curl-spider": curlPreacher,
   "press-ohp": pressOhp,
-  "press-bench": pressBench,
+  "press-bench": pressBenchFlat,
+  "press-decline": pressDecline,
+  "press-dumbbell-bench": pressDumbbellBench,
   "press-incline": pressIncline,
   "press-machine": pressMachine,
   "fly-dumbbell": flyDumbbell,
-  "fly-cable": flyDumbbell,
+  "fly-cable": flyCable,
   "fly-pec-deck": flyPecDeckFixed,
   pushup,
   dip,
@@ -280,7 +486,7 @@ const DEMO_POSES: Record<DemoPoseId, ExerciseVisualGuide> = {
   "wall-sit": squatBack,
   "tricep-pushdown": tricepPushdown,
   "tricep-overhead": getExerciseGuide("tricep-extension")!,
-  "tricep-skull": pressBench,
+  "tricep-skull": pressBenchFlat,
   "tricep-kickback": tricepPushdown,
   "tricep-machine": tricepPushdown,
   "lateral-raise": lateralRaise,

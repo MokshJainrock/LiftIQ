@@ -5,7 +5,7 @@ import { Play, Pause, Gauge } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PoseFrame, ExerciseVisualGuide } from "@/lib/exercises/exercise-visual-guides";
 import type { ExerciseDemoSpec } from "@/lib/exercises/demo-spec";
-import { drawEquipment } from "@/lib/exercises/equipment-draw";
+import { drawBackgroundEquipment, drawForegroundEquipment } from "@/lib/exercises/equipment-draw";
 
 interface AnimatedSkeletonProps {
   guide: ExerciseVisualGuide;
@@ -139,10 +139,15 @@ export function AnimatedSkeleton({
       s.lastTime = now;
       s.elapsed += dt;
 
-      const useFront = view === "front" && guide.frontKeyframes?.length;
-      const keyframes = useFront ? guide.frontKeyframes! : guide.keyframes;
-      const connections = useFront ? (guide.frontConnections ?? guide.connections) : guide.connections;
-      const highlightJoints = useFront ? (guide.frontHighlightJoints ?? guide.highlightJoints) : guide.highlightJoints;
+      const isFrontPose = !!guide.keyframes[0]?.leftShoulder;
+      const useFront = (view === "front" && !!guide.frontKeyframes?.length) || isFrontPose;
+      const keyframes = useFront && guide.frontKeyframes?.length ? guide.frontKeyframes! : guide.keyframes;
+      const connections = useFront
+        ? (guide.frontConnections ?? guide.connections)
+        : guide.connections;
+      const highlightJoints = useFront
+        ? (guide.frontHighlightJoints ?? guide.highlightJoints)
+        : guide.highlightJoints;
       const dur = guide.frameDurations[s.frameIdx % guide.frameDurations.length] || 600;
 
       if (s.elapsed >= dur) {
@@ -195,6 +200,19 @@ export function AnimatedSkeleton({
       const highlightColor = ghost ? `rgba(59,130,246,${baseAlpha})` : "#3b82f6";
       const glowColor = ghost ? "rgba(6,182,212,0.1)" : "rgba(6,182,212,0.25)";
       const arrowColor = "rgba(168,85,247,0.55)";
+
+      const skeletonView = useFront ? "front" : "side";
+
+      // Bench / machine / bar — behind the body
+      if (demoSpec) {
+        drawBackgroundEquipment(
+          { ctx, toCanvas, scale, ghost: !!ghost },
+          pose,
+          skeletonView,
+          demoSpec.equipment,
+          demoSpec.position,
+        );
+      }
 
       // trail
       if (trailRef.current && !ghost) {
@@ -289,10 +307,9 @@ export function AnimatedSkeleton({
         ctx.restore();
       }
 
-      // equipment props (barbell, dumbbells, cable, machine, etc.)
+      // equipment in hands — in front of the body
       if (demoSpec) {
-        const skeletonView = useFront ? "front" : "side";
-        drawEquipment(
+        drawForegroundEquipment(
           { ctx, toCanvas, scale, ghost: !!ghost },
           pose,
           skeletonView,

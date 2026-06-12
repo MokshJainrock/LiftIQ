@@ -207,8 +207,16 @@ export function drawPullUpBar(d: DrawCtx) {
   ctx.stroke();
 }
 
-export function drawBench(d: DrawCtx, incline = false) {
+export function drawBench(d: DrawCtx, incline = false, side: "side" | "front" = "side") {
   const { ctx, scale, toCanvas } = d;
+  if (side === "front") {
+    const y = 168;
+    const a = toCanvas({ x: 52, y });
+    const b = toCanvas({ x: 248, y });
+    ctx.fillStyle = `rgba(82,82,91,${alpha(d.ghost, 0.65)})`;
+    ctx.fillRect(a.x, a.y, b.x - a.x, 8 * scale);
+    return;
+  }
   const y = 175;
   const a = toCanvas({ x: incline ? 70 : 60, y: incline ? 150 : y });
   const b = toCanvas({ x: 240, y });
@@ -242,7 +250,7 @@ export function drawBand(d: DrawCtx, pose: PoseFrame, anchor: "floor" | "high") 
   drawCable(d, pose, "side", anchor === "floor" ? "low" : "high");
 }
 
-export function drawEquipment(
+export function drawBackgroundEquipment(
   d: DrawCtx,
   pose: PoseFrame,
   side: "side" | "front",
@@ -250,9 +258,29 @@ export function drawEquipment(
   position: DemoPosition,
 ) {
   if (position === "lying" || position === "incline") {
-    drawBench(d, position === "incline");
+    drawBench(d, position === "incline", side);
   }
+  if (equipment.type === "pull-up-bar") drawPullUpBar(d);
+  if (equipment.type === "machine") drawMachine(d, pose, side, equipment.variant);
+  if (equipment.type === "cable") {
+    // Draw cable stack only (lines drawn in foreground)
+    const { ctx, scale, toCanvas } = d;
+    const anchor = equipment.anchor;
+    const anchorY = anchor === "high" ? 18 : anchor === "low" ? 240 : 120;
+    const anchorX = side === "front" ? 150 : 200;
+    const ax = toCanvas({ x: anchorX, y: anchorY });
+    ctx.fillStyle = `rgba(63,63,70,${alpha(d.ghost, 0.85)})`;
+    ctx.fillRect(ax.x - 8 * scale, ax.y - 4 * scale, 16 * scale, 28 * scale);
+  }
+}
 
+export function drawForegroundEquipment(
+  d: DrawCtx,
+  pose: PoseFrame,
+  side: "side" | "front",
+  equipment: DemoEquipment,
+  _position: DemoPosition,
+) {
   switch (equipment.type) {
     case "barbell":
       drawBarbell(d, pose, side);
@@ -261,23 +289,57 @@ export function drawEquipment(
       drawDumbbells(d, pose, side, equipment.single);
       break;
     case "cable":
-      drawCable(d, pose, side, equipment.anchor);
-      break;
-    case "machine":
-      drawMachine(d, pose, side, equipment.variant);
+      drawCableLines(d, pose, side, equipment.anchor);
       break;
     case "kettlebell":
       drawKettlebell(d, pose, side);
       break;
-    case "pull-up-bar":
-      drawPullUpBar(d);
-      break;
     case "band":
       drawBand(d, pose, equipment.anchor);
       break;
-    case "bodyweight":
-      break;
-    case "cardio":
+    default:
       break;
   }
+}
+
+function drawCableLines(
+  d: DrawCtx,
+  pose: PoseFrame,
+  side: "side" | "front",
+  anchor: "high" | "low" | "mid" = "high",
+) {
+  const { ctx, scale, toCanvas } = d;
+  const anchorY = anchor === "high" ? 18 : anchor === "low" ? 240 : 120;
+  const anchorX = side === "front" ? 150 : 200;
+  const ax = toCanvas({ x: anchorX, y: anchorY });
+  const targets: Pt[] = [];
+  if (side === "front" && pose.leftHand && pose.rightHand) {
+    targets.push({ x: pose.leftHand.x, y: pose.leftHand.y }, { x: pose.rightHand.x, y: pose.rightHand.y });
+  } else if (pose.hand) {
+    targets.push({ x: pose.hand.x, y: pose.hand.y });
+  }
+  ctx.strokeStyle = `rgba(234,179,8,${alpha(d.ghost, 0.75)})`;
+  ctx.lineWidth = 1.5 * scale;
+  for (const t of targets) {
+    const tc = toCanvas(t);
+    ctx.beginPath();
+    ctx.moveTo(ax.x, ax.y + 12 * scale);
+    ctx.lineTo(tc.x, tc.y);
+    ctx.stroke();
+    ctx.fillStyle = `rgba(234,179,8,${alpha(d.ghost, 0.9)})`;
+    ctx.beginPath();
+    ctx.arc(tc.x, tc.y, 4 * scale, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+export function drawEquipment(
+  d: DrawCtx,
+  pose: PoseFrame,
+  side: "side" | "front",
+  equipment: DemoEquipment,
+  position: DemoPosition,
+) {
+  drawBackgroundEquipment(d, pose, side, equipment, position);
+  drawForegroundEquipment(d, pose, side, equipment, position);
 }

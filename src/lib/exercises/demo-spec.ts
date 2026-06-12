@@ -24,6 +24,8 @@ export type DemoPoseId =
   | "curl-spider"
   | "press-ohp"
   | "press-bench"
+  | "press-decline"
+  | "press-dumbbell-bench"
   | "press-incline"
   | "press-machine"
   | "fly-dumbbell"
@@ -152,12 +154,23 @@ export function resolveDemoSpec(ex: LibraryExercise): ExerciseDemoSpec {
 
   if (/incline bench|incline dumbbell press|incline push/i.test(n))
     return { poseId: "press-incline", equipment: eq, position: "incline", preferFront: eq.type === "dumbbell" };
-  if (/bench press|close-grip bench|decline bench|dumbbell bench|svend|machine.*bench|machine chest press|machine incline/i.test(n))
-    return { poseId: /decline/i.test(n) ? "press-bench" : "press-bench", equipment: eq, position: "lying" };
+  if (/machine chest press|machine incline press/i.test(n))
+    return { poseId: "press-machine", equipment: eq, position: "seated" };
+  if (/decline bench/i.test(n))
+    return { poseId: "press-decline", equipment: eq, position: "lying" };
+  if (/dumbbell bench/i.test(n))
+    return { poseId: "press-dumbbell-bench", equipment: eq, position: "lying", preferFront: true };
+  if (/bench press|close-grip bench|svend/i.test(n))
+    return { poseId: "press-bench", equipment: eq, position: "lying" };
   if (/pec deck/i.test(n))
     return { poseId: "fly-pec-deck", equipment: { type: "machine", variant: "pec-deck" }, position: "seated", preferFront: true };
   if (/fly|pullover/i.test(n))
-    return { poseId: eq.type === "cable" ? "fly-cable" : "fly-dumbbell", equipment: eq, position: "standing", preferFront: true };
+    return {
+      poseId: eq.type === "cable" ? "fly-cable" : "fly-dumbbell",
+      equipment: eq.type === "cable" ? { type: "cable", anchor: /low-to-high/i.test(n) ? "low" : "mid" } : eq,
+      position: eq.type === "cable" ? "standing" : "lying",
+      preferFront: true,
+    };
 
   if (/push-up|push up|diamond push/i.test(n))
     return { poseId: "pushup", equipment: { type: "bodyweight" }, position: "floor" };
