@@ -57,12 +57,13 @@ interface ScannedFoodItem {
   confidence: "high" | "medium" | "low";
 }
 
-/** Read a file, downscale to <=1024px, and return a JPEG data URL to keep the
- *  payload to the vision API small and fast. */
+/** Read a file, downscale, and return a JPEG data URL. 1536px keeps the
+ *  payload reasonable while preserving enough resolution for the vision
+ *  model to read product labels (brand names, ml/g sizes). */
 async function fileToCompressedDataURL(
   file: File,
-  maxDim = 1024,
-  quality = 0.8
+  maxDim = 1536,
+  quality = 0.85
 ): Promise<string> {
   const dataUrl = await new Promise<string>((resolve, reject) => {
     const reader = new FileReader();

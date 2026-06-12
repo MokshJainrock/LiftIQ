@@ -4,8 +4,8 @@ import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 // gpt-4o-mini supports image input, so we can hand it a food photo and ask
 // for a structured nutrition estimate.
-const PROMPT = `You are a nutrition estimation assistant. Analyze the food in this image.
-Identify each distinct food or drink item you can see. For EACH item, estimate the nutrition for the portion actually visible in the photo (not a generic database serving).
+const PROMPT = `You are a nutrition estimation assistant. Analyze the food/drink in this image.
+Identify each distinct food or drink item you can see. For EACH item, estimate the nutrition.
 
 Respond with ONLY valid JSON (no markdown, no code fences) in EXACTLY this shape:
 {
@@ -16,13 +16,23 @@ Respond with ONLY valid JSON (no markdown, no code fences) in EXACTLY this shape
   "note": string
 }
 
-Rules:
+Rules for FRESH/PLATED food:
+- Estimate nutrition for the portion actually visible (not a generic database serving).
 - "portion" is a short human description of the visible amount, e.g. "1 medium apple", "~150g grilled chicken", "1 cup rice".
-- "calories" is for the visible portion. "protein", "carbs", "fat" are grams for that portion.
-- "confidence" reflects how sure you are given the image quality and portion ambiguity.
+
+Rules for PACKAGED/BRANDED products (soft drink bottles, cans, chip packets, chocolate bars, etc.):
+- Read the brand and the package size printed on the label (e.g. "Thums Up 750 ml", "Coca-Cola 330 ml can", "Lay's 52 g").
+- "name" must include the brand (e.g. "Thums Up"). "portion" must state the labeled container size.
+- Use the manufacturer's standard nutrition for that product at that size. If the size isn't readable, assume the most common retail size for that product in its market and say so in "note".
+- If the container looks empty or partially consumed, STILL identify the product and return nutrition for the FULL labeled container — the user likely consumed it. Mention "looks empty/partially consumed; logged as full container" in "note".
+- NEVER return zero calories or refuse just because the contents aren't visible — the packaging is the evidence. Confidence is "high" when the label is clearly readable.
+
+General:
+- "calories" is for the stated portion. "protein", "carbs", "fat" are grams for that portion.
+- "confidence" reflects image quality and portion ambiguity.
 - "totalCalories" is the sum of all item calories, rounded.
-- "note" is one short sentence (assumptions made, or guidance). Keep it under 120 chars.
-- If there is no identifiable food, return {"items": [], "totalCalories": 0, "note": "No food detected in the image."}.
+- "note" is one short sentence. Keep it under 120 chars.
+- Only if there is truly no identifiable food, drink, or food packaging: return {"items": [], "totalCalories": 0, "note": "No food detected in the image."}.
 Be realistic and concise.`;
 
 interface ScannedItem {
@@ -120,6 +130,7 @@ export async function POST(req: NextRequest) {
     const res = await callOpenAI({
       prompt: PROMPT,
       imageDataUrl: image,
+      imageDetail: "high",
       temperature: 0.2,
       maxTokens: 1024,
       jsonMode: true,

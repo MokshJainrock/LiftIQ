@@ -9,6 +9,8 @@ interface LLMRequest {
   prompt: string;
   /** Optional base64 data URL — sent as image input for vision tasks. */
   imageDataUrl?: string;
+  /** "high" lets the model read small label text (more tokens, better OCR). */
+  imageDetail?: "low" | "high" | "auto";
   maxTokens?: number;
   temperature?: number;
   jsonMode?: boolean;
@@ -35,7 +37,10 @@ export async function callOpenAI(req: LLMRequest): Promise<LLMResponse> {
   const content: unknown = req.imageDataUrl
     ? [
         { type: "text", text: req.prompt },
-        { type: "image_url", image_url: { url: req.imageDataUrl } },
+        {
+          type: "image_url",
+          image_url: { url: req.imageDataUrl, detail: req.imageDetail ?? "auto" },
+        },
       ]
     : req.prompt;
 
