@@ -1,6 +1,6 @@
 {
   "bench-press": {
-    "gifUrl": "https://static.exercisedb.dev/media/3QgteDK.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/barbell-bench-press.gif",
     "sourceName": "barbell wide reverse grip bench press horizontal",
     "score": 900,
     "instructions": [
@@ -10,7 +10,8 @@
       "Step:4 Lower the barbell slowly towards your chest, keeping your elbows tucked in and your wrists straight. Focus on horizontal movement.",
       "Step:5 Pause for a moment when the barbell touches your chest, then push it back up to the starting position.",
       "Step:6 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/bench-press.mp4"
   },
   "incline-bench-press": {
     "gifUrl": "https://static.exercisedb.dev/media/3TZduzM.gif",
@@ -149,7 +150,7 @@
     "videoUrl": "/exercise-videos/decline-push-up.mp4"
   },
   "dip-chest": {
-    "gifUrl": "https://static.exercisedb.dev/media/FSF9WOs.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/chest-dip.gif",
     "sourceName": "wide-grip chest dip on high parallel bars - low variation",
     "score": 820,
     "instructions": [
@@ -157,7 +158,8 @@
       "Step:2 Lean forward slightly and lower your body by bending your elbows until your chest is just above the bars.",
       "Step:3 (low variation) Pause for a moment, then push yourself back up to the starting position by straightening your arms.",
       "Step:4 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/dip-chest.mp4"
   },
   "machine-incline-press": {
     "gifUrl": "https://static.exercisedb.dev/media/IeDEXTe.gif",
@@ -283,7 +285,7 @@
     "videoUrl": "/exercise-videos/seated-cable-row.mp4"
   },
   "lat-pulldown": {
-    "gifUrl": "https://static.exercisedb.dev/media/0MlxeMn.gif",
+    "gifUrl": "https://static.exercisedb.dev/media/T2mxWqc.gif",
     "sourceName": "gentle style cable pulldown (pro lat bar)",
     "score": 820,
     "instructions": [
@@ -293,7 +295,8 @@
       "Step:4 Pull the bar down towards your chest, squeezing your shoulder blades together. Maintain gentle form throughout.",
       "Step:5 Pause for a moment at the bottom of the movement, then slowly release the bar back up to the starting position.",
       "Step:6 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/lat-pulldown.mp4"
   },
   "straight-arm-pulldown": {
     "gifUrl": "https://static.exercisedb.dev/media/x69MAlq.gif",
@@ -352,7 +355,7 @@
     "videoUrl": "/exercise-videos/inverted-row.mp4"
   },
   "machine-row": {
-    "gifUrl": "https://static.exercisedb.dev/media/7WcQgkm.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/lever-seated-row.gif",
     "sourceName": "smith machine incline tricep extension - straight variation",
     "score": 235,
     "instructions": [
@@ -363,7 +366,8 @@
       "Step:5 Lower the bar slowly towards your forehead, keeping your elbows close to your head.",
       "Step:6 Pause for a moment at the bottom, then push the bar back up to the starting position.",
       "Step:7 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/machine-row.mp4"
   },
   "rack-pull": {
     "gifUrl": "https://static.exercisedb.dev/media/za9Ni4z.gif",
@@ -380,7 +384,7 @@
     "videoUrl": "/exercise-videos/rack-pull.mp4"
   },
   "single-arm-lat-pulldown": {
-    "gifUrl": "https://static.exercisedb.dev/media/0MlxeMn.gif",
+    "gifUrl": "https://static.exercisedb.dev/media/T2mxWqc.gif",
     "sourceName": "gentle style cable pulldown (pro lat bar)",
     "score": 820,
     "instructions": [
@@ -390,7 +394,8 @@
       "Step:4 Pull the bar down towards your chest, squeezing your shoulder blades together. Maintain gentle form throughout.",
       "Step:5 Pause for a moment at the bottom of the movement, then slowly release the bar back up to the starting position.",
       "Step:6 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/single-arm-lat-pulldown.mp4"
   },
   "meadows-row": null,
   "renegade-row": {
@@ -407,7 +412,7 @@
     "videoUrl": "/exercise-videos/renegade-row.mp4"
   },
   "band-pull-down": {
-    "gifUrl": "https://static.exercisedb.dev/media/0I5fUyn.gif",
+    "gifUrl": "https://static.exercisedb.dev/media/x69MAlq.gif",
     "sourceName": "band underhand pulldown with classic",
     "score": 100,
     "instructions": [
@@ -418,7 +423,8 @@
       "Step:5 Engage your lats and pull the band down towards your chest, squeezing your shoulder blades together.",
       "Step:6 Pause for a moment at the bottom of the movement, then slowly release the tension and return to the starting position.",
       "Step:7 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/band-pull-down.mp4"
   },
   "superman-hold": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/superman-push-up.gif",
@@ -917,7 +923,7 @@
     "videoUrl": "/exercise-videos/tricep-kickback.mp4"
   },
   "machine-tricep-extension": {
-    "gifUrl": "https://static.exercisedb.dev/media/7WcQgkm.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/triceps/lever-triceps-extension.gif",
     "sourceName": "smith machine incline tricep extension - straight variation",
     "score": 830,
     "instructions": [
@@ -928,7 +934,8 @@
       "Step:5 Lower the bar slowly towards your forehead, keeping your elbows close to your head.",
       "Step:6 Pause for a moment at the bottom, then push the bar back up to the starting position.",
       "Step:7 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/machine-tricep-extension.mp4"
   },
   "wrist-curl": {
     "gifUrl": "https://static.exercisedb.dev/media/2dImyQ8.gif",
@@ -1092,7 +1099,7 @@
     "videoUrl": "/exercise-videos/bulgarian-split-squat.mp4"
   },
   "lunge": {
-    "gifUrl": "https://static.exercisedb.dev/media/iqH55N8.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/barbell-lunge.gif",
     "sourceName": "fierce style forward lunge (male)",
     "score": 810,
     "instructions": [
@@ -1101,7 +1108,8 @@
       "Step:3 Bend your right knee to about 90 degrees, keeping your knee aligned with your ankle.",
       "Step:4 Push off with your right foot and return to the starting position.",
       "Step:5 (fierce variation) Repeat with your left leg, alternating sides for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/lunge.mp4"
   },
   "walking-lunge": {
     "gifUrl": "https://static.exercisedb.dev/media/IZVHb27.gif",
@@ -1118,7 +1126,7 @@
     "videoUrl": "/exercise-videos/walking-lunge.mp4"
   },
   "leg-extension": {
-    "gifUrl": "https://static.exercisedb.dev/media/7WcQgkm.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/quads/lever-leg-extension.gif",
     "sourceName": "smith machine incline tricep extension - straight variation",
     "score": 235,
     "instructions": [
@@ -1129,7 +1137,8 @@
       "Step:5 Lower the bar slowly towards your forehead, keeping your elbows close to your head.",
       "Step:6 Pause for a moment at the bottom, then push the bar back up to the starting position.",
       "Step:7 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/leg-extension.mp4"
   },
   "step-up": {
     "gifUrl": "https://static.exercisedb.dev/media/aXtJhlg.gif",
@@ -1222,7 +1231,7 @@
     "videoUrl": "/exercise-videos/romanian-deadlift.mp4"
   },
   "stiff-leg-deadlift": {
-    "gifUrl": "https://static.exercisedb.dev/media/2Ty4idJ.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/dumbbell-stiff-leg-deadlift.gif",
     "sourceName": "advanced dumbbell stiff leg deadlift",
     "score": 665,
     "instructions": [
@@ -1230,7 +1239,8 @@
       "Step:2 Keeping your back straight and your core engaged, hinge at the hips and lower the dumbbells towards the ground, allowing a slight bend in your knees. Focus on advanced movement.",
       "Step:3 Lower the dumbbells until you feel a stretch in your hamstrings, then squeeze your glutes and push through your heels to return to the starting position.",
       "Step:4 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/stiff-leg-deadlift.mp4"
   },
   "dumbbell-rdl": {
     "gifUrl": "https://static.exercisedb.dev/media/0IgNjSM.gif",
@@ -1316,7 +1326,7 @@
     "videoUrl": "/exercise-videos/single-leg-rdl.mp4"
   },
   "back-extension": {
-    "gifUrl": "https://static.exercisedb.dev/media/7WcQgkm.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/spine/back-extension-on-exercise-ball.gif",
     "sourceName": "smith machine incline tricep extension - straight variation",
     "score": 235,
     "instructions": [
@@ -1327,7 +1337,8 @@
       "Step:5 Lower the bar slowly towards your forehead, keeping your elbows close to your head.",
       "Step:6 Pause for a moment at the bottom, then push the bar back up to the starting position.",
       "Step:7 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/back-extension.mp4"
   },
   "banded-leg-curl": null,
   "hip-thrust": {
@@ -1714,7 +1725,7 @@
     "videoUrl": "/exercise-videos/flutter-kick.mp4"
   },
   "v-up": {
-    "gifUrl": "https://static.exercisedb.dev/media/3pqGMQj.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/band-v-up.gif",
     "sourceName": "band alternating v-up with simple",
     "score": 660,
     "instructions": [
@@ -1723,7 +1734,8 @@
       "Step:3 As you lower your legs and upper body back down, switch the position of your legs, crossing one over the other. Focus on simple movement.",
       "Step:4 Repeat the movement, alternating the position of your legs with each repetition.",
       "Step:5 Continue for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/v-up.mp4"
   },
   "leg-raise": {
     "gifUrl": "https://static.exercisedb.dev/media/0jp9Rlz.gif",
@@ -1825,9 +1837,10 @@
     "videoUrl": "/exercise-videos/box-jump.mp4"
   },
   "rowing-machine": {
-    "gifUrl": "https://static.exercisedb.dev/media/7i4MS6X.gif",
+    "gifUrl": "https://static.exercisedb.dev/media/a8VDgLw.gif",
     "sourceName": "stationary bike run",
-    "score": 90
+    "score": 90,
+    "videoUrl": "/exercise-videos/rowing-machine.mp4"
   },
   "assault-bike": {
     "gifUrl": "https://static.exercisedb.dev/media/a8VDgLw.gif",
@@ -1874,9 +1887,10 @@
     "videoUrl": "/exercise-videos/elliptical.mp4"
   },
   "swimming": {
-    "gifUrl": "https://static.exercisedb.dev/media/9ApP01R.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/swimmer-kicks-v-2-male.gif",
     "sourceName": "swimmer kicks",
-    "score": 90
+    "score": 90,
+    "videoUrl": "/exercise-videos/swimming.mp4"
   },
   "incline-walk": {
     "gifUrl": "https://static.exercisedb.dev/media/3eGE2JC.gif",
@@ -1929,7 +1943,7 @@
     "videoUrl": "/exercise-videos/kettlebell-swing.mp4"
   },
   "kettlebell-clean-press": {
-    "gifUrl": "https://static.exercisedb.dev/media/89HVjEp.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/quads/barbell-clean-and-press.gif",
     "sourceName": "kettlebell seated press with high",
     "score": 350,
     "instructions": [
@@ -1938,7 +1952,8 @@
       "Step:3 Press the kettlebells overhead, fully extending your arms. Focus on high movement.",
       "Step:4 Lower the kettlebells back to shoulder height.",
       "Step:5 Repeat for the desired number of repetitions."
-    ]
+    ],
+    "videoUrl": "/exercise-videos/kettlebell-clean-press.mp4"
   },
   "kettlebell-goblet-carry": {
     "gifUrl": "https://static.exercisedb.dev/media/ZA8b5hc.gif",
@@ -2009,9 +2024,10 @@
   },
   "sled-push": null,
   "battle-ropes": {
-    "gifUrl": "https://static.exercisedb.dev/media/hVzPY5j.gif",
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/delts/battling-ropes.gif",
     "sourceName": "athletic style battling ropes",
-    "score": 90
+    "score": 90,
+    "videoUrl": "/exercise-videos/battle-ropes.mp4"
   },
   "band-pull-apart": {
     "gifUrl": "https://static.exercisedb.dev/media/VtTbiP3.gif",

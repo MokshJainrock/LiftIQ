@@ -50,7 +50,7 @@ function convert(gifPath, mp4Path) {
     "-movflags",
     "+faststart",
     "-vf",
-    "scale='min(720,iw)':-2",
+    "scale='min(720,iw)':-2,crop=trunc(iw*0.82/2)*2:trunc(ih*0.82/2)*2:(iw-iw*0.82)/2:(ih-ih*0.82)/2",
     mp4Path,
   ];
   const r = spawnSync(ffmpegPath, args, { encoding: "utf8" });

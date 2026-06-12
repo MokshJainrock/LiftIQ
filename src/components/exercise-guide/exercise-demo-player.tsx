@@ -10,6 +10,8 @@ export interface ExerciseDemoPlayerProps {
   className?: string;
   showControls?: boolean;
   autoplay?: boolean;
+  /** Only autoplay when scrolled into view (for grid cards). */
+  playWhenVisible?: boolean;
 }
 
 /** Preload demo media before opening the detail modal. */
@@ -34,7 +36,9 @@ export function ExerciseDemoPlayer({
   className,
   showControls = true,
   autoplay = true,
+  playWhenVisible = false,
 }: ExerciseDemoPlayerProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const frozenRef = useRef<string | null>(null);
@@ -43,6 +47,7 @@ export function ExerciseDemoPlayer({
   const [ready, setReady] = useState(false);
   const [paused, setPaused] = useState(!autoplay);
   const [error, setError] = useState(false);
+  const [visible, setVisible] = useState(!playWhenVisible);
 
   useEffect(() => {
     setReady(false);
@@ -52,14 +57,24 @@ export function ExerciseDemoPlayer({
   }, [videoSrc, gifSrc, autoplay, useVideo]);
 
   useEffect(() => {
+    if (!playWhenVisible || !rootRef.current) return;
+    const el = rootRef.current;
+    const io = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.15, rootMargin: "80px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [playWhenVisible]);
+
+  const shouldPlay = autoplay && !paused && visible;
+
+  useEffect(() => {
     const el = videoRef.current;
-    if (!useVideo || !el || !autoplay) return;
-    if (paused) {
-      el.pause();
-    } else {
-      el.play().catch(() => {});
-    }
-  }, [useVideo, autoplay, paused, ready]);
+    if (!useVideo || !el) return;
+    if (shouldPlay) el.play().catch(() => {});
+    else el.pause();
+  }, [useVideo, shouldPlay, ready]);
 
   const togglePause = useCallback(() => {
     if (useVideo) {
@@ -97,7 +112,7 @@ export function ExerciseDemoPlayer({
 
   if (!videoSrc && !gifSrc) {
     return (
-      <div className={cn("flex items-center justify-center bg-[#0a0a0f] text-zinc-600 text-xs", className)}>
+      <div className={cn("flex items-center justify-center bg-[#050508] text-zinc-600 text-xs", className)}>
         Demo unavailable
       </div>
     );
@@ -105,33 +120,30 @@ export function ExerciseDemoPlayer({
 
   if (error) {
     return (
-      <div className={cn("flex items-center justify-center bg-[#0a0a0f] text-zinc-600 text-xs", className)}>
+      <div className={cn("flex items-center justify-center bg-[#050508] text-zinc-600 text-xs", className)}>
         Demo unavailable
       </div>
     );
   }
 
+  const mediaClass =
+    "absolute inset-0 w-full h-full object-cover object-center scale-[1.45] origin-center transition-opacity duration-200";
+
   return (
     <div
-      className={cn(
-        "relative w-full h-full flex items-center justify-center bg-[#0a0a0f] overflow-hidden",
-        className,
-      )}
-      style={{ contain: "strict", transform: "translateZ(0)" }}
+      ref={rootRef}
+      className={cn("relative w-full h-full overflow-hidden bg-[#050508]", className)}
     >
       {useVideo ? (
         <video
           ref={videoRef}
           src={videoSrc}
-          className={cn(
-            "max-w-full max-h-full w-auto h-auto object-contain transition-opacity duration-150",
-            ready ? "opacity-100" : "opacity-0",
-          )}
-          autoPlay={autoplay && !paused}
+          className={cn(mediaClass, ready ? "opacity-100" : "opacity-0")}
           loop
           muted
           playsInline
           preload="auto"
+          onLoadedData={() => setReady(true)}
           onCanPlay={() => setReady(true)}
           onError={() => setError(true)}
         />
@@ -141,10 +153,7 @@ export function ExerciseDemoPlayer({
           ref={imgRef}
           src={gifSrc}
           alt=""
-          className={cn(
-            "max-w-full max-h-full w-auto h-auto object-contain transition-opacity duration-150",
-            ready ? "opacity-100" : "opacity-0",
-          )}
+          className={cn(mediaClass, ready ? "opacity-100" : "opacity-0")}
           decoding="async"
           fetchPriority="high"
           onLoad={() => setReady(true)}
@@ -153,7 +162,7 @@ export function ExerciseDemoPlayer({
       )}
 
       {!ready && (
-        <div className="absolute inset-0 bg-[#0a0a0f] flex items-center justify-center">
+        <div className="absolute inset-0 bg-[#050508] flex items-center justify-center">
           <div className="h-6 w-6 rounded-full border-2 border-cyan-500/30 border-t-cyan-400 animate-spin" />
         </div>
       )}

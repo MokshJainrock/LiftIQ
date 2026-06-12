@@ -40,20 +40,26 @@ export function ExerciseDemo({
   const [view, setView] = useState<"side" | "front">(defaultView);
   const skeletonView = spec.preferFront && guide.frontKeyframes?.length ? "front" : "side";
 
-  // Grid / icon: skeleton only — keeps lists smooth (human GIF plays in modal).
   if ((gif?.gifUrl || gif?.videoUrl) && (variant === "icon" || variant === "preview")) {
     const w = width ?? (variant === "icon" ? 48 : undefined);
     const h = height ?? (variant === "icon" ? 48 : undefined);
     return (
       <div
         className={cn(
-          "relative overflow-hidden bg-[#0a0a0f]",
+          "relative overflow-hidden bg-[#050508]",
           variant === "preview" && cn("rounded-xl", compact ? "h-28" : "h-36"),
           className,
         )}
         style={w && h ? { width: w, height: h } : undefined}
       >
-        <AnimatedSkeleton guide={guide} demoSpec={spec} ghost view={skeletonView} />
+        <ExerciseDemoPlayer
+          videoSrc={gif.videoUrl}
+          gifSrc={gif.gifUrl}
+          autoplay
+          showControls={false}
+          playWhenVisible={variant === "preview"}
+          className="absolute inset-0"
+        />
       </div>
     );
   }
@@ -61,13 +67,14 @@ export function ExerciseDemo({
   if (gif?.gifUrl || gif?.videoUrl) {
     return (
       <div className={cn("rounded-xl border border-white/[0.06] bg-[#040408] overflow-hidden", className)}>
-        <div className={cn("relative bg-[#0a0a0f]", compact ? "h-28" : "h-36 sm:h-44")}>
+        <div className={cn("relative bg-[#050508]", compact ? "h-28" : "h-36 sm:h-44")}>
           <ExerciseDemoPlayer
             videoSrc={gif.videoUrl}
             gifSrc={gif.gifUrl}
             autoplay
             showControls={false}
-            className="w-full h-full"
+            playWhenVisible
+            className="absolute inset-0"
           />
         </div>
         {!compact && (
