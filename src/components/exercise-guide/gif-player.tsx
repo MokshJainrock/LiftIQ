@@ -1,159 +1,157 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { parseGIF, decompressFrames } from "gifuct-js";
 import { Play, Pause, Gauge } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { freezeGifUrl, loadGif } from "@/lib/exercises/gif-cache";
 
 const SPEEDS = [0.5, 1, 1.5] as const;
-
-interface GifFrame {
-  dims: { width: number; height: number; top: number; left: number };
-  patch: Uint8ClampedArray;
-  delay: number;
-}
 
 export interface GifPlayerProps {
   src: string;
   className?: string;
   showControls?: boolean;
-  /** When false, shows first frame only (for thumbnails). */
   autoplay?: boolean;
 }
 
+/**
+ * Smooth human demo player.
+ * - 1×: native <img> (browser GPU decode)
+ * - 0.5× / 1.5×: cached pre-composited canvas frames
+ */
 export function GifPlayer({
   src,
   className,
   showControls = true,
   autoplay = true,
 }: GifPlayerProps) {
+  const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const framesRef = useRef<GifFrame[]>([]);
+  const rafRef = useRef(0);
   const frameIdxRef = useRef(0);
   const accumRef = useRef(0);
   const lastTimeRef = useRef(0);
-  const rafRef = useRef(0);
   const pausedRef = useRef(!autoplay);
   const speedRef = useRef(1);
 
   const [paused, setPaused] = useState(!autoplay);
   const [speedIdx, setSpeedIdx] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [imgReady, setImgReady] = useState(false);
+  const [canvasReady, setCanvasReady] = useState(false);
   const [error, setError] = useState(false);
 
-  const blitFrame = useCallback((idx: number) => {
-    const canvas = canvasRef.current;
-    const frame = framesRef.current[idx];
-    if (!canvas || !frame) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-    const imageData = new ImageData(
-      new Uint8ClampedArray(frame.patch),
-      frame.dims.width,
-      frame.dims.height,
-    );
-    ctx.putImageData(imageData, frame.dims.left, frame.dims.top);
+  const useCanvas = SPEEDS[speedIdx] !== 1;
+  const loading = useCanvas ? !canvasReady : !imgReady;
+
+  const freezeNative = useCallback(() => {
+    const img = imgRef.current;
+    if (!img?.complete || !img.naturalWidth) return;
+    const c = document.createElement("canvas");
+    c.width = img.naturalWidth;
+    c.height = img.naturalHeight;
+    c.getContext("2d")!.drawImage(img, 0, 0);
+    img.src = c.toDataURL("image/png");
   }, []);
 
-  const tick = useCallback(
-    (now: number) => {
-      if (pausedRef.current) return;
-      const frames = framesRef.current;
-      if (!frames.length) return;
+  const startCanvasLoop = useCallback(
+    (frames: { delayMs: number; data: ImageData }[]) => {
+      cancelAnimationFrame(rafRef.current);
+      frameIdxRef.current = 0;
+      accumRef.current = 0;
+      lastTimeRef.current = 0;
 
-      if (lastTimeRef.current === 0) lastTimeRef.current = now;
-      const dt = now - lastTimeRef.current;
-      lastTimeRef.current = now;
-      accumRef.current += dt * speedRef.current;
+      const tick = (now: number) => {
+        if (pausedRef.current) return;
+        const canvas = canvasRef.current;
+        if (!canvas) return;
 
-      const frame = frames[frameIdxRef.current];
-      const delayMs = Math.max((frame?.delay ?? 8) * 10, 20);
+        if (lastTimeRef.current === 0) lastTimeRef.current = now;
+        accumRef.current += (now - lastTimeRef.current) * speedRef.current;
+        lastTimeRef.current = now;
 
-      if (accumRef.current >= delayMs) {
-        accumRef.current = 0;
-        frameIdxRef.current = (frameIdxRef.current + 1) % frames.length;
-        blitFrame(frameIdxRef.current);
-      }
+        const frame = frames[frameIdxRef.current];
+        if (accumRef.current >= frame.delayMs) {
+          accumRef.current = 0;
+          frameIdxRef.current = (frameIdxRef.current + 1) % frames.length;
+          canvas.getContext("2d")!.putImageData(frames[frameIdxRef.current].data, 0, 0);
+        }
+
+        rafRef.current = requestAnimationFrame(tick);
+      };
 
       rafRef.current = requestAnimationFrame(tick);
     },
-    [blitFrame],
+    [],
   );
 
+  // Canvas mode — only when speed != 1×
   useEffect(() => {
+    if (!useCanvas) {
+      cancelAnimationFrame(rafRef.current);
+      setCanvasReady(false);
+      return;
+    }
+
     let cancelled = false;
-    setLoading(true);
-    setError(false);
-    framesRef.current = [];
-    frameIdxRef.current = 0;
-    accumRef.current = 0;
-    lastTimeRef.current = 0;
-    cancelAnimationFrame(rafRef.current);
+    setCanvasReady(false);
 
-    fetch(src)
-      .then((r) => {
-        if (!r.ok) throw new Error("fetch failed");
-        return r.arrayBuffer();
-      })
-      .then((buf) => {
+    loadGif(src)
+      .then((gif) => {
         if (cancelled) return;
-        const gif = parseGIF(buf);
-        const frames = decompressFrames(gif, true) as GifFrame[];
-        if (!frames.length) throw new Error("no frames");
-        framesRef.current = frames;
-
         const canvas = canvasRef.current;
         if (canvas) {
-          canvas.width = gif.lsd.width;
-          canvas.height = gif.lsd.height;
-          const ctx = canvas.getContext("2d");
-          if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-          blitFrame(0);
+          canvas.width = gif.width;
+          canvas.height = gif.height;
+          canvas.getContext("2d")!.putImageData(gif.frames[0].data, 0, 0);
         }
-
-        setLoading(false);
-        pausedRef.current = !autoplay;
-        setPaused(!autoplay);
-
-        if (autoplay) {
-          lastTimeRef.current = 0;
-          rafRef.current = requestAnimationFrame(tick);
-        }
+        setCanvasReady(true);
+        if (autoplay && !pausedRef.current) startCanvasLoop(gif.frames);
       })
       .catch(() => {
-        if (!cancelled) {
-          setError(true);
-          setLoading(false);
-        }
+        if (!cancelled) setError(true);
       });
 
     return () => {
       cancelled = true;
       cancelAnimationFrame(rafRef.current);
     };
-  }, [src, autoplay, blitFrame, tick]);
+  }, [src, useCanvas, autoplay, startCanvasLoop]);
+
+  // Reset img ready when switching back to native
+  useEffect(() => {
+    if (!useCanvas) setImgReady(false);
+  }, [useCanvas, src]);
 
   const togglePause = useCallback(() => {
     setPaused((p) => {
       const next = !p;
       pausedRef.current = next;
-      if (!next) {
-        lastTimeRef.current = 0;
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
+
+      if (next) {
         cancelAnimationFrame(rafRef.current);
+        if (!useCanvas) freezeNative();
+      } else if (useCanvas) {
+        loadGif(src).then((gif) => startCanvasLoop(gif.frames));
+      } else {
+        const img = imgRef.current;
+        if (img) img.src = `${src}#${Date.now()}`;
       }
       return next;
     });
-  }, [tick]);
+  }, [useCanvas, freezeNative, src, startCanvasLoop]);
 
   const cycleSpeed = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
     setSpeedIdx((i) => {
       const next = (i + 1) % SPEEDS.length;
       speedRef.current = SPEEDS[next];
       return next;
     });
+    pausedRef.current = false;
+    setPaused(false);
   }, []);
+
+  useEffect(() => () => cancelAnimationFrame(rafRef.current), []);
 
   if (error) {
     return (
@@ -164,15 +162,35 @@ export function GifPlayer({
   }
 
   return (
-    <div className={cn("relative w-full h-full flex items-center justify-center bg-[#0a0a0f]", className)}>
-      <canvas ref={canvasRef} className="max-w-full max-h-full object-contain" />
+    <div className={cn("relative w-full h-full flex items-center justify-center bg-[#0a0a0f] overflow-hidden", className)}>
+      {!useCanvas && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          ref={imgRef}
+          src={src}
+          alt=""
+          className={cn("w-full h-full object-contain transition-opacity", imgReady ? "opacity-100" : "opacity-0")}
+          decoding="async"
+          onLoad={() => setImgReady(true)}
+        />
+      )}
+
+      {useCanvas && (
+        <canvas
+          ref={canvasRef}
+          className="w-full h-full object-contain"
+          style={{ objectFit: "contain" }}
+        />
+      )}
+
       {loading && (
         <div className="absolute inset-0 bg-[#0a0a0f] flex items-center justify-center">
           <div className="h-6 w-6 rounded-full border-2 border-cyan-500/30 border-t-cyan-400 animate-spin" />
         </div>
       )}
+
       {showControls && !loading && (
-        <div className="absolute bottom-3 right-3 flex items-center gap-1.5">
+        <div className="absolute bottom-3 right-3 flex items-center gap-1.5 z-10">
           <button
             type="button"
             onClick={cycleSpeed}
@@ -197,47 +215,41 @@ export function GifPlayer({
   );
 }
 
-/** Only mounts the GIF decoder when visible — stops lag from off-screen animations. */
-export function LazyGifPlayer({
-  src,
-  className,
-  showControls = false,
-  autoplay = true,
-  placeholderClassName,
-}: GifPlayerProps & { placeholderClassName?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+/** Static first-frame poster — zero animation overhead on the grid. */
+export function GifPoster({ src, className }: { src: string; className?: string }) {
+  const [poster, setPoster] = useState<string | null>(null);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
-      { rootMargin: "80px", threshold: 0.15 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    let cancelled = false;
+    freezeGifUrl(src)
+      .then((url) => {
+        if (!cancelled) setPoster(url);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
 
   return (
-    <div ref={ref} className={cn("w-full h-full", className)}>
-      {visible ? (
-        <GifPlayer src={src} showControls={showControls} autoplay={autoplay} className="w-full h-full" />
+    <div className={cn("w-full h-full bg-[#0a0a0f] flex items-center justify-center overflow-hidden", className)}>
+      {poster ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={poster} alt="" className="w-full h-full object-cover object-center" decoding="async" />
       ) : (
-        <div className={cn("w-full h-full bg-[#0a0a0f]", placeholderClassName)} />
+        <div className="h-full w-full animate-pulse bg-white/[0.03]" />
       )}
     </div>
   );
 }
 
-/** Static first-frame thumbnail — no animation, minimal CPU. */
-export function GifPoster({ src, className }: { src: string; className?: string }) {
-  return (
-    <LazyGifPlayer
-      src={src}
-      autoplay={false}
-      showControls={false}
-      className={className}
-    />
-  );
+/** @deprecated use GifPoster */
+export function LazyGifPlayer({
+  src,
+  className,
+  autoplay = true,
+  showControls = false,
+}: GifPlayerProps) {
+  if (!autoplay) return <GifPoster src={src} className={className} />;
+  return <GifPlayer src={src} className={className} showControls={showControls} autoplay />;
 }
