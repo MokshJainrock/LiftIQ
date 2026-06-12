@@ -108,6 +108,19 @@ export interface WorkoutSession {
   source?: "camera" | "manual";
   /** Manual log only: the sets as entered (reps + weight per set). */
   sets?: LoggedSet[];
+  /** Links this exercise to a multi-exercise workout log (live session). */
+  workoutId?: string;
+}
+
+/** A named gym session that can contain multiple exercise logs. */
+export interface WorkoutLog {
+  id: string;
+  /** User label, e.g. "Legs and Back". */
+  name?: string;
+  /** Calendar date YYYY-MM-DD. */
+  date: string;
+  startTime: number;
+  endTime: number;
 }
 
 export interface DailyLog {

@@ -5,24 +5,27 @@ import { motion } from "framer-motion";
 import { Navbar } from "@/components/layout/navbar";
 import { GlassCard } from "@/components/ui/glass-card";
 import { ExerciseIcon } from "@/components/exercise-icon";
-import { getSessions, fetchSessions } from "@/lib/storage";
-import { findLibraryByKey, findLibraryExerciseByName } from "@/lib/exercises/library";
+import { ExerciseHowTo } from "@/components/exercise-how-to";
+import { getSessions, getWorkouts, fetchSessions, updateWorkoutName } from "@/lib/storage";
+import { buildWorkoutGroups, formatWorkoutDate, type WorkoutGroup } from "@/lib/workout-groups";
+import { findLibraryByKey } from "@/lib/exercises/library";
 import { WeightUnit, getWeightUnit, formatWeight, formatVolume } from "@/lib/units";
 import { WorkoutSession } from "@/types";
-import { Calendar, Camera, ChevronDown, Dumbbell, NotebookPen, Repeat, Search } from "lucide-react";
+import {
+  Calendar,
+  Camera,
+  ChevronDown,
+  Dumbbell,
+  NotebookPen,
+  Pencil,
+  Repeat,
+  Search,
+  Check,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type SourceFilter = "all" | "manual" | "camera";
-
-function sessionMuscle(s: WorkoutSession): string {
-  const lib = findLibraryByKey(s.exercise) ?? findLibraryExerciseByName(s.exerciseName ?? "");
-  return lib?.muscle ?? "full-body";
-}
-
-function sessionVolume(s: WorkoutSession): number {
-  if (s.sets?.length) return s.sets.reduce((n, st) => n + (st.weight ?? 0) * st.reps, 0);
-  return (s.weight ?? 0) * s.reps.length;
-}
 
 function prettyName(s: WorkoutSession): string {
   return (
@@ -34,50 +37,52 @@ function prettyName(s: WorkoutSession): string {
   );
 }
 
+function sessionVolume(s: WorkoutSession): number {
+  if (s.sets?.length) return s.sets.reduce((n, st) => n + (st.weight ?? 0) * st.reps, 0);
+  return (s.weight ?? 0) * s.reps.length;
+}
+
 export default function HistoryPage() {
   const [sessions, setSessions] = useState<WorkoutSession[]>([]);
+  const [workouts, setWorkouts] = useState(getWorkouts());
   const [query, setQuery] = useState("");
   const [source, setSource] = useState<SourceFilter>("all");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
   const [unit, setUnit] = useState<WeightUnit>("lbs");
 
+  const refresh = () => {
+    setSessions(getSessions());
+    setWorkouts(getWorkouts());
+    setUnit(getWeightUnit());
+  };
+
   useEffect(() => {
-    queueMicrotask(() => {
-      setSessions(getSessions());
-      setUnit(getWeightUnit());
-      void fetchSessions().then(setSessions).catch(() => {});
-    });
+    queueMicrotask(refresh);
+    void fetchSessions().then((s) => { setSessions(s); refresh(); }).catch(() => {});
   }, []);
 
-  const filtered = useMemo(() => {
+  const groups = useMemo(() => {
+    let list = buildWorkoutGroups(sessions, workouts);
     const q = query.trim().toLowerCase();
-    return sessions.filter((s) => {
-      if (source === "manual" && s.source !== "manual") return false;
-      if (source === "camera" && s.source === "manual") return false;
-      if (q && !prettyName(s).toLowerCase().includes(q)) return false;
-      return true;
-    });
-  }, [sessions, query, source]);
-
-  const days = useMemo(() => {
-    const map = new Map<string, WorkoutSession[]>();
-    for (const s of [...filtered].sort((a, b) => b.startTime - a.startTime)) {
-      const key = new Date(s.startTime).toDateString();
-      const list = map.get(key) ?? [];
-      list.push(s);
-      map.set(key, list);
+    if (q) {
+      list = list.filter(
+        (g) =>
+          g.name.toLowerCase().includes(q) ||
+          g.sessions.some((s) => prettyName(s).toLowerCase().includes(q)),
+      );
     }
-    return [...map.entries()];
-  }, [filtered]);
+    if (source === "manual") list = list.filter((g) => g.hasManual);
+    if (source === "camera") list = list.filter((g) => g.hasCamera);
+    return list;
+  }, [sessions, workouts, query, source]);
 
-  const totals = useMemo(
-    () => ({
-      sessions: filtered.length,
-      reps: filtered.reduce((n, s) => n + s.reps.length, 0),
-      volume: filtered.reduce((n, s) => n + sessionVolume(s), 0),
-    }),
-    [filtered],
-  );
+  const saveName = (id: string) => {
+    updateWorkoutName(id, editName);
+    setWorkouts(getWorkouts());
+    setEditingId(null);
+  };
 
   return (
     <div className="min-h-[100dvh] has-bottom-nav md:pb-0">
@@ -86,12 +91,10 @@ export default function HistoryPage() {
         <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <h1 className="text-4xl md:text-5xl font-black tracking-[-0.04em]">History</h1>
           <p className="text-zinc-500 mt-2">
-            {totals.sessions} sessions · {totals.reps.toLocaleString()} reps
-            {totals.volume > 0 ? ` · ${formatVolume(totals.volume, unit)} lifted` : ""}
+            Full workouts by day — tap a workout to see every exercise and set logged
           </p>
         </motion.div>
 
-        {/* Search + source filter */}
         <div className="space-y-3 mb-6">
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
@@ -99,144 +102,45 @@ export default function HistoryPage() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by exercise..."
-              className="w-full h-12 rounded-xl bg-secondary border border-border pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+              placeholder="Search workout name or exercise..."
+              className="w-full h-12 rounded-xl bg-secondary border border-border pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </div>
           <div className="grid grid-cols-3 gap-2 glass-card rounded-xl p-1.5">
-            {(
-              [
-                { id: "all", label: "All" },
-                { id: "manual", label: "Logged" },
-                { id: "camera", label: "Camera" },
-              ] as { id: SourceFilter; label: string }[]
-            ).map((f) => (
+            {(["all", "manual", "camera"] as SourceFilter[]).map((f) => (
               <button
-                key={f.id}
-                onClick={() => setSource(f.id)}
+                key={f}
+                onClick={() => setSource(f)}
                 className={cn(
-                  "rounded-lg px-3 py-2 text-sm font-semibold transition-all min-h-[40px]",
-                  source === f.id ? "bg-cyan-500/10 text-cyan-300" : "text-zinc-500 hover:text-zinc-300",
+                  "rounded-lg px-3 py-2 text-sm font-semibold min-h-[40px] transition-colors",
+                  source === f ? "bg-cyan-500/10 text-cyan-300" : "text-zinc-500 hover:text-zinc-300",
                 )}
               >
-                {f.label}
+                {f === "all" ? "All" : f === "manual" ? "Logged" : "Camera"}
               </button>
             ))}
           </div>
         </div>
 
-        {days.length === 0 ? (
-          <GlassCard className="p-10 text-center text-sm text-zinc-500">
-            No workouts yet — start one from the Train or Exercises tab.
-          </GlassCard>
+        {groups.length === 0 ? (
+          <GlassCard className="p-10 text-center text-sm text-zinc-500">No workouts match.</GlassCard>
         ) : (
-          <div className="space-y-7">
-            {days.map(([day, daySessions]) => {
-              const dayVolume = daySessions.reduce((n, s) => n + sessionVolume(s), 0);
-              const dayReps = daySessions.reduce((n, s) => n + s.reps.length, 0);
-              return (
-                <section key={day}>
-                  <div className="flex items-center justify-between mb-2.5 px-1">
-                    <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-zinc-500 flex items-center gap-2">
-                      <Calendar className="h-3.5 w-3.5 text-cyan-400" />
-                      {new Date(day).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
-                    </h2>
-                    <span className="text-[10px] text-zinc-600 tabular-nums">
-                      {dayReps} reps{dayVolume > 0 ? ` · ${formatVolume(dayVolume, unit)}` : ""}
-                    </span>
-                  </div>
-                  <div className="space-y-2">
-                    {daySessions.map((s) => {
-                      const isOpen = expanded === s.id;
-                      const volume = sessionVolume(s);
-                      return (
-                        <GlassCard key={s.id} className="overflow-hidden">
-                          <button
-                            type="button"
-                            onClick={() => setExpanded(isOpen ? null : s.id)}
-                            className="w-full flex items-center gap-3 px-3.5 py-3 text-left hover:bg-white/[0.02] transition-colors"
-                          >
-                            <ExerciseIcon muscle={sessionMuscle(s)} size="md" />
-                            <div className="min-w-0 flex-1">
-                              <div className="font-semibold text-sm text-zinc-200 truncate flex items-center gap-2">
-                                {prettyName(s)}
-                                {s.source === "manual" ? (
-                                  <span className="inline-flex items-center gap-1 text-[9px] text-zinc-500 font-bold uppercase tracking-wider border border-white/[0.08] rounded px-1 py-px">
-                                    <NotebookPen className="h-2.5 w-2.5" /> Log
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 text-[9px] text-cyan-400/70 font-bold uppercase tracking-wider">
-                                    <Camera className="h-2.5 w-2.5" /> AI
-                                  </span>
-                                )}
-                              </div>
-                              <div className="text-[10px] text-zinc-600 mt-0.5">
-                                {new Date(s.startTime).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" })}
-                                {s.sets?.length ? ` · ${s.sets.length} sets` : ""} · {s.reps.length} reps
-                                {volume > 0 ? ` · ${formatVolume(volume, unit)}` : ""}
-                              </div>
-                            </div>
-                            <span
-                              className={cn(
-                                "text-lg font-black tabular-nums shrink-0",
-                                s.totalScore >= 85 ? "text-emerald-400" : s.totalScore >= 65 ? "text-amber-400" : "text-rose-400",
-                              )}
-                            >
-                              {s.totalScore}
-                            </span>
-                            <ChevronDown
-                              className={cn("h-4 w-4 text-zinc-600 shrink-0 transition-transform", isOpen && "rotate-180")}
-                            />
-                          </button>
-
-                          {isOpen && (
-                            <div className="px-4 pb-4 pt-1 border-t border-white/[0.04]">
-                              {s.sets?.length ? (
-                                <div className="mt-2">
-                                  <div className="grid grid-cols-3 gap-2 text-[9px] font-semibold uppercase tracking-[0.12em] text-zinc-600 px-1 mb-1.5">
-                                    <span>Set</span>
-                                    <span>Weight</span>
-                                    <span>Reps</span>
-                                  </div>
-                                  {s.sets.map((st, i) => (
-                                    <div key={i} className="grid grid-cols-3 gap-2 text-sm py-1.5 px-1 border-b border-white/[0.03] last:border-0">
-                                      <span className="text-zinc-500 tabular-nums">{i + 1}</span>
-                                      <span className="text-zinc-200 tabular-nums">
-                                        {st.weight ? formatWeight(st.weight, unit) : "Bodyweight"}
-                                      </span>
-                                      <span className="text-zinc-200 tabular-nums">{st.reps}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              ) : (
-                                <div className="mt-2 grid grid-cols-3 gap-2.5">
-                                  <Stat label="Reps" value={`${s.reps.length}`} icon={<Repeat className="h-3 w-3 text-cyan-400" />} />
-                                  <Stat
-                                    label="Best Rep"
-                                    value={`${s.bestRepScore ?? Math.max(0, ...s.reps.map((r) => r.score))}`}
-                                    icon={<Dumbbell className="h-3 w-3 text-emerald-400" />}
-                                  />
-                                  <Stat
-                                    label="Weight"
-                                    value={s.weight ? formatWeight(s.weight, unit) : "—"}
-                                    icon={<Dumbbell className="h-3 w-3 text-zinc-500" />}
-                                  />
-                                </div>
-                              )}
-                              {(s.mistakeSummary?.length ?? 0) > 0 && (
-                                <div className="mt-3 text-[11px] text-zinc-500">
-                                  Issues: {s.mistakeSummary!.slice(0, 3).map((m) => `${m.issue} (x${m.count})`).join(" · ")}
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </GlassCard>
-                      );
-                    })}
-                  </div>
-                </section>
-              );
-            })}
+          <div className="space-y-3">
+            {groups.map((g) => (
+              <WorkoutCard
+                key={g.id}
+                group={g}
+                unit={unit}
+                isOpen={expanded === g.id}
+                onToggle={() => setExpanded(expanded === g.id ? null : g.id)}
+                editing={editingId === g.id}
+                editName={editName}
+                onStartEdit={() => { setEditingId(g.id); setEditName(g.name); }}
+                onEditName={setEditName}
+                onSaveName={() => saveName(g.id)}
+                onCancelEdit={() => setEditingId(null)}
+              />
+            ))}
           </div>
         )}
       </div>
@@ -244,14 +148,165 @@ export default function HistoryPage() {
   );
 }
 
-function Stat({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
+function WorkoutCard({
+  group: g,
+  unit,
+  isOpen,
+  onToggle,
+  editing,
+  editName,
+  onStartEdit,
+  onEditName,
+  onSaveName,
+  onCancelEdit,
+}: {
+  group: WorkoutGroup;
+  unit: WeightUnit;
+  isOpen: boolean;
+  onToggle: () => void;
+  editing: boolean;
+  editName: string;
+  onStartEdit: () => void;
+  onEditName: (v: string) => void;
+  onSaveName: () => void;
+  onCancelEdit: () => void;
+}) {
   return (
-    <div className="glass-card rounded-lg px-3 py-2.5">
-      <div className="text-[9px] uppercase tracking-[0.12em] text-zinc-600 mb-0.5 flex items-center gap-1">
-        {icon}
-        {label}
-      </div>
-      <div className="text-sm font-bold text-zinc-200 tabular-nums">{value}</div>
-    </div>
+    <GlassCard className="overflow-hidden">
+      <button type="button" onClick={onToggle} className="w-full text-left px-4 py-4 hover:bg-white/[0.02] transition-colors">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            {editing ? (
+              <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                <input
+                  value={editName}
+                  onChange={(e) => onEditName(e.target.value)}
+                  placeholder="e.g. Legs and Back"
+                  className="flex-1 h-9 rounded-lg bg-secondary border border-border px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  autoFocus
+                />
+                <button type="button" onClick={onSaveName} className="h-9 w-9 rounded-lg bg-cyan-500/15 text-cyan-300 flex items-center justify-center">
+                  <Check className="h-4 w-4" />
+                </button>
+                <button type="button" onClick={onCancelEdit} className="h-9 w-9 rounded-lg text-zinc-500 flex items-center justify-center">
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-base text-zinc-100 truncate">{g.name}</h3>
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onStartEdit(); }}
+                  className="shrink-0 text-zinc-600 hover:text-cyan-400 transition-colors"
+                  title="Rename workout"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
+            <div className="flex items-center gap-2 mt-1 text-[11px] text-zinc-500">
+              <Calendar className="h-3 w-3 text-cyan-400" />
+              {formatWorkoutDate(g.date, g.startTime)}
+              <span>·</span>
+              {g.exerciseCount} exercise{g.exerciseCount !== 1 ? "s" : ""}
+              <span>·</span>
+              {g.totalReps} reps
+              {g.totalVolume > 0 && (
+                <>
+                  <span>·</span>
+                  {formatVolume(g.totalVolume, unit)}
+                </>
+              )}
+            </div>
+            {/* Exercise preview chips when collapsed */}
+            {!isOpen && (
+              <div className="flex flex-wrap gap-1.5 mt-2.5">
+                {g.sessions.slice(0, 4).map((s) => (
+                  <span key={s.id} className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.04] text-zinc-400 truncate max-w-[140px]">
+                    {prettyName(s)}
+                  </span>
+                ))}
+                {g.sessions.length > 4 && (
+                  <span className="text-[10px] text-zinc-600">+{g.sessions.length - 4} more</span>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col items-end gap-1 shrink-0">
+            <span
+              className={cn(
+                "text-2xl font-black tabular-nums",
+                g.avgScore >= 85 ? "text-emerald-400" : g.avgScore >= 65 ? "text-amber-400" : "text-rose-400",
+              )}
+            >
+              {g.avgScore}
+            </span>
+            <ChevronDown className={cn("h-4 w-4 text-zinc-600 transition-transform", isOpen && "rotate-180")} />
+          </div>
+        </div>
+      </button>
+
+      {isOpen && (
+        <div className="border-t border-white/[0.04] px-4 pb-4 pt-2 space-y-4">
+          {g.sessions.map((s) => (
+            <div key={s.id} className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-3">
+              <div className="flex items-start gap-3">
+                <ExerciseIcon exerciseId={s.exercise} exerciseName={prettyName(s)} size="md" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-sm text-zinc-200">{prettyName(s)}</span>
+                    {s.source === "manual" ? (
+                      <NotebookPen className="h-3 w-3 text-zinc-500" />
+                    ) : (
+                      <Camera className="h-3 w-3 text-cyan-400/70" />
+                    )}
+                    <span
+                      className={cn(
+                        "ml-auto text-sm font-black tabular-nums",
+                        s.totalScore >= 85 ? "text-emerald-400" : s.totalScore >= 65 ? "text-amber-400" : "text-rose-400",
+                      )}
+                    >
+                      {s.totalScore}
+                    </span>
+                  </div>
+
+                  {s.sets?.length ? (
+                    <div className="mt-2.5">
+                      <div className="grid grid-cols-3 gap-2 text-[9px] font-semibold uppercase tracking-wider text-zinc-600 mb-1">
+                        <span>Set</span>
+                        <span>Weight</span>
+                        <span>Reps</span>
+                      </div>
+                      {s.sets.map((st, i) => (
+                        <div key={i} className="grid grid-cols-3 gap-2 text-sm py-1 border-b border-white/[0.03] last:border-0 tabular-nums">
+                          <span className="text-zinc-500">{i + 1}</span>
+                          <span className="text-zinc-200">{st.weight ? formatWeight(st.weight, unit) : "BW"}</span>
+                          <span className="text-zinc-200">{st.reps}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="mt-2 text-[11px] text-zinc-500 flex gap-3">
+                      <span className="flex items-center gap-1"><Repeat className="h-3 w-3" /> {s.reps.length} reps</span>
+                      {s.weight != null && (
+                        <span className="flex items-center gap-1"><Dumbbell className="h-3 w-3" /> {formatWeight(s.weight, unit)}</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="mt-3">
+                <ExerciseHowTo
+                  exerciseId={findLibraryByKey(s.exercise)?.id ?? s.exercise}
+                  exerciseName={prettyName(s)}
+                  compact
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </GlassCard>
   );
 }

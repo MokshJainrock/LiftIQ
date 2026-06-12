@@ -15,7 +15,7 @@ import {
   searchLibrary,
 } from "@/lib/exercises/library";
 import { buildManualSession, resolveExerciseKey } from "@/lib/manual-session";
-import { getSessions, saveSession, updateStreak } from "@/lib/storage";
+import { getSessions, saveSession, updateStreak, saveWorkout } from "@/lib/storage";
 import { LoggedSet } from "@/types";
 import { ManualRating } from "@/lib/manual-rating";
 import { ExerciseIcon } from "@/components/exercise-icon";
@@ -104,6 +104,8 @@ export default function LiveWorkoutPage() {
   const [pickerMuscle, setPickerMuscle] = useState<MuscleGroup | "all">("all");
   const [results, setResults] = useState<ExerciseResult[] | null>(null);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
+  const [showNamePrompt, setShowNamePrompt] = useState(false);
+  const [workoutNameInput, setWorkoutNameInput] = useState("");
   const [unit, setUnit] = useState<WeightUnit>("lbs");
   /** AI coach note per finished exercise name; null = loading. */
   const [aiNotes, setAiNotes] = useState<Record<string, string | null>>({});
@@ -256,9 +258,27 @@ export default function LiveWorkoutPage() {
   const endRest = useCallback(() => setResting(null), []);
 
   const finishWorkout = () => {
+    const hasDone = exercises.some((ex) => ex.sets.some((s) => s.done && (parseInt(s.reps) || 0) > 0));
+    if (!hasDone) return;
+    setWorkoutNameInput("");
+    setShowNamePrompt(true);
+  };
+
+  const confirmFinishWorkout = () => {
+    setShowNamePrompt(false);
     const end = Date.now();
     const history = getSessions();
     const out: ExerciseResult[] = [];
+    const workoutId = `workout-${crypto.randomUUID()}`;
+    const date = new Date(startedAt).toISOString().slice(0, 10);
+
+    saveWorkout({
+      id: workoutId,
+      name: workoutNameInput.trim() || undefined,
+      date,
+      startTime: startedAt,
+      endTime: end,
+    });
 
     for (const ex of exercises) {
       const sets: LoggedSet[] = ex.sets
@@ -274,6 +294,7 @@ export default function LiveWorkoutPage() {
       const { session, rating } = buildManualSession(ex.name, sets, history, {
         startTime: startedAt,
         endTime: end,
+        workoutId,
       });
       saveSession(session);
       history.push(session);
@@ -388,7 +409,7 @@ export default function LiveWorkoutPage() {
                   <GlassCard key={r.name} className="p-4">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <ExerciseIcon muscle={findLibraryExerciseByName(r.name)?.muscle ?? "full-body"} size="sm" />
+                        <ExerciseIcon exerciseName={r.name} size="sm" />
                         <div className="min-w-0">
                           <div className="font-bold text-sm text-zinc-200 truncate">{r.name}</div>
                           <div className="text-[11px] text-zinc-500 mt-0.5">
@@ -518,7 +539,7 @@ export default function LiveWorkoutPage() {
             <GlassCard key={`${ex.libId}-${exIdx}`} className="p-4">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-start gap-2.5 min-w-0">
-                  <ExerciseIcon muscle={ex.muscle} size="md" />
+                  <ExerciseIcon exerciseId={ex.libId} exerciseName={ex.name} size="md" />
                   <div className="min-w-0">
                     <div className="font-bold text-sm text-zinc-100 truncate">{ex.name}</div>
                     <div className="text-[10px] uppercase tracking-wider text-zinc-600 mt-0.5">{ex.muscle}</div>
@@ -716,7 +737,7 @@ export default function LiveWorkoutPage() {
                               onClick={() => addSuggested(s.name)}
                               className="w-full flex items-center gap-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05] px-2.5 py-2 text-left hover:bg-cyan-500/10 transition-colors"
                             >
-                              <ExerciseIcon muscle={lib?.muscle ?? "full-body"} size="sm" />
+                              <ExerciseIcon exerciseId={lib?.id} exerciseName={s.name} size="sm" />
                               <span className="min-w-0 flex-1">
                                 <span className="block text-sm text-zinc-100 truncate">{s.name}</span>
                                 <span className="block text-[10px] text-zinc-500 truncate">{s.reason}</span>
@@ -750,7 +771,7 @@ export default function LiveWorkoutPage() {
                   onClick={() => addExercise(e)}
                   className="w-full flex items-center gap-2.5 rounded-lg bg-secondary/30 px-2.5 py-2 text-sm hover:bg-secondary active:bg-secondary text-left"
                 >
-                  <ExerciseIcon muscle={e.muscle} size="sm" />
+                  <ExerciseIcon exerciseId={e.id} exerciseName={e.name} size="sm" />
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-zinc-200">{e.name}</div>
                     <div className="text-[10px] text-zinc-600 uppercase tracking-wider mt-0.5">
@@ -765,6 +786,31 @@ export default function LiveWorkoutPage() {
               )}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── Name workout before save ── */}
+      {showNamePrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-6">
+          <GlassCard className="w-full max-w-sm p-6">
+            <h3 className="font-bold text-zinc-100">Name this workout</h3>
+            <p className="text-sm text-zinc-500 mt-1">Optional — e.g. &ldquo;Legs and Back&rdquo;</p>
+            <input
+              value={workoutNameInput}
+              onChange={(e) => setWorkoutNameInput(e.target.value)}
+              placeholder="Legs and Back"
+              className="mt-4 w-full h-11 rounded-xl bg-secondary border border-border px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+              autoFocus
+            />
+            <div className="mt-5 flex gap-2">
+              <Button variant="outline" onClick={() => setShowNamePrompt(false)} className="flex-1 min-h-[44px]">
+                Cancel
+              </Button>
+              <Button onClick={confirmFinishWorkout} className="flex-1 min-h-[44px]">
+                Save Workout
+              </Button>
+            </div>
+          </GlassCard>
         </div>
       )}
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { LoggedSet } from "@/types";
-import { getSessions, saveSession, updateStreak } from "@/lib/storage";
+import { getSessions, saveSession, updateStreak, saveWorkout } from "@/lib/storage";
 import { ManualRating } from "@/lib/manual-rating";
 import { buildManualSession, resolveExerciseKey } from "@/lib/manual-session";
 import { searchLibrary, EXERCISE_LIBRARY } from "@/lib/exercises/library";
@@ -73,7 +73,18 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
 
   const handleSave = () => {
     if (!canSave) return;
-    const { session, rating: result } = buildManualSession(exerciseName, parsedSets, getSessions());
+    const now = Date.now();
+    const workoutId = `workout-${crypto.randomUUID()}`;
+    const { session, rating: result } = buildManualSession(exerciseName, parsedSets, getSessions(), {
+      endTime: now,
+      workoutId,
+    });
+    saveWorkout({
+      id: workoutId,
+      date: new Date(now).toISOString().slice(0, 10),
+      startTime: session.startTime,
+      endTime: now,
+    });
     saveSession(session);
     void updateStreak();
     setRating(result);
@@ -149,7 +160,7 @@ export function ManualLog({ onClose, onLogged }: ManualLogProps) {
                     onClick={() => pickExercise(e.name)}
                     className="w-full flex items-center gap-2.5 rounded-lg bg-secondary/30 px-2.5 py-2 text-sm hover:bg-secondary active:bg-secondary text-left"
                   >
-                    <ExerciseIcon muscle={e.muscle} size="sm" />
+                    <ExerciseIcon exerciseId={e.id} exerciseName={e.name} size="sm" />
                     <span className="truncate flex-1">{e.name}</span>
                     <span className="text-[9px] uppercase tracking-wider text-zinc-600 shrink-0">{e.muscle}</span>
                   </button>

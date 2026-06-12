@@ -9,7 +9,9 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { FoodTracker } from "@/components/nutrition/food-tracker";
 import { ManualLog } from "@/components/workout/manual-log";
-import { getSessions, getDailyLogs, getStreakData, getTodayFoodCalories, getFoodLog, getUserProfile } from "@/lib/storage";
+import { getSessions, getDailyLogs, getStreakData, getTodayFoodCalories, getFoodLog, getUserProfile, getWorkouts } from "@/lib/storage";
+import { buildWorkoutGroups, formatWorkoutDate } from "@/lib/workout-groups";
+import { ExerciseIcon } from "@/components/exercise-icon";
 import { WeightUnit, getWeightUnit, formatWeight, toDisplayWeight } from "@/lib/units";
 import Link from "next/link";
 import { WorkoutSession, DailyLog, StreakData, FoodEntry, UserProfile } from "@/types";
@@ -39,7 +41,16 @@ export default function DashboardPage() {
   const [showManualLog, setShowManualLog] = useState(false);
   const [unit, setUnit] = useState<WeightUnit>("lbs");
 
-  const refresh = () => { setSessions(getSessions()); setDailyLogs(getDailyLogs()); setStreak(getStreakData()); setTodayFoodCalories(getTodayFoodCalories()); setFoodLog(getFoodLog()); setProfile(getUserProfile()); setUnit(getWeightUnit()); };
+  const refresh = () => {
+    setSessions(getSessions());
+    setDailyLogs(getDailyLogs());
+    setStreak(getStreakData());
+    setTodayFoodCalories(getTodayFoodCalories());
+    setFoodLog(getFoodLog());
+    setProfile(getUserProfile());
+    setUnit(getWeightUnit());
+  };
+  const recentWorkouts = buildWorkoutGroups(sessions, getWorkouts()).slice(0, 8);
   useEffect(() => {
     queueMicrotask(() => { refresh(); });
     const onFoodChanged = () => { setTodayFoodCalories(getTodayFoodCalories()); setFoodLog(getFoodLog()); };
@@ -386,40 +397,51 @@ export default function DashboardPage() {
               </GlassCard>
             )}
 
-            {/* ── Recent Sessions ── */}
+            {/* ── Recent Workouts (grouped by day/session) ── */}
             {hasData && (
               <GlassCard className="overflow-hidden">
                 <div className="px-6 py-4 border-b border-white/[0.04] flex items-center justify-between gap-2.5">
                   <div className="flex items-center gap-2.5">
                     <Calendar className="h-4 w-4 text-cyan-400" />
-                    <h3 className="text-sm font-bold">Recent Sessions</h3>
+                    <h3 className="text-sm font-bold">Recent Workouts</h3>
                   </div>
                   <Link href="/history" className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
                     View all →
                   </Link>
                 </div>
                 <div className="p-4 space-y-2">
-                  {sessions.slice(-10).reverse().map((session) => {
-                    const hasPerfect = (session.bestRepScore ?? 0) >= 90;
-                    return (
-                    <div key={session.id} className="flex items-center justify-between gap-3 rounded-xl glass-card px-4 py-3 hover:bg-white/[0.03] transition-colors">
+                  {recentWorkouts.map((w) => (
+                    <Link
+                      key={w.id}
+                      href="/history"
+                      className="flex items-center justify-between gap-3 rounded-xl glass-card px-4 py-3 hover:bg-white/[0.03] transition-colors"
+                    >
                       <div className="min-w-0 flex-1">
-                        <div className="font-semibold text-sm truncate flex items-center gap-2 text-zinc-200">
-                          {session.exerciseName || session.exercise.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
-                          {session.weight != null && <span className="text-[10px] text-zinc-600 tabular-nums">{formatWeight(session.weight, unit)}</span>}
-                          {session.source === "manual" && <span className="text-[9px] text-zinc-500 font-bold uppercase tracking-wider border border-white/[0.08] rounded px-1 py-px">LOG</span>}
-                          {session.isRecorded && <span className="text-[9px] text-cyan-400/60 font-bold uppercase tracking-wider">REC</span>}
-                          {hasPerfect && <span className="inline-flex items-center gap-0.5 text-[9px] text-amber-400 font-bold uppercase tracking-wider"><Flame className="h-2.5 w-2.5" />PR</span>}
+                        <div className="font-semibold text-sm truncate text-zinc-200">{w.name}</div>
+                        <div className="text-[10px] text-zinc-600 mt-0.5">
+                          {formatWorkoutDate(w.date, w.startTime)} · {w.exerciseCount} exercises · {w.totalReps} reps
+                          {w.hasManual && <span className="ml-1.5 text-zinc-500 uppercase tracking-wider text-[9px]">LOG</span>}
                         </div>
-                        <div className="text-[10px] text-zinc-600 mt-0.5">{new Date(session.startTime).toLocaleDateString(undefined, { month: "short", day: "numeric" })} · {session.sets?.length ? `${session.sets.length} sets · ` : ""}{session.reps.length} reps{hasPerfect ? ` · Best ${session.bestRepScore}` : ""}</div>
+                        <div className="flex gap-1 mt-2">
+                          {w.sessions.slice(0, 3).map((s) => (
+                            <ExerciseIcon
+                              key={s.id}
+                              exerciseId={s.exercise}
+                              exerciseName={s.exerciseName || s.exercise}
+                              size="sm"
+                            />
+                          ))}
+                          {w.sessions.length > 3 && (
+                            <span className="text-[10px] text-zinc-600 self-center ml-1">+{w.sessions.length - 3}</span>
+                          )}
+                        </div>
                       </div>
                       <div className="flex flex-col items-end gap-1 shrink-0">
-                        <span className={cn("text-lg font-black tabular-nums", session.totalScore >= 85 ? "text-emerald-400" : session.totalScore >= 65 ? "text-amber-400" : "text-rose-400")}>{session.totalScore}</span>
-                        <Progress value={session.totalScore} className="w-14 h-1 bg-white/[0.04]" indicatorClassName={session.totalScore >= 85 ? "bg-emerald-400" : session.totalScore >= 65 ? "bg-amber-400" : "bg-rose-400"} />
+                        <span className={cn("text-lg font-black tabular-nums", w.avgScore >= 85 ? "text-emerald-400" : w.avgScore >= 65 ? "text-amber-400" : "text-rose-400")}>{w.avgScore}</span>
+                        <Progress value={w.avgScore} className="w-14 h-1 bg-white/[0.04]" indicatorClassName={w.avgScore >= 85 ? "bg-emerald-400" : w.avgScore >= 65 ? "bg-amber-400" : "bg-rose-400"} />
                       </div>
-                    </div>
-                    );
-                  })}
+                    </Link>
+                  ))}
                 </div>
               </GlassCard>
             )}

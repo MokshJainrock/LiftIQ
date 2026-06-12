@@ -860,6 +860,167 @@ const burpeeGuide: ExerciseVisualGuide = {
   coachingCues: ["Hands down, feet back, feet in, jump up", "Solid plank — even if brief", "Explode out of the bottom", "Land soft, flow smooth"],
 };
 
+// ── Aliased / pattern guides for the full exercise library ────
+
+const benchPressGuide: ExerciseVisualGuide = {
+  ...pushupGuide,
+  id: "bench-press",
+  name: "Bench Press",
+  description: "Lie on the bench, lower the bar to mid-chest, drive through your feet and press up.",
+  muscles: ["Chest", "Triceps", "Front Delts"],
+  steps: [
+    { title: "Setup", detail: "Shoulder blades pinched, feet flat, slight arch." },
+    { title: "Lower", detail: "Bring the bar to mid-chest with elbows ~45°." },
+    { title: "Press", detail: "Drive the bar up in a slight arc to lockout." },
+    { title: "Reset", detail: "Control the descent — don't bounce off the chest." },
+  ],
+  commonMistakes: [
+    { mistake: "Flaring elbows 90°", fix: "Keep elbows around 45° from your torso." },
+    { mistake: "Bouncing the bar", fix: "Touch the chest lightly, then press — no rebound." },
+  ],
+  coachingCues: ["Feet drive the floor", "Bar path: slight arc to lockout", "Control the negative"],
+};
+
+const barbellRowGuide: ExerciseVisualGuide = {
+  ...bicepCurlGuide,
+  id: "barbell-row",
+  name: "Barbell Row",
+  description: "Hinge at the hips, pull the bar to your lower ribs with a flat back.",
+  muscles: ["Lats", "Rhomboids", "Biceps"],
+  highlightJoints: ["shoulder", "elbow", "hip"],
+  frameDurations: [800, 600, 600, 800],
+  keyframes: [
+    {
+      head: { x: 150, y: 38 }, shoulder: { x: 148, y: 78 }, elbow: { x: 168, y: 100 }, hand: { x: 188, y: 118 },
+      hip: { x: 152, y: 138 }, frontKnee: { x: 154, y: 198 }, frontAnkle: { x: 154, y: 252 },
+      backKnee: { x: 148, y: 198 }, backAnkle: { x: 148, y: 252 },
+    },
+    {
+      head: { x: 150, y: 38 }, shoulder: { x: 148, y: 78 }, elbow: { x: 158, y: 102 }, hand: { x: 168, y: 108 },
+      hip: { x: 152, y: 138 }, frontKnee: { x: 154, y: 198 }, frontAnkle: { x: 154, y: 252 },
+      backKnee: { x: 148, y: 198 }, backAnkle: { x: 148, y: 252 },
+    },
+    {
+      head: { x: 150, y: 38 }, shoulder: { x: 148, y: 78 }, elbow: { x: 142, y: 98 }, hand: { x: 138, y: 102 },
+      hip: { x: 152, y: 138 }, frontKnee: { x: 154, y: 198 }, frontAnkle: { x: 154, y: 252 },
+      backKnee: { x: 148, y: 198 }, backAnkle: { x: 148, y: 252 },
+    },
+    {
+      head: { x: 150, y: 38 }, shoulder: { x: 148, y: 78 }, elbow: { x: 158, y: 102 }, hand: { x: 168, y: 108 },
+      hip: { x: 152, y: 138 }, frontKnee: { x: 154, y: 198 }, frontAnkle: { x: 154, y: 252 },
+      backKnee: { x: 148, y: 198 }, backAnkle: { x: 148, y: 252 },
+    },
+  ],
+  steps: [
+    { title: "Hinge", detail: "Torso ~45°, back flat, core braced." },
+    { title: "Pull", detail: "Drive elbows back, bar to lower ribs." },
+    { title: "Squeeze", detail: "Pause with shoulder blades pinched." },
+    { title: "Lower", detail: "Control the weight back to full extension." },
+  ],
+  commonMistakes: [
+    { mistake: "Using momentum", fix: "Keep the torso angle fixed — only the arms move." },
+    { mistake: "Rounded back", fix: "Brace your core and keep a neutral spine." },
+  ],
+  coachingCues: ["Chest up", "Pull elbows to your pockets", "Squeeze at the top"],
+  frontConnections: FRONT_CONNECTIONS,
+  frontHighlightJoints: ["leftElbow", "rightElbow", "leftShoulder", "rightShoulder"],
+  frontKeyframes: bicepCurlGuide.frontKeyframes,
+};
+
+const deadliftGuide: ExerciseVisualGuide = {
+  ...squatGuide,
+  id: "deadlift",
+  name: "Deadlift",
+  description: "Hinge at the hips, grip the bar, and drive the floor away while keeping the bar close.",
+  muscles: ["Hamstrings", "Glutes", "Back", "Core"],
+  steps: [
+    { title: "Setup", detail: "Bar over mid-foot, hinge and grip just outside your legs." },
+    { title: "Brace", detail: "Big breath, lats tight, chest up." },
+    { title: "Drive", detail: "Push the floor away — don't yank with your back." },
+    { title: "Lockout", detail: "Stand tall, squeeze glutes, don't hyperextend." },
+  ],
+  coachingCues: ["Bar stays close to your shins", "Push the floor away", "Hips and shoulders rise together"],
+};
+
+const lateralRaiseGuide: ExerciseVisualGuide = {
+  ...shoulderPressGuide,
+  id: "lateral-raise",
+  name: "Lateral Raise",
+  description: "Raise dumbbells out to shoulder height with a slight bend in the elbows.",
+  muscles: ["Side Delts"],
+  frameDurations: [800, 600, 600, 800],
+  keyframes: [
+    {
+      head: { x: 150, y: 30 }, shoulder: { x: 148, y: 68 }, elbow: { x: 148, y: 100 }, hand: { x: 148, y: 128 },
+      hip: { x: 150, y: 132 }, frontKnee: { x: 152, y: 192 }, frontAnkle: { x: 152, y: 252 },
+      backKnee: { x: 148, y: 192 }, backAnkle: { x: 148, y: 252 },
+    },
+    {
+      head: { x: 150, y: 30 }, shoulder: { x: 148, y: 68 }, elbow: { x: 132, y: 95 }, hand: { x: 108, y: 88 },
+      hip: { x: 150, y: 132 }, frontKnee: { x: 152, y: 192 }, frontAnkle: { x: 152, y: 252 },
+      backKnee: { x: 148, y: 192 }, backAnkle: { x: 148, y: 252 },
+    },
+    {
+      head: { x: 150, y: 30 }, shoulder: { x: 148, y: 68 }, elbow: { x: 118, y: 72 }, hand: { x: 88, y: 68 },
+      hip: { x: 150, y: 132 }, frontKnee: { x: 152, y: 192 }, frontAnkle: { x: 152, y: 252 },
+      backKnee: { x: 148, y: 192 }, backAnkle: { x: 148, y: 252 },
+    },
+    {
+      head: { x: 150, y: 30 }, shoulder: { x: 148, y: 68 }, elbow: { x: 132, y: 95 }, hand: { x: 108, y: 88 },
+      hip: { x: 150, y: 132 }, frontKnee: { x: 152, y: 192 }, frontAnkle: { x: 152, y: 252 },
+      backKnee: { x: 148, y: 192 }, backAnkle: { x: 148, y: 252 },
+    },
+  ],
+  steps: [
+    { title: "Start", detail: "Arms at your sides, slight bend in elbows." },
+    { title: "Raise", detail: "Lead with elbows out to shoulder height." },
+    { title: "Pause", detail: "Brief hold at the top — don't shrug." },
+    { title: "Lower", detail: "Control down — 2 seconds on the negative." },
+  ],
+  coachingCues: ["Lead with elbows", "Stop at shoulder height", "No swinging"],
+};
+
+const tricepExtensionGuide: ExerciseVisualGuide = {
+  ...bicepCurlGuide,
+  id: "tricep-extension",
+  name: "Tricep Extension",
+  description: "Extend the arms against resistance — elbows stay pinned overhead or at your sides.",
+  muscles: ["Triceps"],
+  frameDurations: [700, 500, 500, 700],
+  keyframes: [
+    {
+      head: { x: 150, y: 30 }, shoulder: { x: 148, y: 68 }, elbow: { x: 152, y: 72 }, hand: { x: 158, y: 52 },
+      hip: { x: 150, y: 132 }, frontKnee: { x: 152, y: 192 }, frontAnkle: { x: 152, y: 252 },
+      backKnee: { x: 148, y: 192 }, backAnkle: { x: 148, y: 252 },
+    },
+    {
+      head: { x: 150, y: 30 }, shoulder: { x: 148, y: 68 }, elbow: { x: 152, y: 78 }, hand: { x: 158, y: 72 },
+      hip: { x: 150, y: 132 }, frontKnee: { x: 152, y: 192 }, frontAnkle: { x: 152, y: 252 },
+      backKnee: { x: 148, y: 192 }, backAnkle: { x: 148, y: 252 },
+    },
+    {
+      head: { x: 150, y: 30 }, shoulder: { x: 148, y: 68 }, elbow: { x: 152, y: 88 }, hand: { x: 158, y: 98 },
+      hip: { x: 150, y: 132 }, frontKnee: { x: 152, y: 192 }, frontAnkle: { x: 152, y: 252 },
+      backKnee: { x: 148, y: 192 }, backAnkle: { x: 148, y: 252 },
+    },
+    {
+      head: { x: 150, y: 30 }, shoulder: { x: 148, y: 68 }, elbow: { x: 152, y: 78 }, hand: { x: 158, y: 72 },
+      hip: { x: 150, y: 132 }, frontKnee: { x: 152, y: 192 }, frontAnkle: { x: 152, y: 252 },
+      backKnee: { x: 148, y: 192 }, backAnkle: { x: 148, y: 252 },
+    },
+  ],
+  steps: [
+    { title: "Start", detail: "Arms overhead or at sides, elbows fixed." },
+    { title: "Lower", detail: "Bend elbows, weight behind head or at chest." },
+    { title: "Extend", detail: "Drive through the triceps to full lockout." },
+    { title: "Control", detail: "Slow negative — don't flare the elbows." },
+  ],
+  coachingCues: ["Elbows stay put", "Full lockout at the top", "Control the negative"],
+  frontConnections: FRONT_CONNECTIONS,
+  frontHighlightJoints: ["leftElbow", "rightElbow"],
+  frontKeyframes: shoulderPressGuide.frontKeyframes,
+};
+
 // ── REGISTRY ─────────────────────────────────────────────────
 
 export const exerciseVisualGuides: Record<string, ExerciseVisualGuide> = {
@@ -873,6 +1034,11 @@ export const exerciseVisualGuides: Record<string, ExerciseVisualGuide> = {
   "shoulder-press": shoulderPressGuide,
   "bicep-curl": bicepCurlGuide,
   burpee: burpeeGuide,
+  "bench-press": benchPressGuide,
+  "barbell-row": barbellRowGuide,
+  deadlift: deadliftGuide,
+  "lateral-raise": lateralRaiseGuide,
+  "tricep-extension": tricepExtensionGuide,
 };
 
 export function getExerciseGuide(id: string): ExerciseVisualGuide | undefined {

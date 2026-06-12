@@ -15,6 +15,7 @@ import {
 } from "@/lib/exercises/library";
 import { Camera, Play, Search } from "lucide-react";
 import { ExerciseIcon } from "@/components/exercise-icon";
+import { ExerciseHowTo } from "@/components/exercise-how-to";
 import { cn } from "@/lib/utils";
 
 const EQUIPMENT_FILTERS: (Equipment | "all")[] = [
@@ -106,7 +107,7 @@ export default function ExercisesPage() {
                   {group.items.map((e) => (
                     <GlassCard key={e.id} className="p-4 flex flex-col justify-between gap-3 hover:bg-white/[0.03] transition-colors">
                       <div className="flex items-start gap-3">
-                        <ExerciseIcon muscle={e.muscle} size="lg" />
+                        <ExerciseIcon exerciseId={e.id} exerciseName={e.name} size="lg" />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-start justify-between gap-2">
                             <span className="font-semibold text-sm text-zinc-100">{e.name}</span>
@@ -125,6 +126,7 @@ export default function ExercisesPage() {
                           <p className="text-[11px] text-zinc-500 mt-1.5 leading-relaxed">{e.cue}</p>
                         </div>
                       </div>
+                      <ExerciseHowTo exerciseId={e.id} exerciseName={e.name} compact className="mb-3" />
                       <div className="flex gap-2">
                         <Link
                           href={`/workout/live?exercise=${e.id}`}

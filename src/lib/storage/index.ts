@@ -1,4 +1,4 @@
-import { WorkoutSession, DailyLog, StreakData, UserSettings, UserProfile, FoodEntry, UserExercise, WorkoutRoutine } from "@/types";
+import { WorkoutSession, DailyLog, StreakData, UserSettings, UserProfile, FoodEntry, UserExercise, WorkoutRoutine, WorkoutLog } from "@/types";
 import * as db from "@/lib/api-db";
 import { clearAllRecordings } from "@/lib/storage/recordings-db";
 
@@ -11,6 +11,7 @@ const STORAGE_KEYS = {
   FOOD_LOG: "liftiq-food-log",
   USER_EXERCISES: "liftiq-user-exercises",
   ROUTINES: "liftiq-routines",
+  WORKOUTS: "liftiq-workouts",
 } as const;
 
 function getItem<T>(key: string, fallback: T): T {
@@ -302,4 +303,38 @@ export function deleteRoutine(id: string): void {
   const routines = getRoutines().filter((r) => r.id !== id);
   setItem(STORAGE_KEYS.ROUTINES, routines);
   db.dbDeleteRoutine(id);
+}
+
+// ── Workout logs (named multi-exercise sessions) ──────────────
+
+export function getWorkouts(): WorkoutLog[] {
+  return getItem<WorkoutLog[]>(STORAGE_KEYS.WORKOUTS, []);
+}
+
+export function saveWorkout(workout: WorkoutLog): void {
+  const list = getWorkouts();
+  const idx = list.findIndex((w) => w.id === workout.id);
+  if (idx >= 0) list[idx] = workout;
+  else list.push(workout);
+  setItem(STORAGE_KEYS.WORKOUTS, list);
+}
+
+export function updateWorkoutName(id: string, name: string): void {
+  const list = getWorkouts();
+  const w = list.find((x) => x.id === id);
+  if (w) {
+    w.name = name.trim() || undefined;
+    setItem(STORAGE_KEYS.WORKOUTS, list);
+  } else if (id.startsWith("legacy-")) {
+    const rest = id.slice("legacy-".length);
+    const [date, startStr] = rest.split("__");
+    list.push({
+      id,
+      name: name.trim(),
+      date: date ?? new Date().toISOString().slice(0, 10),
+      startTime: parseInt(startStr ?? "0", 10) || Date.now(),
+      endTime: Date.now(),
+    });
+    setItem(STORAGE_KEYS.WORKOUTS, list);
+  }
 }

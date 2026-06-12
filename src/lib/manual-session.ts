@@ -27,7 +27,7 @@ export function buildManualSession(
   exerciseName: string,
   sets: LoggedSet[],
   history: WorkoutSession[],
-  opts?: { startTime?: number; endTime?: number },
+  opts?: { startTime?: number; endTime?: number; workoutId?: string },
 ): BuiltManualSession {
   const exerciseKey = resolveExerciseKey(exerciseName);
   const rating = rateManualWorkout(exerciseKey, sets, history);
@@ -67,6 +67,7 @@ export function buildManualSession(
     caloriesBurned: Math.round(totalReps * (isWeighted ? 0.6 : 0.4)),
     source: "manual",
     sets,
+    workoutId: opts?.workoutId,
   };
 
   return { session, rating };

@@ -12,6 +12,8 @@ interface AnimatedSkeletonProps {
   className?: string;
   ghost?: boolean;
   showControls?: boolean;
+  /** Side (default) or front-facing skeleton keyframes. */
+  view?: "side" | "front";
   /** Optional outward ref so a parent (e.g. the recording compositor) can sample this canvas. */
   canvasRefExternal?: RefObject<HTMLCanvasElement | null>;
 }
@@ -74,6 +76,7 @@ export function AnimatedSkeleton({
   className,
   ghost,
   showControls = false,
+  view = "side",
   canvasRefExternal,
 }: AnimatedSkeletonProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -131,8 +134,11 @@ export function AnimatedSkeleton({
       s.lastTime = now;
       s.elapsed += dt;
 
-      const { keyframes, frameDurations, connections, highlightJoints } = guide;
-      const dur = frameDurations[s.frameIdx] || 600;
+      const useFront = view === "front" && guide.frontKeyframes?.length;
+      const keyframes = useFront ? guide.frontKeyframes! : guide.keyframes;
+      const connections = useFront ? (guide.frontConnections ?? guide.connections) : guide.connections;
+      const highlightJoints = useFront ? (guide.frontHighlightJoints ?? guide.highlightJoints) : guide.highlightJoints;
+      const dur = guide.frameDurations[s.frameIdx % guide.frameDurations.length] || 600;
 
       if (s.elapsed >= dur) {
         s.elapsed = 0;
@@ -304,7 +310,7 @@ export function AnimatedSkeleton({
 
       animRef.current = requestAnimationFrame(draw);
     },
-    [guide],
+    [guide, view],
   );
 
   useEffect(() => {
@@ -316,7 +322,7 @@ export function AnimatedSkeleton({
     setSpeedIdx(1);
     animRef.current = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(animRef.current);
-  }, [draw]);
+  }, [draw, view]);
 
   return (
     <div className="relative" style={{ width: width ?? "100%", height: height ?? "100%" }}>
