@@ -1,12 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import { useWorkoutStore } from "@/lib/store";
-import { saveSession, updateStreak } from "@/lib/storage";
+import { saveSession, updateStreak, getSessions } from "@/lib/storage";
 import { saveRecording } from "@/lib/storage/recordings-db";
 import { getExercise } from "@/lib/exercises";
 import { WorkoutSession } from "@/types";
 import { Button } from "@/components/ui/button";
-import { Play, Pause, Square, RotateCcw, CircleDot, X } from "lucide-react";
+import { Play, Pause, Square, RotateCcw, CircleDot, X, Dumbbell, Minus, Plus } from "lucide-react";
+
+/** Last weight the user logged for this exercise, for prefill. */
+function lastWeightFor(exercise: string): number | undefined {
+  const prior = getSessions().find(
+    (s) => s.exercise === exercise && typeof s.weight === "number" && s.weight > 0,
+  );
+  return prior?.weight;
+}
 
 export function WorkoutControls() {
   const {
@@ -19,6 +28,7 @@ export function WorkoutControls() {
     hasSelectedExercise,
     sessionStartTime,
     sessionWeight,
+    setSessionWeight,
     startCountdown,
     cancelCountdown,
     pauseWorkout,
@@ -34,11 +44,33 @@ export function WorkoutControls() {
     setCurrentPhase,
   } = useWorkoutStore();
 
-  const handleStart = () => {
-    if (!hasSelectedExercise || !selectedExercise) return;
+  const [showWeightPrompt, setShowWeightPrompt] = useState(false);
+  const [weightInput, setWeightInput] = useState("");
+
+  const beginCountdown = (weight: number | undefined) => {
+    setSessionWeight(weight);
+    setShowWeightPrompt(false);
     clearRepResults();
     setRecordingBlob(null);
     startCountdown();
+  };
+
+  const handleStart = () => {
+    if (!hasSelectedExercise || !selectedExercise) return;
+    const prefill = sessionWeight ?? lastWeightFor(selectedExercise);
+    setWeightInput(prefill && prefill > 0 ? String(prefill) : "");
+    setShowWeightPrompt(true);
+  };
+
+  const adjustWeight = (delta: number) => {
+    const current = parseFloat(weightInput) || 0;
+    const next = Math.max(0, current + delta);
+    setWeightInput(next > 0 ? String(next) : "");
+  };
+
+  const confirmWeight = () => {
+    const parsed = parseFloat(weightInput);
+    beginCountdown(Number.isFinite(parsed) && parsed > 0 ? parsed : undefined);
   };
 
   const handleStop = async () => {
@@ -179,6 +211,64 @@ export function WorkoutControls() {
           Cancel
         </Button>
       ) : !isWorkoutActive ? (
+        showWeightPrompt ? (
+          <div className="w-full space-y-3">
+            <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
+              <Dumbbell className="h-3.5 w-3.5 text-cyan-400" />
+              Weight for this set (lbs)
+            </div>
+            <div className="flex items-stretch gap-2">
+              <Button
+                onClick={() => adjustWeight(-5)}
+                variant="outline"
+                size="lg"
+                aria-label="Decrease weight by 5 lbs"
+                className="min-h-[48px] shrink-0 rounded-xl border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] px-4"
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <input
+                type="number"
+                inputMode="decimal"
+                min={0}
+                step="2.5"
+                value={weightInput}
+                onChange={(e) => setWeightInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && confirmWeight()}
+                placeholder="Bodyweight"
+                autoFocus
+                className="min-h-[48px] w-full min-w-0 flex-1 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 text-center text-lg font-bold tabular-nums text-zinc-100 outline-none transition-colors placeholder:text-sm placeholder:font-medium placeholder:text-zinc-600 focus:border-cyan-500/40"
+              />
+              <Button
+                onClick={() => adjustWeight(5)}
+                variant="outline"
+                size="lg"
+                aria-label="Increase weight by 5 lbs"
+                className="min-h-[48px] shrink-0 rounded-xl border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] px-4"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                onClick={confirmWeight}
+                size="lg"
+                className="min-h-[48px] flex-1 rounded-xl shadow-md shadow-primary/15 transition-all hover:shadow-lg hover:shadow-primary/20 hover:brightness-105"
+              >
+                <Play className="h-4 w-4" />
+                {parseFloat(weightInput) > 0 ? `Start @ ${parseFloat(weightInput)} lbs` : "Start (bodyweight)"}
+              </Button>
+              <Button
+                onClick={() => setShowWeightPrompt(false)}
+                variant="outline"
+                size="lg"
+                className="min-h-[48px] shrink-0 rounded-xl border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] px-4"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        ) : (
         <div className="flex w-full flex-col gap-2.5 sm:flex-row sm:items-stretch">
           <Button
             onClick={handleStart}
@@ -198,6 +288,7 @@ export function WorkoutControls() {
             <RotateCcw className="h-4 w-4" />
           </Button>
         </div>
+        )
       ) : (
         <div className="flex w-full items-stretch gap-2">
           {isRecording && (

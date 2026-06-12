@@ -5,12 +5,15 @@ import { motion } from "framer-motion";
 import { CircleDot, Wind } from "lucide-react";
 import { breathingPaceSignal, estimateBpm, selfReportSignal } from "@/lib/mind/signal";
 import { combineSignals } from "@/lib/mind/intervention";
+import { heartRateSignal, type HeartRateReading } from "@/lib/mind/heart-rate";
+import { HeartRateCard } from "@/components/mind/heart-rate-card";
 import type { StressSignal } from "@/lib/mind/types";
 
 interface Props {
   onChange: (state: {
     rating: number;
     bpm: number | null;
+    mood: string | null;
     signals: StressSignal[];
     level: number;
     confidence: number;
@@ -30,19 +33,21 @@ export function StressCheckInCard({ onChange }: Props) {
   const [taps, setTaps] = useState<number[]>([]);
   const [bpm, setBpm] = useState<number | null>(null);
   const [mood, setMood] = useState<string | null>(null);
+  const [heartRate, setHeartRate] = useState<HeartRateReading | null>(null);
   const lastEmit = useRef("");
 
   // Recompute signals whenever inputs change.
   useEffect(() => {
     const signals: StressSignal[] = [selfReportSignal(rating)];
     if (bpm !== null) signals.push(breathingPaceSignal(bpm));
+    if (heartRate !== null) signals.push(heartRateSignal(heartRate.bpm, heartRate.origin));
     const { level, confidence } = combineSignals(signals);
-    const key = `${rating}|${bpm ?? "_"}|${mood ?? "_"}`;
+    const key = `${rating}|${bpm ?? "_"}|${mood ?? "_"}|${heartRate ? `${heartRate.bpm}-${heartRate.origin}` : "_"}`;
     if (key !== lastEmit.current) {
       lastEmit.current = key;
-      onChange({ rating, bpm, signals, level, confidence });
+      onChange({ rating, bpm, mood, signals, level, confidence });
     }
-  }, [rating, bpm, mood, onChange]);
+  }, [rating, bpm, mood, heartRate, onChange]);
 
   const handleTap = () => {
     const next = [...taps, Date.now()].slice(-7);
@@ -161,6 +166,9 @@ export function StressCheckInCard({ onChange }: Props) {
           </button>
         </div>
       </div>
+
+      {/* Heart rate — Bluetooth monitor or manual (e.g. from an Apple Watch) */}
+      <HeartRateCard onReading={setHeartRate} />
 
       {/* Inline range styling — scoped via class */}
       <style jsx>{`

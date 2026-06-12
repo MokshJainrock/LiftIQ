@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { callOpenAI, isOpenAIAvailable } from "@/lib/ai/openai-client";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
-// Gemini 2.0 Flash supports multimodal (image) input, so we can hand it a
-// food photo and ask for a structured nutrition estimate.
-const GEMINI_ENDPOINT =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
-
+// gpt-4o-mini supports image input, so we can hand it a food photo and ask
+// for a structured nutrition estimate.
 const PROMPT = `You are a nutrition estimation assistant. Analyze the food in this image.
 Identify each distinct food or drink item you can see. For EACH item, estimate the nutrition for the portion actually visible in the photo (not a generic database serving).
 
@@ -34,14 +33,6 @@ interface ScannedItem {
   carbs: number;
   fat: number;
   confidence: "high" | "medium" | "low";
-}
-
-function getApiKey(): string | null {
-  return (
-    process.env.GEMINI_API_KEY ||
-    process.env.NEXT_PUBLIC_GEMINI_API_KEY ||
-    null
-  );
 }
 
 function num(v: unknown): number {
@@ -92,10 +83,16 @@ function extractJson(text: string): unknown {
 }
 
 export async function POST(req: NextRequest) {
-  const apiKey = getApiKey();
-  if (!apiKey) {
+  if (!rateLimit(`food-scan:${clientKey(req)}`, 10, 60_000)) {
     return NextResponse.json(
-      { error: "AI food scanning isn't configured (missing Gemini API key)." },
+      { error: "Too many scans — give it a minute and try again." },
+      { status: 429 }
+    );
+  }
+
+  if (!isOpenAIAvailable()) {
+    return NextResponse.json(
+      { error: "AI food scanning isn't configured (missing OpenAI API key)." },
       { status: 500 }
     );
   }
@@ -112,50 +109,30 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No image provided." }, { status: 400 });
   }
 
-  const match = /^data:(image\/[a-zA-Z0-9.+-]+);base64,([\s\S]+)$/.exec(image);
-  if (!match) {
+  if (!/^data:image\/[a-zA-Z0-9.+-]+;base64,[\s\S]+$/.test(image)) {
     return NextResponse.json(
       { error: "Image must be a base64 data URL." },
       { status: 400 }
     );
   }
-  const mimeType = match[1];
-  const base64 = match[2];
 
   try {
-    const response = await fetch(`${GEMINI_ENDPOINT}?key=${apiKey}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              { inline_data: { mime_type: mimeType, data: base64 } },
-              { text: PROMPT },
-            ],
-          },
-        ],
-        generationConfig: {
-          responseMimeType: "application/json",
-          temperature: 0.2,
-          maxOutputTokens: 1024,
-        },
-      }),
+    const res = await callOpenAI({
+      prompt: PROMPT,
+      imageDataUrl: image,
+      temperature: 0.2,
+      maxTokens: 1024,
+      jsonMode: true,
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error("Gemini food-scan error:", response.status, errText.slice(0, 500));
+    if (!res.ok || !res.text) {
       return NextResponse.json(
         { error: "The food scanner is unavailable right now. Try again." },
         { status: 502 }
       );
     }
 
-    const data = await response.json();
-    const text: string =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ?? "";
-    const parsed = extractJson(text) as
+    const parsed = extractJson(res.text) as
       | { items?: unknown; totalCalories?: unknown; note?: unknown }
       | null;
 

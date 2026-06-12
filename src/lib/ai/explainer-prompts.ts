@@ -14,7 +14,7 @@ export interface ExplainerInput {
   recentMistakes?: string[];
 }
 
-export function buildGeminiPrompt(input: ExplainerInput): string {
+export function buildExplainerPrompt(input: ExplainerInput): string {
   const { exercise, issue, severity, metrics, recentMistakes } = input;
 
   const exerciseName = exercise.replace("-", " ");
@@ -261,6 +261,26 @@ export function getFallbackExplanation(issue: string, exercise: string): FormExp
     explanation: `This form issue was detected during your ${exerciseName}. Addressing it will improve your movement quality and reduce injury risk.`,
     fixTip: `Focus on correcting this on your next set — slow down and pay extra attention to form.`,
   };
+}
+
+/**
+ * Client-safe batch fallback: dedupes issue messages and maps each to its
+ * rule-based explanation. Used for instant display while the AI route loads,
+ * and as the final fallback when it fails.
+ */
+export function getFallbackExplanations(
+  issues: { message?: string }[],
+  exercise: string,
+): FormExplanation[] {
+  const seen = new Set<string>();
+  const results: FormExplanation[] = [];
+  for (const iss of issues) {
+    const msg = iss.message || "";
+    if (!msg || seen.has(msg.toLowerCase())) continue;
+    seen.add(msg.toLowerCase());
+    results.push(getFallbackExplanation(msg, exercise));
+  }
+  return results.slice(0, 5);
 }
 
 export function validateExplanation(obj: unknown): obj is FormExplanation {

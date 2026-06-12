@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 
 const USDA_BASE = "https://api.nal.usda.gov/fdc/v1";
 
@@ -48,6 +49,10 @@ function findMacro(
 }
 
 export async function GET(req: NextRequest) {
+  if (!rateLimit(`food-search:${clientKey(req)}`, 30, 60_000)) {
+    return NextResponse.json({ foods: [] }, { status: 429 });
+  }
+
   const query = req.nextUrl.searchParams.get("q");
   if (!query || query.trim().length < 2) {
     return NextResponse.json({ foods: [] });

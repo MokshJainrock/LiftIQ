@@ -20,12 +20,14 @@ export default function CheckInPage() {
   const [state, setState] = useState<{
     rating: number;
     bpm: number | null;
+    mood: string | null;
     signals: StressSignal[];
     level: number;
     confidence: number;
   }>({
     rating: 4,
     bpm: null,
+    mood: null,
     signals: [],
     level: 0.4,
     confidence: 0.9,
@@ -50,6 +52,7 @@ export default function CheckInPage() {
       level: state.level,
       confidence: state.confidence,
       intervention,
+      mood: state.mood ?? undefined,
     });
     saveMindSession({
       id: `ms_${Date.now()}`,
@@ -108,6 +111,7 @@ export default function CheckInPage() {
               <AIReflectionPanel
                 mode="checkin"
                 level={state.level}
+                mood={state.mood ?? undefined}
                 trigger={reflectTrigger}
               />
             </div>

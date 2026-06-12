@@ -11,7 +11,7 @@ import { FoodTracker } from "@/components/nutrition/food-tracker";
 import { getSessions, getDailyLogs, getStreakData, getTodayFoodCalories, getFoodLog, getUserProfile } from "@/lib/storage";
 import { WorkoutSession, DailyLog, StreakData, FoodEntry, UserProfile } from "@/types";
 import { getGoalLabel } from "@/lib/calories";
-import { BarChart3, Trophy, Flame, Target, Repeat, TrendingUp, Calendar, Zap, UtensilsCrossed, AlertTriangle, Star, Activity } from "lucide-react";
+import { BarChart3, Trophy, Flame, Target, Repeat, TrendingUp, Calendar, Zap, UtensilsCrossed, AlertTriangle, Star, Activity, Medal, Dumbbell } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, AreaChart, Area, PieChart, Pie, Cell } from "recharts";
 import { cn } from "@/lib/utils";
 
@@ -99,6 +99,38 @@ export default function DashboardPage() {
     const score = s.bestRepScore ?? 0;
     return score > best.score ? { score, exercise: s.exerciseName || s.exercise, date: s.startTime } : best;
   }, { score: 0, exercise: "", date: 0 });
+
+  // Personal records per exercise: max weight, most reps in a session, best score
+  const personalRecords = (() => {
+    const byExercise: Record<string, { name: string; maxWeight: number; maxReps: number; bestScore: number; lastTrained: number }> = {};
+    for (const s of sessions) {
+      const key = s.exercise;
+      const rec = byExercise[key] ?? {
+        name: s.exerciseName || s.exercise.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
+        maxWeight: 0, maxReps: 0, bestScore: 0, lastTrained: 0,
+      };
+      rec.maxWeight = Math.max(rec.maxWeight, s.weight ?? 0);
+      rec.maxReps = Math.max(rec.maxReps, s.reps.length);
+      rec.bestScore = Math.max(rec.bestScore, s.totalScore);
+      rec.lastTrained = Math.max(rec.lastTrained, s.startTime);
+      byExercise[key] = rec;
+    }
+    return Object.values(byExercise).sort((a, b) => b.lastTrained - a.lastTrained).slice(0, 6);
+  })();
+
+  // Training volume (weight × reps) per day — weighted sessions only
+  const volumePerDay = (() => {
+    const byDay: Record<string, number> = {};
+    for (const s of sessions) {
+      if (!s.weight || s.weight <= 0 || s.reps.length === 0) continue;
+      const day = new Date(s.startTime).toISOString().slice(0, 10);
+      byDay[day] = (byDay[day] || 0) + s.weight * s.reps.length;
+    }
+    return Object.entries(byDay)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-14)
+      .map(([d, v]) => ({ date: d.slice(5), volume: Math.round(v) }));
+  })();
 
   const hasData = sessions.length > 0;
 
@@ -234,6 +266,19 @@ export default function DashboardPage() {
                     </ResponsiveContainer>
                   </ChartCard>
                 )}
+                {volumePerDay.length > 0 && (
+                  <ChartCard title="Training Volume (lbs)" icon={<Dumbbell className="h-4 w-4 text-emerald-400" />}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={volumePerDay} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke={G} vertical={false} />
+                        <XAxis dataKey="date" stroke={A} tick={{ fontSize: 10, fill: A }} tickLine={false} axisLine={{ stroke: G }} />
+                        <YAxis stroke={A} tick={{ fontSize: 10, fill: A }} tickLine={false} axisLine={{ stroke: G }} width={44} />
+                        <Tooltip contentStyle={TT} formatter={(v) => [`${Number(v).toLocaleString()} lbs`, "Volume"]} />
+                        <Bar dataKey="volume" fill="#34d399" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                )}
                 {repsPerDay.length > 0 && (
                   <ChartCard title="Daily Avg Score" icon={<Target className="h-4 w-4 text-cyan-400" />}>
                     <ResponsiveContainer width="100%" height="100%">
@@ -284,6 +329,39 @@ export default function DashboardPage() {
                   </ChartCard>
                 )}
               </div>
+            )}
+
+            {/* ── Personal Records ── */}
+            {personalRecords.length > 0 && (
+              <GlassCard className="overflow-hidden">
+                <div className="px-6 py-4 border-b border-white/[0.04] flex items-center gap-2.5">
+                  <Medal className="h-4 w-4 text-amber-400" />
+                  <h3 className="text-sm font-bold">Personal Records</h3>
+                </div>
+                <div className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                  {personalRecords.map((pr) => (
+                    <div key={pr.name} className="glass-card rounded-xl px-4 py-3">
+                      <div className="text-sm font-semibold text-zinc-200 truncate">{pr.name}</div>
+                      <div className="mt-2 flex items-center gap-4 text-[11px] text-zinc-500">
+                        <span className="flex items-center gap-1" title="Best session score">
+                          <Trophy className="h-3 w-3 text-amber-400" />
+                          <span className="tabular-nums text-zinc-300 font-bold">{pr.bestScore}</span>
+                        </span>
+                        <span className="flex items-center gap-1" title="Most reps in a session">
+                          <Repeat className="h-3 w-3 text-cyan-400" />
+                          <span className="tabular-nums text-zinc-300 font-bold">{pr.maxReps}</span> reps
+                        </span>
+                        {pr.maxWeight > 0 && (
+                          <span className="flex items-center gap-1" title="Heaviest weight">
+                            <Dumbbell className="h-3 w-3 text-emerald-400" />
+                            <span className="tabular-nums text-zinc-300 font-bold">{pr.maxWeight}</span> lbs
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </GlassCard>
             )}
 
             {/* ── Recent Sessions ── */}

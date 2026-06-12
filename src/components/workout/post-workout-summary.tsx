@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useWorkoutStore } from "@/lib/store";
 import { generateWorkoutFeedback } from "@/lib/ai/feedback";
-import { generateFormExplanations, getExplanationsForIssues } from "@/lib/ai/explainer";
-import { FormExplanation } from "@/lib/ai/explainer-prompts";
+import { fetchCoachFeedback, fetchFormExplanations } from "@/lib/ai/client";
+import { FormExplanation, getFallbackExplanations } from "@/lib/ai/explainer-prompts";
 import { Badge } from "@/components/ui/badge";
 import { GlassCard } from "@/components/ui/glass-card";
 import { motion, AnimatePresence } from "framer-motion";
@@ -21,14 +21,34 @@ export function PostWorkoutSummary() {
   const [aiExplanations, setAiExplanations] = useState<FormExplanation[]>([]);
   const [loadingAI, setLoadingAI] = useState(false);
   const [hasLoadedAI, setHasLoadedAI] = useState(false);
+  const [aiFeedback, setAiFeedback] = useState<string | null>(null);
+  const [aiFeedbackPending, setAiFeedbackPending] = useState(false);
+
+  // Kick off the real LLM analysis as soon as the modal opens. The rule-based
+  // summary renders instantly and is replaced if/when the model responds.
+  useEffect(() => {
+    if (!lastSession) return;
+    let stale = false;
+    setAiFeedback(null);
+    setAiFeedbackPending(true);
+    fetchCoachFeedback(lastSession).then((text) => {
+      if (!stale) {
+        setAiFeedback(text);
+        setAiFeedbackPending(false);
+      }
+    });
+    return () => {
+      stale = true;
+    };
+  }, [lastSession]);
 
   const loadAIExplanations = useCallback(async () => {
     if (!lastSession || hasLoadedAI) return;
     setLoadingAI(true);
     try {
       const allIssues = lastSession.reps.flatMap(r => r.issues);
-      const results = await generateFormExplanations(allIssues, lastSession.exercise);
-      setAiExplanations(results);
+      const results = await fetchFormExplanations(allIssues, lastSession.exercise);
+      if (results.length > 0) setAiExplanations(results);
     } catch {
       // Fall through — sync fallback already shown
     } finally {
@@ -47,10 +67,11 @@ export function PostWorkoutSummary() {
   for (const issue of allIssues) if (issue.message) issueCounts[issue.message] = (issueCounts[issue.message] || 0) + 1;
   const topMistakes = Object.entries(issueCounts).sort(([, a], [, b]) => b - a).slice(0, 5);
   const chartData = reps.map((r, i) => ({ rep: i + 1, score: r.score, isBest: i === bestRepIndex }));
-  const feedback = generateWorkoutFeedback({ exercise, reps, avgScore: totalScore, duration: endTime ? Math.floor((endTime - startTime) / 1000) : 0 });
+  const ruleFeedback = generateWorkoutFeedback({ exercise, reps, avgScore: totalScore, duration: endTime ? Math.floor((endTime - startTime) / 1000) : 0 });
+  const feedback = aiFeedback ?? ruleFeedback;
   const displayExercise = lastSession.exerciseName || exercise.charAt(0).toUpperCase() + exercise.slice(1).replace("-", " ");
 
-  const syncExplanations = getExplanationsForIssues(allIssues, exercise);
+  const syncExplanations = getFallbackExplanations(allIssues, exercise);
   const explanations = aiExplanations.length > 0 ? aiExplanations : syncExplanations;
 
   const handleExplainClick = () => {
@@ -154,7 +175,10 @@ export function PostWorkoutSummary() {
 
             {/* AI Coach Analysis */}
             <div>
-              <h3 className="text-sm font-bold text-zinc-400 mb-2.5 flex items-center gap-2"><Sparkles className="h-4 w-4 text-cyan-400" />AI Coach Analysis</h3>
+              <h3 className="text-sm font-bold text-zinc-400 mb-2.5 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-cyan-400" />AI Coach Analysis
+                {aiFeedbackPending && <Loader2 className="h-3.5 w-3.5 animate-spin text-cyan-500/70" />}
+              </h3>
               <GlassCard glow className="p-4"><p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line">{feedback}</p></GlassCard>
             </div>
 

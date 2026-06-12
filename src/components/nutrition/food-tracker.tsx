@@ -964,7 +964,7 @@ function AddFoodForm({ onClose, onAdded }: { onClose: () => void; onAdded: () =>
         <div className="text-center">
           <span className="text-[9px] text-muted-foreground/50">
             {mode === "scan"
-              ? "AI food scan powered by Gemini"
+              ? "AI food scan powered by GPT-4o mini"
               : "Food data from FoodData Central (USDA)"}
           </span>
         </div>

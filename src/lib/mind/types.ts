@@ -5,6 +5,8 @@ export type StressSignalSource =
   | "self_report"
   | "breathing"
   | "camera_ppg"
+  /** Live BPM from a Bluetooth monitor or manually entered from a watch. */
+  | "heart_rate"
   /** Legacy: older local sessions may still include this. No longer written by the app. */
   | "simulated";
 

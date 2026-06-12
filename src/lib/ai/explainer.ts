@@ -1,15 +1,15 @@
 import { JointFeedback, JointStatus } from "@/types";
-import { callGemini, isGeminiAvailable } from "./gemini-client";
+import { callOpenAI, isOpenAIAvailable } from "./openai-client";
 import {
   FormExplanation,
   ExplainerInput,
-  buildGeminiPrompt,
+  buildExplainerPrompt,
   getFallbackExplanation,
   validateExplanation,
 } from "./explainer-prompts";
 
 // ── In-memory cache ──
-// Keyed by "exercise|issue" — avoids re-calling Gemini for repeated identical queries
+// Keyed by "exercise|issue" — avoids re-calling the model for repeated identical queries
 const explanationCache = new Map<string, FormExplanation>();
 const MAX_CACHE_SIZE = 50;
 
@@ -37,10 +37,10 @@ export async function generateFormExplanation(input: ExplainerInput): Promise<Fo
   const cached = getCached(exercise, issue);
   if (cached) return cached;
 
-  if (isGeminiAvailable()) {
+  if (isOpenAIAvailable()) {
     try {
-      const prompt = buildGeminiPrompt({ exercise, issue, severity, metrics, recentMistakes });
-      const response = await callGemini({ prompt, maxTokens: 250, temperature: 0.7, jsonMode: true });
+      const prompt = buildExplainerPrompt({ exercise, issue, severity, metrics, recentMistakes });
+      const response = await callOpenAI({ prompt, maxTokens: 250, temperature: 0.7, jsonMode: true });
 
       if (response.ok && response.text) {
         const parsed = JSON.parse(response.text);
@@ -55,7 +55,7 @@ export async function generateFormExplanation(input: ExplainerInput): Promise<Fo
         }
       }
     } catch {
-      // Gemini failed — fall through to rule-based
+      // Model call failed — fall through to rule-based
     }
   }
 
@@ -97,27 +97,6 @@ export async function generateFormExplanations(
   return results;
 }
 
-// ── Sync fallback for immediate use (no Gemini) ──
-
-export function getExplanationsForIssues(
-  issues: JointFeedback[],
-  exercise: string
-): FormExplanation[] {
-  const seen = new Set<string>();
-  const results: FormExplanation[] = [];
-
-  for (const iss of issues) {
-    const msg = iss.message || "";
-    if (!msg || seen.has(msg.toLowerCase())) continue;
-    seen.add(msg.toLowerCase());
-
-    const cached = getCached(exercise, msg);
-    if (cached) {
-      results.push(cached);
-    } else {
-      results.push(getFallbackExplanation(msg, exercise));
-    }
-  }
-
-  return results.slice(0, 5);
-}
+// Client-side sync fallback lives in explainer-prompts.ts
+// (getFallbackExplanations) so this module — which touches the server-only
+// OpenAI client — is only imported by API routes.

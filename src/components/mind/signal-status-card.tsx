@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Activity, Mic, ShieldCheck, Sparkles } from "lucide-react";
+import { Activity, HeartPulse, Mic, ShieldCheck, Sparkles } from "lucide-react";
 import type { StressSignal } from "@/lib/mind/types";
 
 const META: Record<
@@ -11,6 +11,7 @@ const META: Record<
   self_report:  { label: "Self-report",     icon: ShieldCheck, tag: "Direct" },
   breathing:    { label: "Breathing pace",  icon: Activity,    tag: "Estimated" },
   camera_ppg:   { label: "Camera estimate", icon: Mic,         tag: "On-device" },
+  heart_rate:   { label: "Heart rate",      icon: HeartPulse,  tag: "Sensor" },
   /** Legacy sessions may still list this; no longer added in new check-ins. */
   simulated:    { label: "Blended",         icon: Sparkles,    tag: "Heuristic" },
 };

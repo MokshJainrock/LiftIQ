@@ -15,6 +15,7 @@ import { PerfectRepBanner } from "@/components/workout/perfect-rep-banner";
 import { AICoachBadge } from "@/components/workout/ai-coach-badge";
 import { ExerciseManager } from "@/components/workout/exercise-manager";
 import { RoutineBuilder } from "@/components/workout/routine-builder";
+import { RecommendedWorkouts } from "@/components/workout/recommended-workouts";
 import {
   RoutineProgressBar,
   type RoutineProgressState,
@@ -292,6 +293,13 @@ export default function WorkoutPage() {
               </div>
               {showExercises && (
                 <div className="px-4 pb-2 pt-2 border-t border-white/[0.04] mt-2 mx-3">
+                  <RecommendedWorkouts
+                    className="mb-4"
+                    onSelect={() => {
+                      setShowExercises(false);
+                      setSelectedUserExercise(null);
+                    }}
+                  />
                   <ExerciseSelector
                     onSelect={() => {
                       setShowExercises(false);
@@ -422,6 +430,12 @@ export default function WorkoutPage() {
               )}
               {!routineProgress && (
                 <GlassCard className="p-5">
+                  {!isWorkoutActive && !isCountingDown && !isFormChecking && (
+                    <RecommendedWorkouts
+                      className="mb-4"
+                      onSelect={() => setSelectedUserExercise(null)}
+                    />
+                  )}
                   <ExerciseSelector onSelect={() => setSelectedUserExercise(null)} />
                 </GlassCard>
               )}

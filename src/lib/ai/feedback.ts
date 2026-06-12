@@ -1,7 +1,7 @@
 import { RepResult, JointFeedback } from "@/types";
 
-// Pluggable AI feedback module
-// Currently uses rule-based generation; can be swapped for Gemini API
+// Rule-based feedback module — instant summary + fallback for the
+// LLM-powered /api/coach-feedback route.
 
 interface WorkoutSummaryInput {
   exercise: string;
@@ -75,10 +75,5 @@ function countIssues(issues: JointFeedback[]): Record<string, number> {
   return counts;
 }
 
-// Placeholder for real Gemini integration
-export async function generateAIFeedback(input: WorkoutSummaryInput): Promise<string> {
-  // When a real Gemini API key is available, replace this with:
-  // const response = await fetch('https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent', { ... });
-  // For now, use the rule-based generator
-  return generateWorkoutFeedback(input);
-}
+// Real LLM analysis is served by /api/coach-feedback; this module is the
+// instant rule-based summary and the fallback when the API is unavailable.

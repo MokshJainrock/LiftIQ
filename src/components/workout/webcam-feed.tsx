@@ -61,11 +61,13 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
   // Compositor — paints video + live skeleton + ghost coach into one canvas
   // so MediaRecorder can capture the full overlay (not just the raw camera).
   const compositorCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const liveCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const ghostCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const compositorRafRef = useRef<number>(0);
 
   const repDetectorRef = useRef<RepDetector | null>(null);
+  // Freshest landmarks for the recording compositor, with a timestamp so a
+  // lost pose can't leave a frozen skeleton baked into the clip.
+  const latestLandmarksRef = useRef<{ lms: Landmark[]; t: number } | null>(null);
   const exerciseRef = useRef(selectedExercise);
   const formCheckFramesRef = useRef(0);
   const lastHintRef = useRef("");
@@ -251,6 +253,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
 
   const handleFrame = useCallback(
     (landmarks: Landmark[]) => {
+      latestLandmarksRef.current = { lms: landmarks, t: performance.now() };
       const CORE_LANDMARKS = [11, 12, 13, 14, 23, 24];
       const MIN_VIS = 0.6;
       const coreVisible = CORE_LANDMARKS.filter(
@@ -413,16 +416,11 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
     ]
   );
 
-  const { videoRef, canvasRef, status, landmarks: liveLandmarks } = usePoseDetection({
+  const { videoRef, canvasRef, status, landmarks: liveLandmarks, drawSkeletonToCtx } = usePoseDetection({
     onFrame: handleFrame,
     getJointColors: () => liveJointColorsRef.current,
     enabled: true,
     facingMode: cameraFacing,
-  });
-
-  // Mirror the live overlay canvas ref so the compositor can grab pixels from it.
-  useEffect(() => {
-    liveCanvasRef.current = canvasRef.current;
   });
 
   useEffect(() => {
@@ -464,22 +462,42 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
           ctx.drawImage(video, 0, 0, composite.width, composite.height);
           ctx.restore();
 
-          // 2) Live skeleton overlay (already rendered each frame onto liveCanvas)
-          const live = liveCanvasRef.current;
-          if (live && live.width > 0 && live.height > 0) {
+          // 2) Skeleton — redrawn directly at the video's native resolution so
+          // joints land exactly on the body in the saved clip. (Copying the
+          // on-screen overlay canvas would bake in its object-cover crop for a
+          // *different* aspect ratio and drift at the edges.) With box == src
+          // dimensions the object-cover transform is an exact identity mapping.
+          const latest = latestLandmarksRef.current;
+          if (latest && performance.now() - latest.t < 500) {
             ctx.save();
             if (cameraFacing === "user") {
               ctx.translate(composite.width, 0);
               ctx.scale(-1, 1);
             }
-            ctx.drawImage(live, 0, 0, composite.width, composite.height);
+            drawSkeletonToCtx(
+              ctx,
+              composite.width,
+              composite.height,
+              composite.width,
+              composite.height,
+              latest.lms,
+              liveJointColorsRef.current,
+              { clear: false },
+            );
             ctx.restore();
           }
 
-          // 3) Ghost coach overlay (its own internal canvas)
+          // 3) Ghost coach overlay — mirrored like the live view (its CSS
+          // applies scaleX(-1) on the front camera).
           const ghost = ghostCanvasRef.current;
           if (ghostCoachEnabled && ghost && ghost.width > 0 && ghost.height > 0) {
+            ctx.save();
+            if (cameraFacing === "user") {
+              ctx.translate(composite.width, 0);
+              ctx.scale(-1, 1);
+            }
             ctx.drawImage(ghost, 0, 0, composite.width, composite.height);
+            ctx.restore();
           }
 
           // 4) Stats HUD (score / reps / phase / timer / cue). Drawn last, in
@@ -509,7 +527,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
       cancelled = true;
       if (compositorRafRef.current) cancelAnimationFrame(compositorRafRef.current);
     };
-  }, [isWorkoutActive, isRecording, ghostCoachEnabled, cameraFacing, videoRef]);
+  }, [isWorkoutActive, isRecording, ghostCoachEnabled, cameraFacing, videoRef, drawSkeletonToCtx]);
 
   // Start/stop MediaRecorder. Prefer the compositor canvas (with overlays);
   // fall back to the raw camera stream if captureStream is unavailable.

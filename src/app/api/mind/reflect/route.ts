@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { callGemini, isGeminiAvailable } from "@/lib/ai/gemini-client";
+import { callOpenAI, isOpenAIAvailable } from "@/lib/ai/openai-client";
+import { rateLimit, clientKey } from "@/lib/rate-limit";
 import {
   CRISIS_RESPONSE,
   SAFE_FALLBACK_REFLECTION,
@@ -11,6 +12,13 @@ import {
 export const runtime = "edge";
 
 export async function POST(req: NextRequest) {
+  if (!rateLimit(`reflect:${clientKey(req)}`, 20, 60_000)) {
+    return NextResponse.json(
+      { reflection: SAFE_FALLBACK_REFLECTION, source: "fallback" },
+      { status: 429 },
+    );
+  }
+
   let body: Partial<ReflectInput> = {};
   try {
     body = await req.json();
@@ -30,7 +38,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ reflection: CRISIS_RESPONSE, source: "safety" });
   }
 
-  if (!isGeminiAvailable()) {
+  if (!isOpenAIAvailable()) {
     return NextResponse.json({
       reflection: SAFE_FALLBACK_REFLECTION,
       source: "fallback",
@@ -40,7 +48,7 @@ export async function POST(req: NextRequest) {
   const prompt = buildReflectPrompt({ mode, text, level, mood });
 
   try {
-    const res = await callGemini({
+    const res = await callOpenAI({
       prompt,
       maxTokens: 220,
       temperature: 0.6,

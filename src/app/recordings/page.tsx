@@ -7,8 +7,8 @@ import { GlassCard } from "@/components/ui/glass-card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getSessions } from "@/lib/storage";
-import { getExplanationsForIssues, generateFormExplanations } from "@/lib/ai/explainer";
-import { FormExplanation } from "@/lib/ai/explainer-prompts";
+import { fetchFormExplanations } from "@/lib/ai/client";
+import { FormExplanation, getFallbackExplanations } from "@/lib/ai/explainer-prompts";
 import { getAllRecordingsMeta, getRecordingBlob, deleteRecording, type RecordingMeta } from "@/lib/storage/recordings-db";
 import { WorkoutSession, PERFECT_REP_REASON_LABELS, PerfectRepReason } from "@/types";
 import { Video, Play, Trash2, X, Clock, Target, Repeat, Download, Star, AlertTriangle, Sparkles, MessageCircle, Flame, Lightbulb, Loader2, Wrench, Crown, CheckCircle2 } from "lucide-react";
@@ -166,7 +166,7 @@ function SessionInsightsPanel({ session }: { session: WorkoutSession }) {
   const bestScore = bestIdx >= 0 ? reps[bestIdx].score : 0;
   const chartData = reps.map((r, i) => ({ rep: i + 1, score: r.score }));
   const allIssues = reps.flatMap(r => r.issues);
-  const syncExplanations = getExplanationsForIssues(allIssues, exercise);
+  const syncExplanations = getFallbackExplanations(allIssues, exercise);
   const explanations = aiExplanations.length > 0 ? aiExplanations : syncExplanations;
 
   const issueCounts: Record<string, number> = {};
@@ -181,8 +181,8 @@ function SessionInsightsPanel({ session }: { session: WorkoutSession }) {
     if (next && !hasLoadedAI) {
       setLoadingAI(true);
       try {
-        const results = await generateFormExplanations(allIssues, exercise);
-        setAiExplanations(results);
+        const results = await fetchFormExplanations(allIssues, exercise);
+        if (results.length > 0) setAiExplanations(results);
       } catch { /* fallback already showing */ }
       finally { setLoadingAI(false); setHasLoadedAI(true); }
     }
