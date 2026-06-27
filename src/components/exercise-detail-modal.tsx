@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { ExerciseDemoFallback } from "@/components/exercise-guide/exercise-demo-fallback";
 import { ExerciseDemoPlayer, preloadExerciseDemo } from "@/components/exercise-guide/exercise-demo-player";
-import { AnimatedSkeleton } from "@/components/exercise-guide/animated-skeleton";
 import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
 import type { LibraryExercise } from "@/lib/exercises/library";
 import { EQUIPMENT_LABELS } from "@/lib/exercises/library";
 import { resolveExerciseDemo } from "@/lib/exercises/exercise-demo-map";
-import { posterUrlForMedia, resolveExerciseGif } from "@/lib/exercises/exercise-gif";
+import { posterUrlForMedia, resolveExerciseGif, resolveStaticExerciseImage } from "@/lib/exercises/exercise-gif";
 import type { ExerciseVisualGuide } from "@/lib/exercises/exercise-visual-guides";
 
 type Tab = "steps" | "mistakes" | "cues" | "focus";
@@ -49,8 +49,8 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
   const [activeTab, setActiveTab] = useState<Tab>("steps");
 
   const gif = useMemo(() => resolveExerciseGif(exercise.id, exercise.name), [exercise.id, exercise.name]);
-  const poster = posterUrlForMedia(gif);
-  const { guide: rawGuide, spec } = useMemo(
+  const poster = posterUrlForMedia(gif) ?? resolveStaticExerciseImage(exercise.id, exercise.name);
+  const { guide: rawGuide } = useMemo(
     () => resolveExerciseDemo(exercise.id, exercise.name),
     [exercise.id, exercise.name],
   );
@@ -62,10 +62,6 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
   useEffect(() => {
     if (gif) preloadExerciseDemo(gif.videoUrl, gif.gifUrl);
   }, [gif]);
-
-  const isFrontOnly = !!guide.keyframes[0]?.leftShoulder;
-  const skeletonView =
-    (spec.preferFront || isFrontOnly) && (guide.frontKeyframes?.length || isFrontOnly) ? "front" : "side";
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "steps", label: "Steps", icon: <Footprints className="h-3.5 w-3.5" /> },
@@ -125,23 +121,26 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
               <div className="relative rounded-2xl bg-[#050508] border border-white/[0.04] overflow-hidden mb-5">
                 <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/[0.02] to-transparent pointer-events-none z-10" />
                 <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full">
-                  {gif?.gifUrl || gif?.videoUrl ? (
-                    <ExerciseDemoPlayer
-                      videoSrc={gif.videoUrl}
-                      gifSrc={gif.gifUrl}
-                      posterSrc={poster}
-                      showControls
-                      autoplay
-                      className="absolute inset-0"
-                    />
-                  ) : (
-                    <AnimatedSkeleton guide={guide} demoSpec={spec} ghost view={skeletonView} showControls />
-                  )}
+                  <ExerciseDemoPlayer
+                    videoSrc={gif?.videoUrl}
+                    gifSrc={gif?.gifUrl}
+                    posterSrc={poster}
+                    showControls
+                    autoplay
+                    fallback={
+                      <ExerciseDemoFallback
+                        exerciseId={exercise.id}
+                        exerciseName={exercise.name}
+                        showControls
+                      />
+                    }
+                    className="absolute inset-0"
+                  />
                 </div>
                 <div className="absolute bottom-3 left-3 z-20 flex items-center gap-1.5">
                   <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-sm border border-white/[0.06] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-cyan-300">
                     <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                    {gif ? "Exercise demo" : `${skeletonView} view`}
+                    {gif?.gifUrl || gif?.videoUrl ? "Exercise demo" : "Form guide"}
                   </span>
                 </div>
               </div>

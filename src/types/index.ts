@@ -22,6 +22,8 @@ export interface RepResult {
   score: number;
   issues: JointFeedback[];
   timestamp: number;
+  /** False when camera confidence was too low to trust the score. */
+  scoreReliable?: boolean;
   /** Number of zero-issue frames during this rep — higher = cleaner */
   issueCount?: number;
   /** Manual log only: which set this rep belongs to (0-based). */

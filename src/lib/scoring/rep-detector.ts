@@ -304,6 +304,7 @@ export class RepDetector {
     repResult?: RepResult;
     repCount: number;
     familyMismatch: boolean;
+    frameTrust: number;
   } {
     const rawAngles = getCommonAngles(landmarks);
     const smoothedAngles = this.smoothAngles(rawAngles);
@@ -435,6 +436,7 @@ export class RepDetector {
       repResult,
       repCount: this.repCount,
       familyMismatch: this.familyMismatch,
+      frameTrust: trust,
     };
   }
 

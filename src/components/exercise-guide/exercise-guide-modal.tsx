@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { AnimatedSkeleton } from "./animated-skeleton";
+import { ExerciseDemoFallback } from "./exercise-demo-fallback";
+import { ExerciseDemoPlayer, preloadExerciseDemo } from "./exercise-demo-player";
 import { GlassCard } from "@/components/ui/glass-card";
 import { Badge } from "@/components/ui/badge";
 import type { ExerciseVisualGuide } from "@/lib/exercises/exercise-visual-guides";
+import { posterUrlForMedia, resolveExerciseGif, resolveStaticExerciseImage } from "@/lib/exercises/exercise-gif";
 import {
   X,
   ChevronRight,
@@ -21,6 +23,8 @@ import { cn } from "@/lib/utils";
 
 interface ExerciseGuideModalProps {
   guide: ExerciseVisualGuide;
+  /** Library exercise name — used to load human demo GIF/MP4 when available. */
+  exerciseName?: string;
   onClose: () => void;
   onEnableGhostCoach?: () => void;
 }
@@ -33,8 +37,25 @@ const difficultyColors: Record<string, string> = {
   advanced: "text-rose-400 bg-rose-500/10 border-rose-500/20",
 };
 
-export function ExerciseGuideModal({ guide, onClose, onEnableGhostCoach }: ExerciseGuideModalProps) {
+export function ExerciseGuideModal({ guide, exerciseName, onClose, onEnableGhostCoach }: ExerciseGuideModalProps) {
   const [activeTab, setActiveTab] = useState<Tab>("steps");
+  const displayName = exerciseName || guide.name;
+  const media = useMemo(
+    () => resolveExerciseGif(guide.id, displayName),
+    [guide.id, displayName],
+  );
+  const poster = posterUrlForMedia(media) ?? resolveStaticExerciseImage(guide.id, displayName);
+  const demoFallback = (
+    <ExerciseDemoFallback
+      exerciseId={guide.id}
+      exerciseName={displayName}
+      showControls
+    />
+  );
+
+  useEffect(() => {
+    if (media) preloadExerciseDemo(media.videoUrl, media.gifUrl);
+  }, [media]);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "steps", label: "Steps", icon: <Footprints className="h-3.5 w-3.5" /> },
@@ -94,16 +115,24 @@ export function ExerciseGuideModal({ guide, onClose, onEnableGhostCoach }: Exerc
                 </button>
               </div>
 
-              {/* animated skeleton */}
+              {/* Demo — human GIF/MP4 when mapped, else animated skeleton */}
               <div className="relative rounded-2xl bg-[#050508] border border-white/[0.04] overflow-hidden mb-5">
-                <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/[0.02] to-transparent pointer-events-none" />
-                <div className="aspect-[16/10] sm:aspect-[16/9]">
-                  <AnimatedSkeleton guide={guide} showControls />
+                <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/[0.02] to-transparent pointer-events-none z-10" />
+                <div className="aspect-[16/10] sm:aspect-[16/9] relative">
+                  <ExerciseDemoPlayer
+                    videoSrc={media?.videoUrl}
+                    gifSrc={media?.gifUrl}
+                    posterSrc={poster}
+                    showControls
+                    autoplay
+                    fallback={demoFallback}
+                    className="absolute inset-0"
+                  />
                 </div>
-                <div className="absolute bottom-3 left-3 flex items-center gap-1.5">
+                <div className="absolute bottom-3 left-3 flex items-center gap-1.5 z-20">
                   <span className="inline-flex items-center gap-1 rounded-full bg-black/60 backdrop-blur-sm border border-white/[0.06] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-cyan-300">
                     <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-                    {guide.recommendedView} VIEW
+                    {media?.gifUrl || media?.videoUrl ? "Exercise demo" : "Form guide"}
                   </span>
                 </div>
               </div>

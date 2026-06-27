@@ -70,6 +70,20 @@ interface WorkoutState {
   currentIssues: JointFeedback[];
   setCurrentIssues: (issues: JointFeedback[]) => void;
 
+  /** Display name from the 188-exercise library (may differ from template id). */
+  selectedExerciseLabel: string;
+  setSelectedExerciseLabel: (label: string) => void;
+
+  /** Live tracking confidence from pose + framing heuristics. */
+  trackingTier: "high" | "medium" | "low";
+  scoreAvailable: boolean;
+  trackingLabel: string;
+  setTrackingQuality: (tier: "high" | "medium" | "low", scoreAvailable: boolean, label: string) => void;
+
+  /** Latest AI-generated live cue (merged into coaching UI). */
+  aiLiveCue: string;
+  setAiLiveCue: (cue: string) => void;
+
   // Rep history
   repResults: RepResult[];
   addRepResult: (rep: RepResult) => void;
@@ -167,7 +181,7 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
     }),
   pauseWorkout: () => set({ isPaused: true }),
   resumeWorkout: () => set({ isPaused: false }),
-  stopWorkout: () => set({ isWorkoutActive: false, isPaused: false, isRecording: false, isCountingDown: false, countdownSeconds: 0, isFormChecking: false, readiness: "idle", readinessMessage: "" }),
+  stopWorkout: () => set({ isWorkoutActive: false, isPaused: false, isRecording: false, isCountingDown: false, countdownSeconds: 0, isFormChecking: false, readiness: "idle", readinessMessage: "", aiLiveCue: "", trackingTier: "low", scoreAvailable: false, trackingLabel: "Calibrating…" }),
   setSessionWeight: (weight) => set({ sessionWeight: weight }),
 
   readiness: "idle",
@@ -189,6 +203,18 @@ export const useWorkoutStore = create<WorkoutState>((set) => ({
   setCurrentCues: (cues) => set({ currentCues: cues }),
   currentIssues: [],
   setCurrentIssues: (issues) => set({ currentIssues: issues }),
+
+  selectedExerciseLabel: "",
+  setSelectedExerciseLabel: (label) => set({ selectedExerciseLabel: label }),
+
+  trackingTier: "low",
+  scoreAvailable: false,
+  trackingLabel: "Calibrating…",
+  setTrackingQuality: (tier, scoreAvailable, label) =>
+    set({ trackingTier: tier, scoreAvailable, trackingLabel: label }),
+
+  aiLiveCue: "",
+  setAiLiveCue: (cue) => set({ aiLiveCue: cue }),
 
   repResults: [],
   addRepResult: (rep) =>

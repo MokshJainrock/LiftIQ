@@ -112,7 +112,11 @@
     "videoUrl": "/exercise-videos/low-to-high-cable-fly.mp4",
     "posterUrl": "/exercise-videos/low-to-high-cable-fly.jpg"
   },
-  "pec-deck": null,
+  "pec-deck": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/lever-seated-fly.gif",
+    "sourceName": "Lever Seated Fly",
+    "score": 90
+  },
   "machine-chest-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/pectorals/machine-inner-chest-press.gif",
     "sourceName": "Machine Inner Chest Press",
@@ -309,7 +313,11 @@
     "videoUrl": "/exercise-videos/dumbbell-row.mp4",
     "posterUrl": "/exercise-videos/dumbbell-row.jpg"
   },
-  "chest-supported-row": null,
+  "chest-supported-row": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/upper-back/dumbbell-incline-row.gif",
+    "sourceName": "Dumbbell Incline Row",
+    "score": 85
+  },
   "seated-cable-row": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/lats/cable-seated-high-row-v-bar.gif",
     "sourceName": "Cable Seated High Row V Bar",
@@ -1136,7 +1144,11 @@
     "videoUrl": "/exercise-videos/dead-hang.mp4",
     "posterUrl": "/exercise-videos/dead-hang.jpg"
   },
-  "plate-pinch-hold": null,
+  "plate-pinch-hold": {
+    "gifUrl": "https://static.exercisedb.dev/media/qPEzJjA.gif",
+    "sourceName": "farmers walk",
+    "score": 80
+  },
   "behind-the-back-wrist-curl": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/forearms/barbell-standing-back-wrist-curl.gif",
     "sourceName": "Barbell Standing Back Wrist Curl",
@@ -1668,7 +1680,11 @@
     "videoUrl": "/exercise-videos/donkey-kick.mp4",
     "posterUrl": "/exercise-videos/donkey-kick.jpg"
   },
-  "banded-lateral-walk": null,
+  "banded-lateral-walk": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/monster-walk.gif",
+    "sourceName": "Monster Walk",
+    "score": 85
+  },
   "reverse-hyperextension": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/glutes/lever-reverse-hyperextension.gif",
     "sourceName": "Lever Reverse Hyperextension",
@@ -1907,7 +1923,11 @@
     "videoUrl": "/exercise-videos/cable-crunch.mp4",
     "posterUrl": "/exercise-videos/cable-crunch.jpg"
   },
-  "cable-woodchopper": null,
+  "cable-woodchopper": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/cable-twist-up-down.gif",
+    "sourceName": "Cable Twist Up Down",
+    "score": 85
+  },
   "dead-bug": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/dead-bug.gif",
     "sourceName": "Dead Bug",
@@ -1977,7 +1997,11 @@
     "videoUrl": "/exercise-videos/leg-raise.mp4",
     "posterUrl": "/exercise-videos/leg-raise.jpg"
   },
-  "hollow-body-hold": null,
+  "hollow-body-hold": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/band-v-up.gif",
+    "sourceName": "Band V Up",
+    "score": 80
+  },
   "pallof-press": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/band-horizontal-pallof-press.gif",
     "sourceName": "Band Horizontal Pallof Press",
@@ -2006,7 +2030,11 @@
     "videoUrl": "/exercise-videos/suitcase-carry.mp4",
     "posterUrl": "/exercise-videos/suitcase-carry.jpg"
   },
-  "toes-to-bar": null,
+  "toes-to-bar": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/hanging-pike.gif",
+    "sourceName": "Hanging Pike",
+    "score": 85
+  },
   "plank-shoulder-tap": {
     "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/kneeling-plank-tap-shoulder-male.gif",
     "sourceName": "Kneeling Plank Tap Shoulder Male",
@@ -2148,7 +2176,11 @@
     "videoUrl": "/exercise-videos/stair-climber.mp4",
     "posterUrl": "/exercise-videos/stair-climber.jpg"
   },
-  "sprint-interval": null,
+  "sprint-interval": {
+    "gifUrl": "https://cdn.jsdelivr.net/gh/JahelCuadrado/ExerciseGymGifsDB@v1.1.0/abs/wind-sprints.gif",
+    "sourceName": "Wind Sprints",
+    "score": 90
+  },
   "cycling": {
     "gifUrl": "https://static.exercisedb.dev/media/a8VDgLw.gif",
     "sourceName": "stationary bike walk",

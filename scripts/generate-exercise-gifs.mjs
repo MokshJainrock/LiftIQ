@@ -97,6 +97,46 @@ const HARDCODED_GIFS = {
     sourceName: "Battling Ropes",
     score: 90,
   },
+  "pec-deck": {
+    gifUrl: `${GYM}/pectorals/lever-seated-fly.gif`,
+    sourceName: "Lever Seated Fly",
+    score: 90,
+  },
+  "chest-supported-row": {
+    gifUrl: `${GYM}/upper-back/dumbbell-incline-row.gif`,
+    sourceName: "Dumbbell Incline Row",
+    score: 85,
+  },
+  "plate-pinch-hold": {
+    gifUrl: "https://static.exercisedb.dev/media/qPEzJjA.gif",
+    sourceName: "farmers walk",
+    score: 80,
+  },
+  "banded-lateral-walk": {
+    gifUrl: `${GYM}/glutes/monster-walk.gif`,
+    sourceName: "Monster Walk",
+    score: 85,
+  },
+  "cable-woodchopper": {
+    gifUrl: `${GYM}/abs/cable-twist-up-down.gif`,
+    sourceName: "Cable Twist Up Down",
+    score: 85,
+  },
+  "hollow-body-hold": {
+    gifUrl: `${GYM}/abs/band-v-up.gif`,
+    sourceName: "Band V Up",
+    score: 80,
+  },
+  "toes-to-bar": {
+    gifUrl: `${GYM}/abs/hanging-pike.gif`,
+    sourceName: "Hanging Pike",
+    score: 85,
+  },
+  "sprint-interval": {
+    gifUrl: `${GYM}/abs/wind-sprints.gif`,
+    sourceName: "Wind Sprints",
+    score: 90,
+  },
 };
 
 const MUSCLE_TO_GIF = {

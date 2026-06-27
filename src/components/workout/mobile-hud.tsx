@@ -24,6 +24,8 @@ export function MobileWorkoutHUD() {
     isWorkoutActive,
     isRecording,
     sessionStartTime,
+    scoreAvailable,
+    trackingLabel,
   } = useWorkoutStore();
   const [elapsed, setElapsed] = useState(0);
 
@@ -61,7 +63,7 @@ export function MobileWorkoutHUD() {
         <div
           className={cn(
             "glass-card rounded-2xl px-3.5 py-2.5 min-w-[76px] text-center shadow-lg shadow-black/20",
-            getScorePillTint(currentScore)
+            scoreAvailable ? getScorePillTint(currentScore) : "border-zinc-600/25 bg-zinc-800/[0.08]"
           )}
         >
           <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -70,11 +72,16 @@ export function MobileWorkoutHUD() {
           <div
             className={cn(
               "text-2xl font-bold tabular-nums leading-tight",
-              getScoreColor(currentScore)
+              scoreAvailable ? getScoreColor(currentScore) : "text-zinc-500"
             )}
           >
-            {currentScore}
+            {scoreAvailable ? currentScore : "—"}
           </div>
+          {!scoreAvailable && (
+            <div className="text-[8px] text-zinc-600 leading-tight mt-0.5 truncate max-w-[72px] mx-auto">
+              {trackingLabel}
+            </div>
+          )}
         </div>
 
         {/* Phase + REC — center */}

@@ -9,7 +9,7 @@
 const FONT_STACK = "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif";
 
 export interface RecordingHudState {
-  score: number;
+  score: number | null;
   reps: number;
   phase: string;
   elapsedSeconds: number;
@@ -115,12 +115,13 @@ export function drawRecordingHud(
   ctx.fillStyle = "#a1a1aa";
   ctx.fillText("SCORE", pad + panelW / 2, pad + Math.round(26 * s));
   ctx.font = valueFont;
-  ctx.fillStyle = scoreColor(state.score);
-  ctx.fillText(
-    `${Math.round(state.score)}`,
-    pad + panelW / 2,
-    pad + Math.round(74 * s)
-  );
+  if (state.score != null) {
+    ctx.fillStyle = scoreColor(state.score);
+    ctx.fillText(`${Math.round(state.score)}`, pad + panelW / 2, pad + Math.round(74 * s));
+  } else {
+    ctx.fillStyle = "#71717a";
+    ctx.fillText("—", pad + panelW / 2, pad + Math.round(74 * s));
+  }
 
   // ── Reps panel (top-right) ───────────────────────────────────────────
   const repsX = W - pad - panelW;

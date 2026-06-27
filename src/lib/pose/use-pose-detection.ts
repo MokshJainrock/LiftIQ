@@ -41,8 +41,10 @@ export function usePoseDetection({
   // callback identity without having to invalidate `detect`.
   const onFrameRef = useRef(onFrame);
   const getJointColorsRef = useRef(getJointColors);
+  const enabledRef = useRef(enabled);
   onFrameRef.current = onFrame;
   getJointColorsRef.current = getJointColors;
+  enabledRef.current = enabled;
   // Tracks how many consecutive detection frames returned no pose. We use this
   // to decide when to clear the overlay so a stale skeleton can never linger.
   const noPoseFramesRef = useRef(0);
@@ -62,8 +64,8 @@ export function usePoseDetection({
         return {
           video: {
             facingMode,
-            width: { ideal: isRear ? 1280 : 480 },
-            height: { ideal: isRear ? 720 : 640 },
+            width: { ideal: isRear ? 1920 : 480 },
+            height: { ideal: isRear ? 1080 : 640 },
             frameRate: { ideal: 30 },
           },
         };
@@ -289,24 +291,32 @@ export function usePoseDetection({
   );
 
   const detect = useCallback(() => {
+    if (!enabledRef.current || !modelReadyRef.current) return;
+
     const video = videoRef.current;
     const poseLandmarker = poseLandmarkerRef.current;
 
-    if (!video || !poseLandmarker || !modelReadyRef.current || video.readyState < 2) {
-      animFrameRef.current = requestAnimationFrame(detect);
+    if (!video || !poseLandmarker || video.readyState < 2) {
+      if (enabledRef.current && modelReadyRef.current) {
+        animFrameRef.current = requestAnimationFrame(detect);
+      }
       return;
     }
 
     // Skip if the video hasn't advanced to a new frame
     if (video.currentTime === lastVideoTimeRef.current) {
-      animFrameRef.current = requestAnimationFrame(detect);
+      if (enabledRef.current && modelReadyRef.current) {
+        animFrameRef.current = requestAnimationFrame(detect);
+      }
       return;
     }
     lastVideoTimeRef.current = video.currentTime;
 
     const now = performance.now();
     if (now <= lastTimestampRef.current) {
-      animFrameRef.current = requestAnimationFrame(detect);
+      if (enabledRef.current && modelReadyRef.current) {
+        animFrameRef.current = requestAnimationFrame(detect);
+      }
       return;
     }
     lastTimestampRef.current = now;
@@ -349,20 +359,50 @@ export function usePoseDetection({
       }
     }
 
-    animFrameRef.current = requestAnimationFrame(detect);
+    if (enabledRef.current && modelReadyRef.current) {
+      animFrameRef.current = requestAnimationFrame(detect);
+    }
   }, [renderLiveSkeleton]);
 
-  // Initial mount: start camera + load pose model
+  const releaseResources = useCallback(() => {
+    modelReadyRef.current = false;
+    lastTimestampRef.current = -1;
+    lastVideoTimeRef.current = -1;
+    noPoseFramesRef.current = 0;
+
+    if (animFrameRef.current) {
+      cancelAnimationFrame(animFrameRef.current);
+      animFrameRef.current = 0;
+    }
+
+    const video = videoRef.current;
+    if (video?.srcObject) {
+      (video.srcObject as MediaStream).getTracks().forEach((t) => t.stop());
+      video.srcObject = null;
+    }
+
+    poseLandmarkerRef.current?.close();
+    poseLandmarkerRef.current = null;
+
+    renderLiveSkeleton(null);
+    setLandmarks(null);
+    setStatus("loading");
+  }, [renderLiveSkeleton]);
+
+  // Start/stop camera + pose model when enabled toggles
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      releaseResources();
+      return;
+    }
 
     let mounted = true;
 
     async function start() {
       const cameraOk = await initCamera(facingMode);
-      if (!cameraOk || !mounted) return;
+      if (!cameraOk || !mounted || !enabledRef.current) return;
       const poseOk = await initPoseDetection();
-      if (!poseOk || !mounted) return;
+      if (!poseOk || !mounted || !enabledRef.current) return;
 
       modelReadyRef.current = true;
       animFrameRef.current = requestAnimationFrame(detect);
@@ -372,22 +412,18 @@ export function usePoseDetection({
 
     return () => {
       mounted = false;
-      if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      if (videoRef.current?.srcObject) {
-        (videoRef.current.srcObject as MediaStream).getTracks().forEach((t) => t.stop());
-      }
-      poseLandmarkerRef.current?.close();
+      releaseResources();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [enabled]);
+  }, [enabled, initCamera, initPoseDetection, detect, releaseResources]);
 
   // Camera switch: re-acquire stream when facingMode changes (model stays loaded)
   const facingModeRef = useRef(facingMode);
   useEffect(() => {
+    if (!enabled) return;
     if (facingModeRef.current === facingMode) return;
     facingModeRef.current = facingMode;
     initCamera(facingMode);
-  }, [facingMode, initCamera]);
+  }, [facingMode, initCamera, enabled]);
 
   return { videoRef, canvasRef, landmarks, status, drawSkeleton, drawSkeletonToCtx } as const;
 }

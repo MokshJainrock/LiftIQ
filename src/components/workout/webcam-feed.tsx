@@ -8,12 +8,16 @@ import { getExercise } from "@/lib/exercises";
 import { Landmark, JointFeedback } from "@/types";
 import { validateStartPosition } from "@/lib/exercises/start-validators";
 import { getVoiceManager, classifyCuePriority } from "@/lib/ai/voice";
-import { Loader2, Camera, CameraOff, SwitchCamera, CheckCircle2, ScanLine, Sparkles, Gauge } from "lucide-react";
+import { Loader2, Camera, CameraOff, SwitchCamera, CheckCircle2, Sparkles, Gauge } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { playCountdownTick, playSuccessChime, playStartGong, speakCue, speakCountdown } from "@/lib/audio-cues";
 import { GhostCoachOverlay } from "@/components/exercise-guide/ghost-coach-overlay";
 import { ReadinessPill } from "@/components/workout/readiness-pill";
 import { drawRecordingHud } from "@/lib/pose/recording-hud";
+import { assessTrackingQuality, displayScore, type SetupCheckItem } from "@/lib/pose/tracking-confidence";
+import { requestLiveCoachCue, resetLiveCoachClient } from "@/lib/ai/live-coach-client";
+import { SetupValidationOverlay } from "@/components/workout/setup-validation-overlay";
+import { useCameraActive } from "@/lib/pose/use-camera-active";
 
 const FORM_CHECK_REQUIRED_FRAMES = 15;
 
@@ -46,6 +50,9 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
     updateSettings,
     setPoseStatus,
     setReadiness,
+    selectedExerciseLabel,
+    setTrackingQuality,
+    setAiLiveCue,
   } = useWorkoutStore();
 
   const [cameraFacing, setCameraFacing] = useState<"user" | "environment">(settings.cameraFacing || "environment");
@@ -54,6 +61,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
   const [formCheckProgress, setFormCheckProgress] = useState(0);
   const [formDetectedBanner, setFormDetectedBanner] = useState(false);
   const [formCheckHint, setFormCheckHint] = useState("");
+  const [setupChecklist, setSetupChecklist] = useState<SetupCheckItem[]>([]);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
@@ -74,10 +82,18 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
   const lastPlayedSecondRef = useRef(-1);
   const coachModeDefaultedRef = useRef(false);
   const { setVoiceInfo } = useWorkoutStore();
+  const cameraActive = useCameraActive();
 
   // First time we mount on a mobile screen, swap the user into minimal
   // coaching mode — the full ghost overlay isn't a great fit for phone
   // viewports. Toggling stays sticky for the rest of the session.
+  useEffect(() => {
+    if (!isWorkoutActive) {
+      resetLiveCoachClient();
+      setAiLiveCue("");
+    }
+  }, [isWorkoutActive, setAiLiveCue]);
+
   useEffect(() => {
     if (coachModeDefaultedRef.current) return;
     coachModeDefaultedRef.current = true;
@@ -151,8 +167,13 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
     const track = getVideoTrack();
     if (!track) { setZoomSupported(false); return; }
     const caps = track.getCapabilities() as MediaTrackCapabilities & { zoom?: { min: number; max: number } };
-    setZoomSupported(!!caps.zoom && caps.zoom.max > caps.zoom.min);
-  }, [cameraFacing]);
+    const supported = !!caps.zoom && caps.zoom.max > caps.zoom.min;
+    setZoomSupported(supported);
+    if (supported && mobile) {
+      setZoomLevel("0.5x");
+      applyZoom("0.5x");
+    }
+  }, [cameraFacing, mobile, applyZoom]);
 
   // Wire VoiceManager state changes into Zustand for UI reactivity
   useEffect(() => {
@@ -269,6 +290,10 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
         const config = getExercise(exerciseRef.current);
         if (!config) return;
 
+        const setupQuality = assessTrackingQuality(landmarks, cameraFacing);
+        setSetupChecklist(setupQuality.checklist);
+        setTrackingQuality(setupQuality.tier, setupQuality.scoreAvailable, setupQuality.label);
+
         // ---- 1) Framing check (cheap, kinematic-free) -----------------
         // We need at least the upper body visible to even attempt
         // pose-family classification; everything else can be advised on.
@@ -302,7 +327,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
         // ever advancing into the active workout state.
         const verdict = validateStartPosition(exerciseRef.current, landmarks);
 
-        if (verdict.isValid) {
+        if (verdict.isValid && setupQuality.tier !== "low") {
           formCheckFramesRef.current++;
           const holdHint = "Hold your position...";
           setFormCheckHint(holdHint);
@@ -358,15 +383,59 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
       }
       if (coreVisible < 4) return;
 
+      const quality = assessTrackingQuality(landmarks, cameraFacing);
+      setSetupChecklist(quality.checklist);
+      setTrackingQuality(quality.tier, quality.scoreAvailable, quality.label);
+
       const result = repDetectorRef.current.update(landmarks);
-      setCurrentScore(result.score);
+      const display = displayScore(result.score, quality.tier);
+      setCurrentScore(display ?? 0);
       setRepCount(result.repCount);
       setCurrentPhase(result.phase);
-      setCurrentCues(result.cues);
+
+      const issueMessages = result.issues.map((i) => i.message).filter(Boolean) as string[];
+      const mergedCues = [...result.cues];
+      setCurrentCues(mergedCues);
       setCurrentIssues(result.issues);
 
+      const exerciseLabel =
+        selectedExerciseLabel ||
+        exerciseRef.current.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      const coachKey = `${quality.tier}:${issueMessages.join("|")}:${result.phase}:${result.repCount}`;
+      requestLiveCoachCue(
+        coachKey,
+        {
+          exerciseName: exerciseLabel,
+          phase: result.phase,
+          repCount: result.repCount,
+          score: display,
+          confidenceTier: quality.tier,
+          issues: issueMessages,
+          ruleCues: result.cues,
+        },
+        (aiCue) => {
+          setAiLiveCue(aiCue);
+          if (quality.tier !== "low") {
+            setCurrentCues([aiCue, ...result.cues].slice(0, 3));
+          }
+          if (settings.voiceEnabled && quality.tier === "high") {
+            getVoiceManager().speakCue(aiCue, classifyCuePriority(aiCue), {
+              exercise: exerciseRef.current,
+              phase: result.phase,
+              repCount: result.repCount,
+              score: display ?? result.score,
+            });
+          }
+        },
+      );
+
       if (result.repCompleted && result.repResult) {
-        addRepResult(result.repResult);
+        const rep = {
+          ...result.repResult,
+          scoreReliable: quality.scoreAvailable,
+          score: quality.scoreAvailable ? result.repResult.score : 0,
+        };
+        addRepResult(rep);
       }
 
       // Family-mismatch nudge: surface a one-shot cue (don't spam every
@@ -385,9 +454,16 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
 
       if (settings.voiceEnabled) {
         const vm = getVoiceManager();
-        const meta = { exercise: exerciseRef.current, phase: result.phase, repCount: result.repCount, score: result.score };
-        for (const cue of result.cues) {
-          vm.speakCue(cue, classifyCuePriority(cue), meta);
+        const meta = {
+          exercise: exerciseRef.current,
+          phase: result.phase,
+          repCount: result.repCount,
+          score: display ?? result.score,
+        };
+        if (quality.tier === "medium") {
+          for (const cue of result.cues.slice(0, 1)) {
+            vm.speakCue(cue, classifyCuePriority(cue), meta);
+          }
         }
         if (result.repCompleted) {
           vm.speakEncouragement(result.repCount);
@@ -413,13 +489,17 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
       setReadiness,
       settings.voiceEnabled,
       computeJointColors,
+      cameraFacing,
+      selectedExerciseLabel,
+      setTrackingQuality,
+      setAiLiveCue,
     ]
   );
 
   const { videoRef, canvasRef, status, landmarks: liveLandmarks, drawSkeletonToCtx } = usePoseDetection({
     onFrame: handleFrame,
     getJointColors: () => liveJointColorsRef.current,
-    enabled: true,
+    enabled: cameraActive,
     facingMode: cameraFacing,
   });
 
@@ -509,7 +589,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
             ? Math.floor((Date.now() - st.sessionStartTime) / 1000)
             : 0;
           drawRecordingHud(ctx, composite.width, composite.height, {
-            score: st.currentScore,
+            score: st.scoreAvailable ? st.currentScore : null,
             reps: st.repCount,
             phase: st.currentPhase?.trim() || "Ready",
             elapsedSeconds: elapsed,
@@ -710,37 +790,14 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
         </div>
       )}
 
-      {/* Form-check overlay */}
+      {/* Form-check / setup validation overlay */}
       {isFormChecking && !formDetectedBanner && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 z-30">
-          <div className="text-center px-6">
-            <div className="relative mx-auto mb-4 h-16 w-16 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border-2 border-cyan-500/30" />
-              <div
-                className="absolute inset-0 rounded-full border-2 border-transparent border-t-cyan-400 animate-spin"
-                style={{ animationDuration: "1.5s" }}
-              />
-              <ScanLine className="h-7 w-7 text-cyan-400 animate-pulse" />
-            </div>
-            <div className="text-sm font-bold uppercase tracking-[0.15em] text-cyan-400 mb-2">
-              Checking Your Position
-            </div>
-            <div className="text-xs text-white/80 mb-4 min-h-[1.25rem] transition-all duration-300">
-              {formCheckHint || "Get into the starting position"}
-            </div>
-            <div className="w-48 mx-auto h-2 rounded-full bg-white/10 overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 rounded-full transition-all duration-300 ease-out"
-                style={{ width: `${formCheckProgress}%` }}
-              />
-            </div>
-            {formCheckProgress > 0 && (
-              <div className="text-[10px] text-white/40 mt-2 tabular-nums">
-                {formCheckProgress < 100 ? `${formCheckProgress}%` : "Almost there..."}
-              </div>
-            )}
-          </div>
-        </div>
+        <SetupValidationOverlay
+          progress={formCheckProgress}
+          hint={formCheckHint}
+          checklist={setupChecklist}
+          ready={formCheckProgress >= 100}
+        />
       )}
 
       {/* Form detected banner */}
@@ -757,6 +814,16 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
               Let's start the workout!
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Camera paused when user leaves AI Exercise tab or switches browser tab */}
+      {!cameraActive && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/75 z-[25]">
+          <CameraOff className={cn("text-zinc-400 mb-3", mobile ? "h-8 w-8" : "h-10 w-10")} />
+          <p className={cn("text-zinc-400 text-center px-8 max-w-sm", mobile ? "text-xs" : "text-sm")}>
+            Camera paused — open the AI Exercise tab to resume
+          </p>
         </div>
       )}
 

@@ -11,7 +11,7 @@ function getBarColor(s: number) { return s >= 85 ? "bg-emerald-400" : s >= 65 ? 
 function getStroke(s: number) { return s >= 85 ? "#34d399" : s >= 65 ? "#fbbf24" : "#f43f5e"; }
 
 export function LiveMetrics() {
-  const { currentScore, repCount, currentPhase, isWorkoutActive, sessionStartTime, bestRepScore, bestRepIndex } = useWorkoutStore();
+  const { currentScore, repCount, currentPhase, isWorkoutActive, sessionStartTime, bestRepScore, bestRepIndex, scoreAvailable, trackingLabel } = useWorkoutStore();
   const [elapsed, setElapsed] = useState(0);
   const [scoreFlash, setScoreFlash] = useState(false);
   const prevScore = useRef(currentScore);
@@ -26,9 +26,9 @@ export function LiveMetrics() {
     prevScore.current = currentScore;
   }, [currentScore]);
 
-  const score = Math.min(100, Math.max(0, currentScore));
+  const score = scoreAvailable ? Math.min(100, Math.max(0, currentScore)) : null;
   const circ = 2 * Math.PI * 48;
-  const offset = circ * (1 - score / 100);
+  const offset = score != null ? circ * (1 - score / 100) : circ;
 
   useEffect(() => {
     if (!isWorkoutActive || !sessionStartTime) {
@@ -52,25 +52,29 @@ export function LiveMetrics() {
             <circle cx="54" cy="54" r="48" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="5" />
             <circle
               cx="54" cy="54" r="48" fill="none"
-              stroke={getStroke(score)}
+              stroke={score != null ? getStroke(score) : "#52525b"}
               strokeWidth="5"
               strokeLinecap="round"
               strokeDasharray={circ}
               strokeDashoffset={offset}
-              style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%", transition: "stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s", filter: `drop-shadow(0 0 6px ${getStroke(score)}44)` }}
+              style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%", transition: "stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s", filter: score != null ? `drop-shadow(0 0 6px ${getStroke(score)}44)` : undefined }}
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className={cn(
               "text-3xl font-black tabular-nums tracking-tight transition-transform duration-300",
-              getScoreColor(score),
-              scoreFlash && "scale-110"
+              score != null ? getScoreColor(score) : "text-zinc-600",
+              scoreFlash && score != null && "scale-110"
             )}>
-              {Math.round(score)}
+              {score != null ? Math.round(score) : "—"}
             </span>
             <span className="text-[9px] font-semibold text-zinc-600 uppercase tracking-[0.2em] mt-0.5">Score</span>
           </div>
         </div>
+
+        {!scoreAvailable && (
+          <p className="text-[10px] text-zinc-500 text-center max-w-[140px] -mt-1 mb-1">{trackingLabel}</p>
+        )}
 
         <div className={cn(
           "mt-3 rounded-full px-3.5 py-1 text-[10px] font-bold tracking-[0.15em] uppercase transition-all",
@@ -159,8 +163,19 @@ function BestRepTile() {
 }
 
 function AvgScore() {
-  const { repResults } = useWorkoutStore();
-  const avg = repResults.length > 0 ? Math.round(repResults.reduce((s, r) => s + r.score, 0) / repResults.length) : 0;
+  const { repResults, scoreAvailable } = useWorkoutStore();
+  const scored = repResults.filter((r) => r.scoreReliable !== false && r.score > 0);
+  const avg = scored.length > 0 ? Math.round(scored.reduce((s, r) => s + r.score, 0) / scored.length) : 0;
+  if (!scoreAvailable && scored.length === 0) {
+    return (
+      <div>
+        <div className="flex items-center gap-1.5 text-[9px] text-zinc-600 uppercase tracking-[0.15em] mb-1.5">
+          <TrendingUp className="h-3 w-3" /> Session Average
+        </div>
+        <span className="text-sm text-zinc-500">Score unlocks at high confidence</span>
+      </div>
+    );
+  }
   return (
     <div>
       <div className="flex items-center gap-1.5 text-[9px] text-zinc-600 uppercase tracking-[0.15em] mb-1.5">

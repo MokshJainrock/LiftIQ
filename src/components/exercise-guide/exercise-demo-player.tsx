@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Play, Pause } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +11,8 @@ export interface ExerciseDemoPlayerProps {
   className?: string;
   showControls?: boolean;
   autoplay?: boolean;
+  /** Shown when video/GIF fail or are missing — e.g. animated skeleton. */
+  fallback?: ReactNode;
 }
 
 /** Preload demo media before opening the detail modal. */
@@ -36,6 +38,7 @@ export function ExerciseDemoPlayer({
   className,
   showControls = true,
   autoplay = true,
+  fallback,
 }: ExerciseDemoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -44,11 +47,11 @@ export function ExerciseDemoPlayer({
 
   const [ready, setReady] = useState(false);
   const [paused, setPaused] = useState(!autoplay);
-  const [error, setError] = useState(false);
+  const [mediaError, setMediaError] = useState(false);
 
   useEffect(() => {
     setReady(false);
-    setError(false);
+    setMediaError(false);
     setPaused(!autoplay);
     frozenRef.current = null;
   }, [videoSrc, gifSrc, autoplay, useVideo]);
@@ -56,9 +59,9 @@ export function ExerciseDemoPlayer({
   useEffect(() => {
     const el = videoRef.current;
     if (!useVideo || !el) return;
-    if (autoplay && !paused) el.play().catch(() => {});
+    if (autoplay && !paused && !mediaError) el.play().catch(() => {});
     else el.pause();
-  }, [useVideo, autoplay, paused, ready]);
+  }, [useVideo, autoplay, paused, ready, mediaError]);
 
   const togglePause = useCallback(() => {
     if (useVideo) {
@@ -94,18 +97,18 @@ export function ExerciseDemoPlayer({
     });
   }, [useVideo, gifSrc]);
 
-  if (!videoSrc && !gifSrc) {
-    return (
-      <div className={cn("flex items-center justify-center bg-[#050508] text-zinc-600 text-xs", className)}>
-        Demo unavailable
-      </div>
-    );
-  }
+  const hasMotion = !!(videoSrc || gifSrc);
+  const showPosterOnly = mediaError && !!posterSrc;
+  const showFallback = (!hasMotion && !posterSrc) || (mediaError && !posterSrc);
 
-  if (error && !posterSrc) {
+  if (showFallback) {
     return (
-      <div className={cn("flex items-center justify-center bg-[#050508] text-zinc-600 text-xs", className)}>
-        Demo unavailable
+      <div className={cn("relative w-full h-full overflow-hidden bg-[#050508]", className)}>
+        {fallback ?? (
+          <div className="absolute inset-0 flex items-center justify-center bg-[#050508]">
+            <div className="h-6 w-6 rounded-full border-2 border-cyan-500/30 border-t-cyan-400 animate-spin" />
+          </div>
+        )}
       </div>
     );
   }
@@ -120,47 +123,48 @@ export function ExerciseDemoPlayer({
         <img
           src={posterSrc}
           alt=""
-          className={cn(mediaClass, useVideo && ready ? "opacity-0" : "opacity-100")}
+          className={cn(
+            mediaClass,
+            useVideo && ready && !mediaError ? "opacity-0" : "opacity-100",
+          )}
           decoding="async"
         />
       )}
 
-      {useVideo ? (
+      {!showPosterOnly && useVideo ? (
         <video
           ref={videoRef}
           src={videoSrc}
-          className={cn(mediaClass, "transition-opacity duration-200", ready ? "opacity-100" : "opacity-0")}
+          className={cn(mediaClass, "transition-opacity duration-200", ready && !mediaError ? "opacity-100" : "opacity-0")}
           loop
           muted
           playsInline
           preload="auto"
           onLoadedData={() => setReady(true)}
           onCanPlay={() => setReady(true)}
-          onError={() => setError(true)}
+          onError={() => setMediaError(true)}
         />
-      ) : (
-        gifSrc && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            ref={imgRef}
-            src={gifSrc}
-            alt=""
-            className={cn(mediaClass, "transition-opacity duration-200", ready ? "opacity-100" : "opacity-0")}
-            decoding="async"
-            fetchPriority="high"
-            onLoad={() => setReady(true)}
-            onError={() => setError(true)}
-          />
-        )
-      )}
+      ) : !showPosterOnly && gifSrc ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          ref={imgRef}
+          src={gifSrc}
+          alt=""
+          className={cn(mediaClass, "transition-opacity duration-200", ready && !mediaError ? "opacity-100" : "opacity-0")}
+          decoding="async"
+          fetchPriority="high"
+          onLoad={() => setReady(true)}
+          onError={() => setMediaError(true)}
+        />
+      ) : null}
 
-      {!ready && !posterSrc && (
+      {!ready && !posterSrc && !showPosterOnly && (
         <div className="absolute inset-0 bg-[#050508] flex items-center justify-center">
           <div className="h-6 w-6 rounded-full border-2 border-cyan-500/30 border-t-cyan-400 animate-spin" />
         </div>
       )}
 
-      {showControls && (ready || posterSrc) && (
+      {showControls && (ready || posterSrc || showPosterOnly) && hasMotion && !mediaError && (
         <div className="absolute bottom-3 right-3 z-10">
           <button
             type="button"

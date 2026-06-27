@@ -48,6 +48,7 @@ export default function WorkoutPage() {
   const {
     lastSession,
     selectedExercise,
+    selectedExerciseLabel,
     isWorkoutActive,
     isRecording,
     isCountingDown,
@@ -101,6 +102,7 @@ export default function WorkoutPage() {
 
   const exerciseName =
     selectedUserExercise?.name ||
+    selectedExerciseLabel ||
     (selectedExercise
       ? selectedExercise
           .split("-")
@@ -365,7 +367,7 @@ export default function WorkoutPage() {
               </div>
               <div>
                 <div className="flex items-center gap-3">
-                  <h1 className="text-xl font-extrabold tracking-tight">Workout Studio</h1>
+                  <h1 className="text-xl font-extrabold tracking-tight">AI Exercise</h1>
                   {isWorkoutActive && (
                     <span className="inline-flex items-center gap-1.5 rounded-full glass-card px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-cyan-300">
                       <Radio className="h-3 w-3 animate-pulse" />
@@ -504,6 +506,7 @@ export default function WorkoutPage() {
       {showExerciseGuide && selectedExercise && getExerciseGuide(selectedExercise) && (
         <ExerciseGuideModal
           guide={getExerciseGuide(selectedExercise)!}
+          exerciseName={selectedExerciseLabel || exerciseName}
           onClose={() => setShowExerciseGuide(false)}
           onEnableGhostCoach={() => setGhostCoachEnabled(true)}
         />
@@ -513,9 +516,10 @@ export default function WorkoutPage() {
 }
 
 function MobileCoachingToast() {
-  const { currentCues, isWorkoutActive } = useWorkoutStore();
-  if (!isWorkoutActive || currentCues.length === 0) return null;
-  const cue = currentCues[0];
+  const { currentCues, isWorkoutActive, aiLiveCue } = useWorkoutStore();
+  if (!isWorkoutActive) return null;
+  const cue = aiLiveCue || currentCues[0];
+  if (!cue) return null;
   const positive = cue.includes("Good") || cue.includes("Great");
   return (
     <div className="absolute bottom-2 left-3 right-3 z-20 pointer-events-none">
