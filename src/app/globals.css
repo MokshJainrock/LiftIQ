@@ -140,6 +140,16 @@ html { overscroll-behavior: none; }
 /* ─── Bottom nav ─── */
 .has-bottom-nav { padding-bottom: calc(5rem + var(--safe-bottom)); }
 
+/* ─── Bottom-sheet / overlay transitions ─── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
 /* ─── Mobile fullscreen webcam ─── */
 @media (max-width: 767px) {
   .webcam-fullscreen { position: fixed; inset: 0; z-index: 10; border-radius: 0; border: none; }

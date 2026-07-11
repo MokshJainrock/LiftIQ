@@ -110,8 +110,8 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Banded Chest Press", "chest", "band", "Anchor behind you, press to full lockout."),
 
   // ── Back ──────────────────────────────────────────────────────
-  ex("Deadlift", "back", "barbell", "Brace hard, push the floor away, bar stays close.", { rest: 180 }),
-  ex("Barbell Row", "back", "barbell", "Hinge ~45°, pull to lower ribs, no torso heave.", { rest: 120 }),
+  ex("Deadlift", "back", "barbell", "Brace hard, push the floor away, bar stays close.", { trackingId: "deadlift", rest: 180 }),
+  ex("Barbell Row", "back", "barbell", "Hinge ~45°, pull to lower ribs, no torso heave.", { trackingId: "row", rest: 120 }),
   ex("Pendlay Row", "back", "barbell", "Each rep starts dead on the floor, explosive pull.", { rest: 120 }),
   ex("T-Bar Row", "back", "barbell", "Chest up, elbows drive back past the torso.", { rest: 120 }),
   ex("Dumbbell Row", "back", "dumbbell", "Pull the elbow to the hip, not the hand to the chest."),
@@ -136,7 +136,7 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   ex("Push Press", "shoulders", "barbell", "Small leg drive, lock out overhead.", { rest: 150 }),
   ex("Dumbbell Shoulder Press", "shoulders", "dumbbell", "Elbows under wrists the whole press.", { trackingId: "shoulder-press" }),
   ex("Arnold Press", "shoulders", "dumbbell", "Rotate palms from facing you to facing forward."),
-  ex("Lateral Raise", "shoulders", "dumbbell", "Lead with the elbows, stop at shoulder height."),
+  ex("Lateral Raise", "shoulders", "dumbbell", "Lead with the elbows, stop at shoulder height.", { trackingId: "lateral-raise" }),
   ex("Cable Lateral Raise", "shoulders", "cable", "Constant tension — slow on the way down."),
   ex("Front Raise", "shoulders", "dumbbell", "Raise to eye level, no body swing."),
   ex("Rear Delt Fly", "shoulders", "dumbbell", "Hinge over, swing arms wide like wings."),
@@ -167,10 +167,10 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
   // ── Triceps ───────────────────────────────────────────────────
   ex("Close-Grip Bench Press", "triceps", "barbell", "Hands shoulder-width, elbows tucked.", { rest: 120 }),
   ex("Skull Crusher", "triceps", "barbell", "Lower to the forehead, elbows stay in."),
-  ex("Tricep Pushdown", "triceps", "cable", "Elbows glued to sides, full lockout."),
+  ex("Tricep Pushdown", "triceps", "cable", "Elbows glued to sides, full lockout.", { trackingId: "tricep-extension" }),
   ex("Overhead Tricep Extension", "triceps", "dumbbell", "Big stretch behind the head."),
   ex("Cable Overhead Extension", "triceps", "cable", "Face away from the stack, extend forward."),
-  ex("Dip (Triceps)", "triceps", "bodyweight", "Stay upright, elbows track straight back.", { rest: 90 }),
+  ex("Dip (Triceps)", "triceps", "bodyweight", "Stay upright, elbows track straight back.", { trackingId: "tricep-dip", rest: 90 }),
   ex("Bench Dip", "triceps", "bodyweight", "Hands on a bench behind you, knees bent to scale."),
   ex("Diamond Push-Up", "triceps", "bodyweight", "Hands form a diamond under the chest."),
   ex("Rope Pushdown", "triceps", "cable", "Split the rope at the bottom, full extension."),
@@ -219,7 +219,7 @@ export const EXERCISE_LIBRARY: LibraryExercise[] = [
 
   // ── Glutes ────────────────────────────────────────────────────
   ex("Hip Thrust", "glutes", "barbell", "Chin tucked, squeeze hard, full lockout.", { rest: 120 }),
-  ex("Glute Bridge", "glutes", "bodyweight", "Drive through the heels, pause at the top."),
+  ex("Glute Bridge", "glutes", "bodyweight", "Drive through the heels, pause at the top.", { trackingId: "glute-bridge" }),
   ex("Cable Kickback", "glutes", "cable", "Kick back and slightly up, no back arch."),
   ex("Cable Pull-Through", "glutes", "cable", "Face away, hinge, snap the hips through."),
   ex("Sumo Deadlift", "glutes", "barbell", "Wide stance, knees out, vertical torso.", { rest: 180 }),

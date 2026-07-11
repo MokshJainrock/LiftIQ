@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, Circle, ScanLine } from "lucide-react";
+import { CheckCircle2, Circle, ScanLine, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SetupCheckItem } from "@/lib/pose/tracking-confidence";
 
@@ -10,6 +10,9 @@ interface SetupValidationOverlayProps {
   hint: string;
   checklist: SetupCheckItem[];
   ready: boolean;
+  /** Depth/LiDAR badge label — shown when depth-class hardware is detected. */
+  depthLabel?: string;
+  depthActive?: boolean;
 }
 
 export function SetupValidationOverlay({
@@ -17,6 +20,8 @@ export function SetupValidationOverlay({
   hint,
   checklist,
   ready,
+  depthLabel,
+  depthActive,
 }: SetupValidationOverlayProps) {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/55 z-30 px-4">
@@ -30,6 +35,11 @@ export function SetupValidationOverlay({
             AI Setup Validation
           </div>
           <p className="text-xs text-white/75 min-h-[1.25rem]">{hint || "Get into the starting position"}</p>
+          {depthActive && depthLabel && (
+            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2.5 py-1 text-[10px] font-semibold text-cyan-300">
+              <Radar className="h-3 w-3" /> {depthLabel}
+            </div>
+          )}
         </div>
 
         <div className="rounded-2xl border border-white/[0.08] bg-black/40 backdrop-blur-md p-4 space-y-2 mb-4">

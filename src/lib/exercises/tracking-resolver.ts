@@ -13,6 +13,12 @@ export const TRACKING_TEMPLATE_IDS = [
   "shoulder-press",
   "bicep-curl",
   "burpee",
+  "lateral-raise",
+  "row",
+  "deadlift",
+  "glute-bridge",
+  "tricep-dip",
+  "tricep-extension",
 ] as const;
 
 export type TrackingTemplateId = (typeof TRACKING_TEMPLATE_IDS)[number];
@@ -31,28 +37,81 @@ export function resolveTrackingId(
 
   const n = exerciseName.toLowerCase();
 
-  if (/burpee|man maker|sprawl/i.test(n)) return "burpee";
+  // ── Compound / full-body movements first ──────────────────────
+  if (/burpee|man maker|sprawl|devil press/i.test(n)) return "burpee";
   if (/jumping jack|star jump|side straddle/i.test(n)) return "jumping-jack";
   if (/mountain climber|bear crawl|inchworm|plank jack/i.test(n)) return "mountain-climber";
+
+  // ── Glute bridge / hip thrust (before the hip-hinge rule) ─────
+  if (/glute bridge|hip thrust|frog pump|hip raise/i.test(n)) return "glute-bridge";
+
+  // ── Hip hinge / posterior chain ───────────────────────────────
+  if (
+    /deadlift|\brdl\b|romanian|stiff.?leg|good morning|rack pull|pull.?through|kettlebell swing|\bswing\b|hip hinge/i.test(
+      n,
+    )
+  ) {
+    return "deadlift";
+  }
+
+  // ── Dips (vertical push) ──────────────────────────────────────
+  if (/\bdips?\b/i.test(n)) return "tricep-dip";
+
+  // ── Tricep elbow-extension (pushdowns, extensions, skull crushers) ─
+  if (/pushdown|skull crusher|tricep.*extension|overhead.*extension|tricep kickback/i.test(n)) {
+    return "tricep-extension";
+  }
+
+  // ── Push-ups ──────────────────────────────────────────────────
   if (/push.?up|pike push|handstand push|diamond push|decline push|wall push|archer push/i.test(n)) {
     return "pushup";
   }
-  if (/plank|dead bug|bird dog|hollow hold|side plank|pallof/i.test(n) && !/push/i.test(n)) {
+
+  // ── Planks & anti-movement holds ──────────────────────────────
+  if (/plank|dead bug|bird dog|hollow|side plank|pallof|copenhagen/i.test(n) && !/push/i.test(n)) {
     return "plank";
   }
-  if (/sit.?up|crunch|v.?up|toe touch|bicycle crunch|leg raise(?!.*hang)/i.test(n)) {
+
+  // ── Ab flexion (sit-up family) ────────────────────────────────
+  if (/sit.?up|crunch|v.?up|toe touch|bicycle|leg raise(?!.*hang)|flutter kick|knee raise/i.test(n)) {
     return "situp";
   }
-  if (/curl|hammer curl|preacher|concentration curl|spider curl|drag curl/i.test(n)) {
-    return "bicep-curl";
+
+  // ── Shoulder raises (before rows so "upright row" lands here) ─
+  if (
+    /lateral raise|side raise|front raise|rear delt|reverse fly|delt fly|y.?raise|upright row|scarecrow|lateral fly/i.test(
+      n,
+    )
+  ) {
+    return "lateral-raise";
   }
-  if (/shoulder press|overhead press|ohp|military press|arnold press|push press|landmine press|pike/i.test(n)) {
+
+  // ── Rows & pulls (skip straight-arm — no rep flexion) ─────────
+  if (!/straight.?arm/i.test(n) && /\brow\b|rows|face pull|pulldown|pull.?down|pull.?up|chin.?up/i.test(n)) {
+    return "row";
+  }
+
+  // ── Overhead press ────────────────────────────────────────────
+  if (
+    /shoulder press|overhead press|ohp|military press|arnold press|push press|landmine press|pike|thruster|clean.*press/i.test(
+      n,
+    )
+  ) {
     return "shoulder-press";
   }
-  if (/lunge|split squat|step.?up|bulgarian|walking lunge|reverse lunge/i.test(n)) {
+
+  // ── Biceps curls (exclude leg/wrist/calf "curls") ─────────────
+  if (/curl/i.test(n) && !/leg curl|nordic|calf|wrist/i.test(n)) {
+    return "bicep-curl";
+  }
+
+  // ── Lunges / split-stance ─────────────────────────────────────
+  if (/lunge|split squat|step.?up|bulgarian|curtsy/i.test(n)) {
     return "lunge";
   }
-  if (/squat|leg press|hack squat|wall sit|goblet squat|front squat|box squat|sumo squat|sissy squat/i.test(n)) {
+
+  // ── Squats & knee-dominant ────────────────────────────────────
+  if (/squat|leg press|hack squat|wall sit|goblet|front squat|box squat|sumo squat|sissy squat|pistol|jump squat/i.test(n)) {
     return "squat";
   }
 

@@ -206,3 +206,71 @@ export interface UserSettings {
 }
 
 export type PoseDetectionStatus = "loading" | "ready" | "detecting" | "error" | "no-camera";
+
+// ── AI Diet Plan ──────────────────────────────────────────────
+
+export type DietPreference =
+  | "omnivore"
+  | "vegetarian"
+  | "vegan"
+  | "pescatarian"
+  | "keto"
+  | "paleo"
+  | "mediterranean";
+
+export interface DietPlanInput {
+  /** Pulled from UserProfile, but the user can override in the questionnaire. */
+  weight: number; // lbs
+  height: number; // inches
+  age: number;
+  gender: Gender;
+  activityLevel: ActivityLevel;
+  weightGoal: WeightGoal;
+  /** Target daily calories — computed default, user-editable. */
+  calorieTarget: number;
+  preference: DietPreference;
+  mealsPerDay: number;
+  /** Free-text allergies / foods to avoid. */
+  allergies: string;
+  /** Optional cuisine preference, e.g. "Indian, Mediterranean". */
+  cuisines: string;
+  /** Optional extra notes / constraints for the AI. */
+  notes: string;
+}
+
+export interface DietPlanFoodItem {
+  name: string;
+  portion: string;
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+}
+
+export interface DietPlanMeal {
+  meal: string; // e.g. "Breakfast", "Lunch"
+  time?: string; // e.g. "8:00 AM"
+  items: DietPlanFoodItem[];
+  calories: number;
+}
+
+export interface DietPlanMacros {
+  protein: number; // grams/day
+  carbs: number;
+  fat: number;
+}
+
+export interface DietPlan {
+  id: string;
+  createdAt: number;
+  /** Snapshot of the inputs used to generate this plan. */
+  input: DietPlanInput;
+  title: string;
+  summary: string;
+  dailyCalories: number;
+  macros: DietPlanMacros;
+  meals: DietPlanMeal[];
+  tips: string[];
+  hydrationLiters?: number;
+  source: "ai" | "fallback";
+}

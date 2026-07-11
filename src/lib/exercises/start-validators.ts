@@ -35,6 +35,11 @@ export const REQUIRED_FAMILY: Record<string, PoseFamily> = {
   "shoulder-press": "standing",
   "bicep-curl": "standing",
   situp: "seated_floor",
+  "lateral-raise": "standing",
+  deadlift: "standing",
+  "glute-bridge": "seated_floor",
+  // row + tricep-dip intentionally omitted — they're done seated/supported or
+  // bent-over, so we stay permissive rather than gating on a pose family.
 };
 
 function vis(lm: Landmark | undefined): number {
@@ -158,6 +163,39 @@ const validateBicepCurl: StartValidator = (_lm, family, angles) => {
 };
 
 const validateBurpee: StartValidator = validateStanding;
+const validateDeadlift: StartValidator = validateStanding;
+
+// Lateral/front raises start standing with the arms hanging down.
+const validateLateralRaise: StartValidator = (_lm, family, angles) => {
+  const base = validateStanding(_lm, family, angles);
+  if (!base.isValid) return base;
+  const avgShoulder = (angles.leftShoulder + angles.rightShoulder) / 2;
+  if (avgShoulder > 55) {
+    return { ...base, isValid: false, reasons: ["Start with your arms relaxed at your sides."] };
+  }
+  return base;
+};
+
+// Glute bridge / hip thrust starts lying on the back with the hips down.
+const validateGluteBridge: StartValidator = (_lm, family, angles) => {
+  const acceptable: PoseFamily[] = ["seated_floor", "floor_plank"];
+  if (!acceptable.includes(family.family)) {
+    return {
+      isValid: false,
+      confidence: family.confidence,
+      reasons: ["Lie on your back with your knees bent to begin."],
+      detectedFamily: family.family,
+      detectedPoseLabel: describePose(family.family, angles),
+    };
+  }
+  return {
+    isValid: true,
+    confidence: family.confidence,
+    reasons: [],
+    detectedFamily: family.family,
+    detectedPoseLabel: describePose(family.family, angles),
+  };
+};
 
 const validatePushup: StartValidator = (lm, family, angles) => {
   const required: PoseFamily = "floor_plank";
@@ -277,6 +315,9 @@ const VALIDATORS: Record<string, StartValidator> = {
   "shoulder-press": validateShoulderPress,
   "bicep-curl": validateBicepCurl,
   situp: validateSitup,
+  "lateral-raise": validateLateralRaise,
+  deadlift: validateDeadlift,
+  "glute-bridge": validateGluteBridge,
 };
 
 /**

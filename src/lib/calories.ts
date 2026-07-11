@@ -72,6 +72,28 @@ export function getGoalLabel(goal: WeightGoal): string {
   }
 }
 
+/**
+ * Recommend a daily macro split (grams) from a calorie target and goal.
+ * Protein is anchored to bodyweight (higher for cut/gain), fat to a % of
+ * calories, and carbs fill the remainder.
+ */
+export function recommendMacros(
+  calories: number,
+  weightLbs: number,
+  goal: WeightGoal
+): { protein: number; carbs: number; fat: number } {
+  const proteinPerLb = goal === "lose" ? 1.0 : goal === "gain" ? 0.9 : 0.8;
+  const protein = Math.round(weightLbs * proteinPerLb);
+
+  const fatPct = goal === "lose" ? 0.28 : 0.25;
+  const fat = Math.round((calories * fatPct) / 9);
+
+  const remainingCals = Math.max(0, calories - protein * 4 - fat * 9);
+  const carbs = Math.round(remainingCals / 4);
+
+  return { protein, carbs, fat };
+}
+
 export function getActivityLabel(level: ActivityLevel): string {
   switch (level) {
     case "sedentary": return "Sedentary (desk job)";

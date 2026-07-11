@@ -1,4 +1,4 @@
-import { WorkoutSession, DailyLog, StreakData, UserSettings, UserProfile, FoodEntry, UserExercise, WorkoutRoutine, WorkoutLog } from "@/types";
+import { WorkoutSession, DailyLog, StreakData, UserSettings, UserProfile, FoodEntry, UserExercise, WorkoutRoutine, WorkoutLog, DietPlan } from "@/types";
 import * as db from "@/lib/api-db";
 import { clearAllRecordings } from "@/lib/storage/recordings-db";
 
@@ -12,6 +12,7 @@ const STORAGE_KEYS = {
   USER_EXERCISES: "liftiq-user-exercises",
   ROUTINES: "liftiq-routines",
   WORKOUTS: "liftiq-workouts",
+  DIET_PLAN: "liftiq-diet-plan",
 } as const;
 
 function getItem<T>(key: string, fallback: T): T {
@@ -80,6 +81,21 @@ export function hasCompletedOnboarding(): boolean {
 export async function fetchHasCompletedOnboarding(): Promise<boolean> {
   const profile = await fetchUserProfile();
   return profile?.hasCompletedOnboarding ?? false;
+}
+
+// ── Diet Plan (AI-generated, latest kept locally) ─────────────
+
+export function getDietPlan(): DietPlan | null {
+  return getItem<DietPlan | null>(STORAGE_KEYS.DIET_PLAN, null);
+}
+
+export function saveDietPlan(plan: DietPlan): void {
+  setItem(STORAGE_KEYS.DIET_PLAN, plan);
+}
+
+export function clearDietPlan(): void {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(STORAGE_KEYS.DIET_PLAN);
 }
 
 // ── User Exercises ────────────────────────────────────────────

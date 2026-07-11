@@ -18,6 +18,7 @@ import { assessTrackingQuality, displayScore, type SetupCheckItem } from "@/lib/
 import { requestLiveCoachCue, resetLiveCoachClient } from "@/lib/ai/live-coach-client";
 import { SetupValidationOverlay } from "@/components/workout/setup-validation-overlay";
 import { useCameraActive } from "@/lib/pose/use-camera-active";
+import { useDepthCapability } from "@/lib/pose/use-depth-capability";
 
 const FORM_CHECK_REQUIRED_FRAMES = 15;
 
@@ -83,6 +84,8 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
   const coachModeDefaultedRef = useRef(false);
   const { setVoiceInfo } = useWorkoutStore();
   const cameraActive = useCameraActive();
+  // Depth/LiDAR assist — read via ref inside the per-frame callback.
+  const depthAssistRef = useRef(false);
 
   // First time we mount on a mobile screen, swap the user into minimal
   // coaching mode — the full ghost overlay isn't a great fit for phone
@@ -290,7 +293,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
         const config = getExercise(exerciseRef.current);
         if (!config) return;
 
-        const setupQuality = assessTrackingQuality(landmarks, cameraFacing);
+        const setupQuality = assessTrackingQuality(landmarks, cameraFacing, depthAssistRef.current);
         setSetupChecklist(setupQuality.checklist);
         setTrackingQuality(setupQuality.tier, setupQuality.scoreAvailable, setupQuality.label);
 
@@ -383,7 +386,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
       }
       if (coreVisible < 4) return;
 
-      const quality = assessTrackingQuality(landmarks, cameraFacing);
+      const quality = assessTrackingQuality(landmarks, cameraFacing, depthAssistRef.current);
       setSetupChecklist(quality.checklist);
       setTrackingQuality(quality.tier, quality.scoreAvailable, quality.label);
 
@@ -502,6 +505,12 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
     enabled: cameraActive,
     facingMode: cameraFacing,
   });
+
+  const depthCapability = useDepthCapability(status === "detecting");
+
+  useEffect(() => {
+    depthAssistRef.current = depthCapability.depthAssist;
+  }, [depthCapability.depthAssist]);
 
   useEffect(() => {
     videoElRef.current = videoRef.current;
@@ -797,6 +806,8 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
           hint={formCheckHint}
           checklist={setupChecklist}
           ready={formCheckProgress >= 100}
+          depthLabel={depthCapability.label}
+          depthActive={depthCapability.depthAssist}
         />
       )}
 

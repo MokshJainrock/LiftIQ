@@ -53,8 +53,12 @@ function shoulderLevel(landmarks: Landmark[]): boolean {
 export function assessTrackingQuality(
   landmarks: Landmark[],
   cameraFacing: "user" | "environment" = "environment",
+  depthAssist = false,
 ): TrackingQuality {
-  const trust = frameTrust(landmarks, CORE);
+  // Depth-class hardware (LiDAR / multi-lens / WebXR depth) gives us a more
+  // reliable sense of scale + framing, so we can trust a given frame a little
+  // more and require slightly less-perfect positioning.
+  const trust = Math.min(1, frameTrust(landmarks, CORE) + (depthAssist ? 0.06 : 0));
   const anklesOk =
     (vis(landmarks, L.LEFT_ANKLE) >= 0.4 || vis(landmarks, L.RIGHT_ANKLE) >= 0.4);
   const shouldersOk =
@@ -102,11 +106,24 @@ export function assessTrackingQuality(
     },
   ];
 
+  if (depthAssist) {
+    checklist.push({
+      id: "depth",
+      label: "Depth sensing active",
+      ok: true,
+      hint: undefined,
+    });
+  }
+
   const checksPassed = checklist.filter((c) => c.id !== "camera" || cameraFacing === "environment").filter((c) => c.ok).length;
   const setupScore = checksPassed / checklist.length;
 
+  // Depth-class hardware slightly lowers the bar for "high" confidence.
+  const highTrust = depthAssist ? 0.58 : 0.62;
+  const highSetup = depthAssist ? 0.55 : 0.6;
+
   let tier: TrackingTier = "low";
-  if (trust >= 0.62 && fullBody && goodDistance && level && setupScore >= 0.6) {
+  if (trust >= highTrust && fullBody && goodDistance && level && setupScore >= highSetup) {
     tier = "high";
   } else if (trust >= 0.48 && shouldersOk && hipsOk) {
     tier = "medium";
