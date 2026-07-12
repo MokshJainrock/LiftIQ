@@ -5,8 +5,11 @@ export const createClient = async (cookieStore?: Awaited<ReturnType<typeof cooki
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
+  // Supabase is an optional OAuth fallback. When it isn't configured we return
+  // null instead of throwing so the build/prerender can never crash — callers
+  // handle the null and degrade gracefully.
   if (!supabaseUrl || !supabaseKey) {
-    throw new Error("Supabase URL and key must be set in environment variables");
+    return null;
   }
 
   const store = cookieStore ?? await cookies();
