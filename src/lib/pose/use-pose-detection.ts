@@ -178,17 +178,32 @@ export function usePoseDetection({
       const baseRadius = mobile ? 4 : 5;
       const targetRadius = mobile ? 6 : 7;
 
-      // Bone glow pass
+      // Warning tints emitted by form scoring (poor = red, moderate = amber).
+      // When a joint carries one of these we recolor the whole limb so a form
+      // fault is obvious at a glance, not just a small dot.
+      const DEFAULT_BONE = "rgba(0, 230, 170, 0.85)";
+      const DEFAULT_GLOW = "rgba(0, 230, 170, 0.55)";
+      const isWarn = (c?: string) => c === "#f87171" || c === "#facc15";
+      // Red takes priority over amber when the two endpoints disagree.
+      const pickWarn = (a?: string, b?: string) => {
+        if (a === "#f87171" || b === "#f87171") return "#f87171";
+        if (a === "#facc15" || b === "#facc15") return "#facc15";
+        return undefined;
+      };
+
+      // Bone pass — each bone tinted by its endpoints' form status.
       ctx.save();
-      ctx.shadowColor = "rgba(0, 230, 170, 0.55)";
-      ctx.shadowBlur = mobile ? 10 : 14;
-      ctx.strokeStyle = "rgba(0, 230, 170, 0.85)";
       ctx.lineWidth = lineWidth;
       ctx.lineCap = "round";
       for (const [start, end] of SKELETON_CONNECTIONS) {
         const a = landmarks[start];
         const b = landmarks[end];
         if (a && b && (a.visibility ?? 1) > 0.5 && (b.visibility ?? 1) > 0.5) {
+          const warn = pickWarn(jointColors?.get(start), jointColors?.get(end));
+          ctx.strokeStyle = warn ?? DEFAULT_BONE;
+          ctx.shadowColor = warn ?? DEFAULT_GLOW;
+          ctx.shadowBlur = warn ? (mobile ? 14 : 18) : mobile ? 10 : 14;
+          ctx.lineWidth = warn ? lineWidth + 1 : lineWidth;
           ctx.beginPath();
           ctx.moveTo(projX(a.x), projY(a.y));
           ctx.lineTo(projX(b.x), projY(b.y));
@@ -206,12 +221,14 @@ export function usePoseDetection({
         const y = projY(lm.y);
         const overrideColor = jointColors?.get(i);
         const isTarget = jointColors?.has(i) ?? false;
+        const warn = isWarn(overrideColor);
         const color = overrideColor || "#00ffaa";
-        const radius = isTarget ? targetRadius : baseRadius;
+        // Flagged joints render largest so the problem area pops.
+        const radius = warn ? targetRadius + 1.5 : isTarget ? targetRadius : baseRadius;
 
         ctx.save();
         ctx.shadowColor = color;
-        ctx.shadowBlur = isTarget ? (mobile ? 12 : 16) : mobile ? 6 : 9;
+        ctx.shadowBlur = warn ? (mobile ? 18 : 24) : isTarget ? (mobile ? 12 : 16) : mobile ? 6 : 9;
         ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, 2 * Math.PI);
@@ -227,7 +244,7 @@ export function usePoseDetection({
           ctx.beginPath();
           ctx.arc(x, y, radius + 2.5, 0, 2 * Math.PI);
           ctx.strokeStyle = color;
-          ctx.lineWidth = 2;
+          ctx.lineWidth = warn ? 2.5 : 2;
           ctx.stroke();
         }
       }

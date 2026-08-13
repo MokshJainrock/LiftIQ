@@ -178,29 +178,43 @@ export function Navbar() {
 
       {/* ─── Mobile: bottom tab bar with elevated center action ─── */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-[100] border-t border-white/[0.06] bg-background/85 backdrop-blur-xl md:hidden"
+        className="fixed bottom-0 left-0 right-0 z-[100] md:hidden border-t border-white/[0.07] bg-[#0a0a0f]/90 backdrop-blur-2xl"
         style={{ paddingBottom: "var(--safe-bottom)" }}
       >
-        <div className="relative flex h-16 items-stretch justify-around px-1">
+        {/* subtle top highlight for depth */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        <div className="relative mx-auto flex h-[60px] max-w-md items-stretch justify-between px-2">
           {/* left two */}
           {primaryMobile.slice(0, 2).map((item) => (
             <TabButton key={item.href} item={item} active={isActive(pathname, item.href)} />
           ))}
 
           {/* center elevated action */}
-          <div className="flex w-16 shrink-0 items-start justify-center">
+          <div className="flex w-[68px] shrink-0 flex-col items-center">
             <Link
               href={centerItem.href}
               aria-label={centerItem.label}
               className={cn(
-                "-mt-6 flex h-16 w-16 flex-col items-center justify-center gap-0.5 rounded-full border-4 border-background shadow-lg transition-transform active:scale-95",
-                "bg-gradient-to-br from-cyan-400 to-blue-500 text-white",
-                isActive(pathname, centerItem.href) && "ring-2 ring-cyan-300/50"
+                "group relative -mt-7 flex h-14 w-14 items-center justify-center rounded-full transition-transform duration-200 active:scale-90",
+                "bg-gradient-to-br from-cyan-400 via-cyan-500 to-blue-600",
+                "shadow-[0_8px_24px_-4px_rgba(6,182,212,0.55)] ring-1 ring-inset ring-white/25",
               )}
             >
-              <centerItem.icon className="h-6 w-6" strokeWidth={2.4} />
-              <span className="text-[8px] font-bold uppercase tracking-wide">AI</span>
+              {/* soft outer ring that separates the FAB from the bar */}
+              <span className="absolute -inset-[5px] -z-10 rounded-full bg-[#0a0a0f]" />
+              {isActive(pathname, centerItem.href) && (
+                <span className="absolute -inset-[5px] -z-10 rounded-full ring-2 ring-cyan-400/60" />
+              )}
+              <centerItem.icon className="h-6 w-6 text-white drop-shadow-sm" strokeWidth={2.4} />
             </Link>
+            <span
+              className={cn(
+                "mt-0.5 text-[10px] font-semibold tracking-wide transition-colors",
+                isActive(pathname, centerItem.href) ? "text-cyan-300" : "text-zinc-400",
+              )}
+            >
+              AI
+            </span>
           </div>
 
           {/* right one + More */}
@@ -210,12 +224,16 @@ export function Navbar() {
           <button
             type="button"
             onClick={() => setMoreOpen(true)}
+            aria-label="More"
             className={cn(
               "relative flex min-h-[48px] min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors",
-              moreActive || moreOpen ? "text-cyan-400" : "text-zinc-500 active:text-zinc-300"
+              moreActive || moreOpen ? "text-cyan-400" : "text-zinc-500 active:text-zinc-300",
             )}
           >
-            <Menu className="h-5 w-5 shrink-0" strokeWidth={moreActive ? 2.25 : 1.5} />
+            {(moreActive || moreOpen) && (
+              <span className="absolute top-0 h-[3px] w-7 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" />
+            )}
+            <Menu className="h-[22px] w-[22px] shrink-0" strokeWidth={moreActive || moreOpen ? 2.4 : 1.75} />
             <span className="truncate text-[10px] font-medium tracking-wide">More</span>
           </button>
         </div>
@@ -236,14 +254,14 @@ function TabButton({
       href={item.href}
       className={cn(
         "relative flex min-h-[48px] min-w-0 flex-1 flex-col items-center justify-center gap-1 py-2 transition-colors",
-        active ? "text-cyan-400" : "text-zinc-500 active:text-zinc-300"
+        active ? "text-cyan-400" : "text-zinc-500 active:text-zinc-300",
       )}
     >
-      <item.icon className="h-5 w-5 shrink-0" strokeWidth={active ? 2.25 : 1.5} />
-      <span className="truncate text-[10px] font-medium tracking-wide">{item.label}</span>
       {active && (
-        <span className="absolute top-0 h-[2px] w-8 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" />
+        <span className="absolute top-0 h-[3px] w-7 rounded-full bg-gradient-to-r from-cyan-400 to-blue-500" />
       )}
+      <item.icon className="h-[22px] w-[22px] shrink-0" strokeWidth={active ? 2.4 : 1.75} />
+      <span className="truncate text-[10px] font-medium tracking-wide">{item.label}</span>
     </Link>
   );
 }

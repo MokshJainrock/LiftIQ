@@ -22,6 +22,44 @@ import { useDepthCapability } from "@/lib/pose/use-depth-capability";
 
 const FORM_CHECK_REQUIRED_FRAMES = 15;
 
+// Maps the semantic joint names emitted by exercise scoring to concrete
+// MediaPipe landmark indices, so form faults tint the right nodes/limbs.
+// Includes singular + side variants so every exercise config resolves.
+const JOINT_LANDMARK_MAP: Record<string, number[]> = {
+  knees: [25, 26],
+  knee: [25, 26],
+  leftKnee: [25],
+  rightKnee: [26],
+  frontKnee: [25, 26],
+  backKnee: [25, 26],
+  hips: [23, 24],
+  hip: [23, 24],
+  leftHip: [23],
+  rightHip: [24],
+  torso: [11, 12, 23, 24],
+  back: [11, 12, 23, 24],
+  spine: [11, 12, 23, 24],
+  elbows: [13, 14],
+  elbow: [13, 14],
+  leftElbow: [13],
+  rightElbow: [14],
+  arms: [13, 14, 15, 16],
+  arm: [13, 14, 15, 16],
+  wrists: [15, 16],
+  wrist: [15, 16],
+  hands: [15, 16],
+  hand: [15, 16],
+  shoulders: [11, 12],
+  shoulder: [11, 12],
+  leftShoulder: [11],
+  rightShoulder: [12],
+  ankles: [27, 28],
+  ankle: [27, 28],
+  frontAnkle: [27, 28],
+  head: [0],
+  neck: [0, 11, 12],
+};
+
 interface WebcamFeedProps {
   mobile?: boolean;
   ghostCoachEnabled?: boolean;
@@ -251,20 +289,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
             ? "#facc15"
             : "#00e68a";
 
-        const jointMapping: Record<string, number[]> = {
-          knees: [25, 26],
-          leftKnee: [25],
-          rightKnee: [26],
-          frontKnee: [25, 26],
-          backKnee: [25, 26],
-          hips: [23, 24],
-          torso: [11, 12, 23, 24],
-          elbows: [13, 14],
-          arms: [13, 14, 15, 16],
-          shoulders: [11, 12],
-        };
-
-        const indices = jointMapping[issue.joint] || [];
+        const indices = JOINT_LANDMARK_MAP[issue.joint] || [];
         for (const idx of indices) {
           colors.set(idx, color);
         }
