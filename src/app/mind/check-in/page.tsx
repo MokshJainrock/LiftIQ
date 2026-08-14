@@ -14,9 +14,11 @@ import {
 } from "@/lib/mind/intervention";
 import { saveCheckIn, saveMindSession } from "@/lib/mind/storage";
 import type { StressSignal } from "@/lib/mind/types";
+import { useFeaturePath } from "@/lib/liftiq/use-feature-path";
 
 export default function CheckInPage() {
   const router = useRouter();
+  const to = useFeaturePath();
   const [state, setState] = useState<{
     rating: number;
     bpm: number | null;
@@ -60,7 +62,7 @@ export default function CheckInPage() {
       intervention,
       startLevel: state.level,
     });
-    router.push(copy.href);
+    router.push(to(copy.href));
   };
 
   const handleReflect = () => {
@@ -71,7 +73,7 @@ export default function CheckInPage() {
   return (
     <main className="mx-auto min-w-0 max-w-5xl px-4 py-8 pt-[max(2.5rem,calc(1.25rem+var(--safe-top)))] sm:px-6 sm:py-14 lg:px-8">
       <Link
-        href="/mind"
+        href={to("/mind")}
         className="inline-flex items-center gap-1.5 text-[12px] mind-text-secondary hover:text-[#6FFFE9] transition-colors"
       >
         <ArrowLeft className="h-3.5 w-3.5" />

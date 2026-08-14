@@ -6,8 +6,10 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { BreathingWidget } from "@/components/mind/breathing-widget";
 import { AIReflectionPanel } from "@/components/mind/ai-reflection-panel";
 import { saveBreathingSession, saveMindSession, getLatestCheckIn } from "@/lib/mind/storage";
+import { useFeaturePath } from "@/lib/liftiq/use-feature-path";
 
 export default function BreathePage() {
+  const to = useFeaturePath();
   const [done, setDone] = useState(false);
   const [reflectTrigger, setReflectTrigger] = useState(0);
   const [stats, setStats] = useState<{ cycles: number; sec: number } | null>(null);
@@ -35,7 +37,7 @@ export default function BreathePage() {
   return (
     <main className="mx-auto min-w-0 max-w-3xl px-4 pt-8 pb-2 sm:px-6 sm:pt-14 sm:pb-4 md:px-8 md:pb-6">
       <Link
-        href="/mind"
+        href={to("/mind")}
         className="inline-flex items-center gap-1.5 text-[12px] mind-text-secondary hover:text-[#6FFFE9] transition-colors"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
@@ -84,14 +86,14 @@ export default function BreathePage() {
 
               <div className="mt-7 flex flex-wrap justify-center gap-3">
                 <Link
-                  href="/mind/journal"
+                  href={to("/mind/journal")}
                   className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#6FFFE9] to-[#5BC0BE] px-5 py-2.5 text-sm font-bold text-[#0B132B] hover:brightness-110 transition-all"
                 >
                   Reflect in journal
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
-                  href="/mind"
+                  href={to("/mind")}
                   className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-5 py-2.5 text-sm font-medium mind-text-secondary hover:text-white hover:bg-white/[0.06] transition-all"
                 >
                   Back to dashboard

@@ -43,6 +43,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFeaturePath } from "@/lib/liftiq/use-feature-path";
 
 interface LiveSet {
   weight: string;
@@ -95,6 +96,7 @@ function formatDuration(ms: number): string {
 
 export default function LiveWorkoutPage() {
   const router = useRouter();
+  const to = useFeaturePath();
   const [startedAt, setStartedAt] = useState<number>(0);
   const [now, setNow] = useState<number>(0);
   const [exercises, setExercises] = useState<LiveExercise[]>([]);
@@ -344,7 +346,7 @@ export default function LiveWorkoutPage() {
     } catch {
       // ignore
     }
-    router.push("/workout");
+    router.push(to("/workout"));
   };
 
   const handleAISuggest = async () => {
@@ -374,7 +376,7 @@ export default function LiveWorkoutPage() {
           {results.length === 0 ? (
             <GlassCard className="p-8 text-center">
               <p className="text-zinc-400">No completed sets — nothing was saved.</p>
-              <Button onClick={() => router.push("/workout")} className="mt-5 min-h-[48px]">
+              <Button onClick={() => router.push(to("/workout"))} className="mt-5 min-h-[48px]">
                 Back to Training
               </Button>
             </GlassCard>
@@ -470,10 +472,10 @@ export default function LiveWorkoutPage() {
               </div>
 
               <div className="mt-6 flex gap-2">
-                <Button variant="outline" onClick={() => router.push("/dashboard")} className="flex-1 min-h-[48px]">
+                <Button variant="outline" onClick={() => router.push(to("/dashboard"))} className="flex-1 min-h-[48px]">
                   View Stats
                 </Button>
-                <Button onClick={() => router.push("/workout")} className="flex-1 min-h-[48px]">
+                <Button onClick={() => router.push(to("/workout"))} className="flex-1 min-h-[48px]">
                   Done
                 </Button>
               </div>

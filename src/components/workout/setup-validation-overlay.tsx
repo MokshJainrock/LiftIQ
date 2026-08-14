@@ -28,15 +28,15 @@ export function SetupValidationOverlay({
       <div className="w-full max-w-md">
         <div className="text-center mb-5">
           <div className="relative mx-auto mb-4 h-14 w-14 flex items-center justify-center">
-            <div className="absolute inset-0 rounded-full border-2 border-cyan-500/30" />
-            <ScanLine className="h-7 w-7 text-cyan-400 animate-pulse" />
+            <div className="absolute inset-0 rounded-full border-2 border-primary/30" />
+            <ScanLine className="h-7 w-7 text-primary animate-pulse" />
           </div>
-          <div className="text-sm font-bold uppercase tracking-[0.15em] text-cyan-400 mb-1">
+          <div className="text-sm font-bold uppercase tracking-[0.15em] text-primary mb-1">
             AI Setup Validation
           </div>
           <p className="text-xs text-white/75 min-h-[1.25rem]">{hint || "Get into the starting position"}</p>
           {depthActive && depthLabel && (
-            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2.5 py-1 text-[10px] font-semibold text-cyan-300">
+            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[10px] font-semibold text-primary">
               <Radar className="h-3 w-3" /> {depthLabel}
             </div>
           )}
@@ -70,7 +70,7 @@ export function SetupValidationOverlay({
 
         <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden mb-2">
           <motion.div
-            className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 rounded-full"
+            className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full"
             initial={false}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.25 }}

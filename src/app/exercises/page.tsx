@@ -21,6 +21,7 @@ import { ExerciseDetailModal } from "@/components/exercise-detail-modal";
 import { resolveExerciseGif } from "@/lib/exercises/exercise-gif";
 import { preloadExerciseDemo } from "@/components/exercise-guide/exercise-demo-player";
 import { cn } from "@/lib/utils";
+import { useFeaturePath } from "@/lib/liftiq/use-feature-path";
 
 const EQUIPMENT_FILTERS: (Equipment | "all")[] = [
   "all",
@@ -141,6 +142,7 @@ const ExerciseCard = memo(function ExerciseCard({
   exercise: LibraryExercise;
   onOpen: () => void;
 }) {
+  const to = useFeaturePath();
   const media = useMemo(() => resolveExerciseGif(e.id, e.name), [e.id, e.name]);
   const hasDemo = !!(media?.videoUrl || media?.gifUrl);
 
@@ -182,14 +184,14 @@ const ExerciseCard = memo(function ExerciseCard({
 
       <div className="flex gap-2">
         <Link
-          href={`/workout/live?exercise=${e.id}`}
+          href={to(`/workout/live?exercise=${e.id}`)}
           className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 px-3 py-2 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/15 transition-colors min-h-[38px]"
         >
           <Play className="h-3 w-3" /> Start
         </Link>
         {e.trackingId && (
           <Link
-            href={`/workout?exercise=${e.trackingId}`}
+            href={to(`/workout?exercise=${e.trackingId}`)}
             className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-white/[0.02] border border-white/[0.08] px-3 py-2 text-xs font-semibold text-zinc-400 hover:text-zinc-200 transition-colors min-h-[38px]"
             title="Train with camera form analysis"
           >

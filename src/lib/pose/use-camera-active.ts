@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 /** True only on the AI Exercise page while the browser tab is in the foreground. */
 export function useCameraActive(): boolean {
   const pathname = usePathname();
-  const onAiExercisePage = pathname === "/workout";
+  const onAiExercisePage = pathname === "/workout" || pathname === "/v2/train";
   const [pageVisible, setPageVisible] = useState(true);
 
   useEffect(() => {

@@ -214,7 +214,7 @@ export function WorkoutControls() {
         showWeightPrompt ? (
           <div className="w-full space-y-3">
             <div className="flex items-center gap-2 text-xs font-semibold text-zinc-400">
-              <Dumbbell className="h-3.5 w-3.5 text-cyan-400" />
+              <Dumbbell className="h-3.5 w-3.5 text-primary" />
               Weight for this set (lbs)
             </div>
             <div className="flex items-stretch gap-2">
@@ -237,7 +237,7 @@ export function WorkoutControls() {
                 onKeyDown={(e) => e.key === "Enter" && confirmWeight()}
                 placeholder="Bodyweight"
                 autoFocus
-                className="min-h-[48px] w-full min-w-0 flex-1 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 text-center text-lg font-bold tabular-nums text-zinc-100 outline-none transition-colors placeholder:text-sm placeholder:font-medium placeholder:text-zinc-600 focus:border-cyan-500/40"
+                className="min-h-[48px] w-full min-w-0 flex-1 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 text-center text-lg font-bold tabular-nums text-zinc-100 outline-none transition-colors placeholder:text-sm placeholder:font-medium placeholder:text-zinc-600 focus:border-primary/40"
               />
               <Button
                 onClick={() => adjustWeight(5)}

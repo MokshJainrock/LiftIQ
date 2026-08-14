@@ -80,7 +80,7 @@ export function LiveMetrics() {
           "mt-3 rounded-full px-3.5 py-1 text-[10px] font-bold tracking-[0.15em] uppercase transition-all",
           phase === "Ready"
             ? "glass-card text-zinc-500"
-            : "bg-cyan-500/10 text-cyan-300 border border-cyan-500/15"
+            : "bg-primary/10 text-primary border border-primary/15"
         )}>
           {phase}
         </div>
@@ -136,7 +136,7 @@ function BestRepTile() {
         ? "bg-gradient-to-br from-amber-500/[0.08] to-orange-500/[0.04] border border-amber-500/15"
         : "glass-card",
       glowActive && isPerfect && "shadow-[0_0_24px_-4px_rgba(245,158,11,0.3)]",
-      glowActive && !isPerfect && "shadow-[0_0_24px_-4px_rgba(6,182,212,0.2)]",
+      glowActive && !isPerfect && "shadow-[0_0_24px_-4px_color-mix(in_srgb,var(--primary)_20%,transparent)]",
     )}>
       <div className="flex items-center gap-1.5 text-[9px] text-zinc-600 uppercase tracking-[0.15em] mb-1.5">
         {isPerfect ? <Crown className="h-3 w-3 text-amber-400" /> : <Star className="h-3 w-3 text-amber-400" />}

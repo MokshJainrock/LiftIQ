@@ -10,6 +10,7 @@ import { StressMeter } from "@/components/mind/stress-meter";
 import { getCheckIns, getMindSessions } from "@/lib/mind/storage";
 import { interventionCopy, levelLabel } from "@/lib/mind/intervention";
 import type { CheckIn, MindSessionSummary } from "@/lib/mind/types";
+import { useFeaturePath } from "@/lib/liftiq/use-feature-path";
 
 const QUICK_ACTIONS = [
   {
@@ -48,6 +49,7 @@ function greetingFor(date = new Date()): string {
 }
 
 export default function MindDashboardPage() {
+  const to = useFeaturePath();
   const [data, setData] = useState<{
     latest: CheckIn | null;
     checkIns: CheckIn[];
@@ -126,7 +128,7 @@ export default function MindDashboardPage() {
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link
-                href={intervention?.href ?? "/mind/check-in"}
+                href={to(intervention?.href ?? "/mind/check-in")}
                 className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#6FFFE9] to-[#5BC0BE] px-5 py-2.5 text-sm font-bold text-[#0B132B] shadow-[0_0_28px_-8px_rgba(111,255,233,0.55)] transition-all hover:brightness-110"
               >
                 {intervention?.cta ?? "Start a check-in"}
@@ -134,7 +136,7 @@ export default function MindDashboardPage() {
               </Link>
               {latest && (
                 <Link
-                  href="/mind/check-in"
+                  href={to("/mind/check-in")}
                   className="text-[13px] font-medium mind-text-secondary hover:text-white transition-colors"
                 >
                   Re-check
@@ -159,7 +161,7 @@ export default function MindDashboardPage() {
             {QUICK_ACTIONS.map((a) => (
               <Link
                 key={a.href}
-                href={a.href}
+                href={to(a.href)}
                 className="group mind-card rounded-2xl p-5 transition-all hover:bg-white/[0.06] hover:border-[#6FFFE9]/20"
               >
                 <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-[#6FFFE9]/10 border border-[#6FFFE9]/20 transition-shadow group-hover:shadow-[0_0_22px_-6px_rgba(111,255,233,0.55)]">

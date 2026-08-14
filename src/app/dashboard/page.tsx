@@ -19,6 +19,7 @@ import { getGoalLabel } from "@/lib/calories";
 import { BarChart3, Trophy, Flame, Target, Repeat, TrendingUp, Calendar, Zap, UtensilsCrossed, AlertTriangle, Star, Activity, Medal, Dumbbell, NotebookPen } from "lucide-react";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, AreaChart, Area, PieChart, Pie, Cell } from "recharts";
 import { cn } from "@/lib/utils";
+import { useFeaturePath } from "@/lib/liftiq/use-feature-path";
 
 const TT: React.CSSProperties = {
   background: "rgba(0,0,0,0.8)",
@@ -32,6 +33,7 @@ const G = "rgba(255,255,255,0.04)";
 const A = "#52525b";
 
 export default function DashboardPage() {
+  const to = useFeaturePath();
   const [sessions, setSessions] = useState<WorkoutSession[]>([]);
   const [dailyLogs, setDailyLogs] = useState<DailyLog[]>([]);
   const [streak, setStreak] = useState<StreakData>({ currentStreak: 0, bestStreak: 0, lastWorkoutDate: "", workoutDates: [] });
@@ -405,7 +407,7 @@ export default function DashboardPage() {
                     <Calendar className="h-4 w-4 text-cyan-400" />
                     <h3 className="text-sm font-bold">Recent Workouts</h3>
                   </div>
-                  <Link href="/history" className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
+                  <Link href={to("/history")} className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 transition-colors">
                     View all →
                   </Link>
                 </div>
@@ -413,7 +415,7 @@ export default function DashboardPage() {
                   {recentWorkouts.map((w) => (
                     <Link
                       key={w.id}
-                      href="/history"
+                      href={to("/history")}
                       className="flex items-center justify-between gap-3 rounded-xl glass-card px-4 py-3 hover:bg-white/[0.03] transition-colors"
                     >
                       <div className="min-w-0 flex-1">

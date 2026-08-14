@@ -181,8 +181,10 @@ export function usePoseDetection({
       // Warning tints emitted by form scoring (poor = red, moderate = amber).
       // When a joint carries one of these we recolor the whole limb so a form
       // fault is obvious at a glance, not just a small dot.
-      const DEFAULT_BONE = "rgba(0, 230, 170, 0.85)";
-      const DEFAULT_GLOW = "rgba(0, 230, 170, 0.55)";
+      const liqTheme = typeof document !== "undefined" && !!document.querySelector(".liq");
+      const DEFAULT_BONE = liqTheme ? "rgba(182, 242, 58, 0.9)" : "rgba(0, 230, 170, 0.85)";
+      const DEFAULT_GLOW = liqTheme ? "rgba(182, 242, 58, 0.5)" : "rgba(0, 230, 170, 0.55)";
+      const DEFAULT_JOINT = liqTheme ? "#b6f23a" : "#00ffaa";
       const isWarn = (c?: string) => c === "#f87171" || c === "#facc15";
       // Red takes priority over amber when the two endpoints disagree.
       const pickWarn = (a?: string, b?: string) => {
@@ -222,7 +224,7 @@ export function usePoseDetection({
         const overrideColor = jointColors?.get(i);
         const isTarget = jointColors?.has(i) ?? false;
         const warn = isWarn(overrideColor);
-        const color = overrideColor || "#00ffaa";
+        const color = overrideColor || DEFAULT_JOINT;
         // Flagged joints render largest so the problem area pops.
         const radius = warn ? targetRadius + 1.5 : isTarget ? targetRadius : baseRadius;
 

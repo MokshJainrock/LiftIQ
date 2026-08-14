@@ -169,13 +169,16 @@ export function drawRecordingHud(
   const phaseH = Math.round(52 * s);
   const phaseW = Math.max(Math.round(120 * s), phaseTextW + phasePadX * 2);
   const phaseX = (W - phaseW) / 2;
-  glassPanel(ctx, phaseX, cy, phaseW, phaseH, radius, "rgba(34,211,238,0.18)");
+  const liqTheme = typeof document !== "undefined" && !!document.querySelector(".liq");
+  const phaseFill = liqTheme ? "rgba(182,242,58,0.16)" : "rgba(34,211,238,0.18)";
+  const phaseColor = liqTheme ? "#b6f23a" : "#67e8f9";
+  glassPanel(ctx, phaseX, cy, phaseW, phaseH, radius, phaseFill);
   ctx.textAlign = "center";
   ctx.font = phaseLabelFont;
   ctx.fillStyle = "#71717a";
   ctx.fillText("PHASE", W / 2, cy + Math.round(20 * s));
   ctx.font = phaseValFont;
-  ctx.fillStyle = "#67e8f9";
+  ctx.fillStyle = phaseColor;
   ctx.fillText(phaseText, W / 2, cy + Math.round(42 * s));
   cy += phaseH + Math.round(8 * s);
 

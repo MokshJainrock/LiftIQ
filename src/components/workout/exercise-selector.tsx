@@ -53,14 +53,14 @@ export function ExerciseSelector({ onSelect }: ExerciseSelectorProps) {
       <div className="flex items-start justify-between gap-2">
         <div>
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-cyan-400" strokeWidth={2} />
+            <Sparkles className="h-4 w-4 text-primary" strokeWidth={2} />
             <h3 className="text-sm font-bold text-zinc-200">AI Exercise</h3>
           </div>
           <p className="text-[10px] text-zinc-500 mt-1">
             {trackableCount} AI-tracked · {totalLibrary} in library
           </p>
         </div>
-        <span className="text-[9px] uppercase tracking-wider font-bold text-cyan-400/80 bg-cyan-500/10 border border-cyan-500/20 rounded-full px-2 py-0.5">
+        <span className="text-[9px] uppercase tracking-wider font-bold text-primary/80 bg-primary/10 border border-primary/20 rounded-full px-2 py-0.5">
           Camera AI
         </span>
       </div>
@@ -72,7 +72,7 @@ export function ExerciseSelector({ onSelect }: ExerciseSelectorProps) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={`Search ${trackableCount} AI exercises…`}
-          className="w-full h-9 rounded-xl bg-white/[0.03] border border-white/[0.06] pl-9 pr-3 text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+          className="w-full h-9 rounded-xl bg-white/[0.03] border border-white/[0.06] pl-9 pr-3 text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-primary/30"
         />
       </div>
 
@@ -96,12 +96,12 @@ export function ExerciseSelector({ onSelect }: ExerciseSelectorProps) {
               className={cn(
                 "flex items-start gap-2 rounded-xl px-3 py-2.5 text-left min-h-[44px] transition-all",
                 "glass-card hover:bg-white/[0.03]",
-                sel && "bg-cyan-500/[0.08] text-cyan-300 border-cyan-500/15 glow-sm",
+                sel && "bg-primary/[0.08] text-primary border-primary/15 glow-sm",
                 !sel && "text-zinc-400 hover:text-zinc-200",
                 isWorkoutActive && "opacity-40 cursor-not-allowed",
               )}
             >
-              <Dumbbell className={cn("h-4 w-4 shrink-0 mt-0.5", sel ? "text-cyan-400" : "text-zinc-600")} />
+              <Dumbbell className={cn("h-4 w-4 shrink-0 mt-0.5", sel ? "text-primary" : "text-zinc-600")} />
               <div className="min-w-0 flex-1">
                 <div className="text-sm font-medium truncate">{exercise.name}</div>
                 <div className="text-[10px] text-zinc-600 capitalize truncate">

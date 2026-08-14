@@ -25,14 +25,14 @@ export function CoachingCues() {
     <GlassCard className="p-5">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2.5">
-          <Sparkles className="h-4 w-4 text-cyan-400" />
+          <Sparkles className="h-4 w-4 text-primary" />
           <h3 className="text-sm font-bold text-zinc-200">AI Live Coaching</h3>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-[9px] uppercase tracking-wider text-zinc-500">{trackingLabel}</span>
           <span className="relative flex h-2 w-2">
-            <span className="absolute inset-0 animate-ping rounded-full bg-cyan-400 opacity-40" />
-            <span className="relative h-2 w-2 rounded-full bg-cyan-400" />
+            <span className="absolute inset-0 animate-ping rounded-full bg-primary opacity-40" />
+            <span className="relative h-2 w-2 rounded-full bg-primary" />
           </span>
         </div>
       </div>
@@ -58,9 +58,9 @@ export function CoachingCues() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 8 }}
                 transition={{ duration: 0.2 }}
-                className="flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm glass-card text-cyan-100 border border-cyan-500/20"
+                className="flex items-start gap-2.5 rounded-xl px-4 py-3 text-sm glass-card text-primary border border-primary/20"
               >
-                <Sparkles className="h-4 w-4 mt-0.5 shrink-0 text-cyan-400" />
+                <Sparkles className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
                 {aiLiveCue}
               </motion.div>
             )}

@@ -786,7 +786,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
             {coachingMode === "ghost" ? (
               <Sparkles className={cn("text-purple-300", mobile ? "h-4 w-4" : "h-5 w-5")} />
             ) : (
-              <Gauge className={cn("text-cyan-300", mobile ? "h-4 w-4" : "h-5 w-5")} />
+              <Gauge className={cn("text-primary", mobile ? "h-4 w-4" : "h-5 w-5")} />
             )}
           </button>
           <button
@@ -806,17 +806,17 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
       {isCountingDown && countdownSeconds > 0 && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-30">
           <div className="text-center">
-            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400 mb-3">Get into position</div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-primary mb-3">Get into position</div>
             <div
               key={countdownSeconds}
               className="text-8xl md:text-9xl font-black text-white tabular-nums animate-[pulse_1s_ease-in-out]"
-              style={{ textShadow: "0 0 40px rgba(6,182,212,0.4)" }}
+              style={{ textShadow: "0 0 40px color-mix(in srgb, var(--primary) 40%, transparent)" }}
             >
               {countdownSeconds}
             </div>
             <div className="mt-4 w-48 mx-auto h-1.5 rounded-full bg-white/10 overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-1000 ease-linear"
+                className="h-full bg-gradient-to-r from-primary to-primary/70 rounded-full transition-all duration-1000 ease-linear"
                 style={{ width: `${((10 - countdownSeconds) / 10) * 100}%` }}
               />
             </div>
@@ -858,7 +858,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/75 z-[25]">
           <CameraOff className={cn("text-zinc-400 mb-3", mobile ? "h-8 w-8" : "h-10 w-10")} />
           <p className={cn("text-zinc-400 text-center px-8 max-w-sm", mobile ? "text-xs" : "text-sm")}>
-            Camera paused — open the AI Exercise tab to resume
+            Camera paused — return to Train to resume
           </p>
         </div>
       )}

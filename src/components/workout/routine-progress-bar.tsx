@@ -56,7 +56,7 @@ export function RoutineProgressBar({
   }
 
   return (
-    <GlassCard className="border-cyan-500/15">
+    <GlassCard className="border-primary/15">
       <div className="p-3 space-y-2">
         <div className="flex items-center justify-between">
           <div>
@@ -83,9 +83,9 @@ export function RoutineProgressBar({
               className={cn(
                 "h-1.5 flex-1 rounded-full transition-colors",
                 i < exerciseIndex
-                  ? "bg-cyan-500"
+                  ? "bg-primary"
                   : i === exerciseIndex
-                    ? "bg-cyan-500/60"
+                    ? "bg-primary/60"
                     : "bg-white/[0.06]",
               )}
             />

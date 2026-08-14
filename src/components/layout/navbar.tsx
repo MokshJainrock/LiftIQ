@@ -61,6 +61,9 @@ export function Navbar() {
     setMoreOpen(false);
   }, [pathname]);
 
+  // New `/v2` shell has its own sidebar + mobile nav — never stack the old chrome.
+  if (pathname === "/v2" || pathname.startsWith("/v2/")) return null;
+
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });

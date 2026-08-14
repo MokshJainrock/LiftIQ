@@ -19,6 +19,7 @@ import {
   Camera,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useFeaturePath } from "@/lib/liftiq/use-feature-path";
 import type { LibraryExercise } from "@/lib/exercises/library";
 import { EQUIPMENT_LABELS } from "@/lib/exercises/library";
 import { resolveExerciseDemo } from "@/lib/exercises/exercise-demo-map";
@@ -46,6 +47,7 @@ function enrichGuide(guide: ExerciseVisualGuide, instructions?: string[]): Exerc
 }
 
 export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalProps) {
+  const to = useFeaturePath();
   const [activeTab, setActiveTab] = useState<Tab>("steps");
 
   const gif = useMemo(() => resolveExerciseGif(exercise.id, exercise.name), [exercise.id, exercise.name]);
@@ -184,14 +186,14 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
 
               <div className="flex gap-2">
                 <Link
-                  href={`/workout/live?exercise=${exercise.id}`}
+                  href={to(`/workout/live?exercise=${exercise.id}`)}
                   className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-500/15 border border-cyan-500/25 px-4 py-3 text-sm font-bold text-cyan-300 hover:bg-cyan-500/20 transition-colors min-h-[48px]"
                 >
                   <Play className="h-4 w-4" /> Start workout
                 </Link>
                 {exercise.trackingId && (
                   <Link
-                    href={`/workout?exercise=${exercise.trackingId}`}
+                    href={to(`/workout?exercise=${exercise.trackingId}`)}
                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-white/[0.03] border border-white/[0.08] px-4 py-3 text-sm font-semibold text-zinc-400 hover:text-zinc-200 transition-colors min-h-[48px]"
                     title="Train with camera form analysis"
                   >

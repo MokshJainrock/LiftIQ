@@ -101,15 +101,15 @@ export function PostWorkoutSummary() {
               <X className="h-5 w-5" />
             </button>
             <div className="flex items-center gap-3 mb-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/10 border border-cyan-500/15 flex items-center justify-center">
-                <Trophy className="h-5 w-5 text-cyan-400" />
+              <div className="h-10 w-10 rounded-xl bg-primary/15 border border-primary/15 flex items-center justify-center">
+                <Trophy className="h-5 w-5 text-primary" />
               </div>
             </div>
             <h2 className="text-2xl font-black tracking-tight">Workout Complete</h2>
             <div className="mt-1.5 flex flex-wrap items-center gap-2 text-sm text-zinc-500">
               <span className="text-zinc-300 font-semibold">{displayExercise}</span>
               {lastSession.weight != null && <span className="glass-card rounded-lg px-2 py-0.5 text-xs tabular-nums">{lastSession.weight} lbs</span>}
-              {lastSession.isRecorded && <Badge variant="outline" className="gap-1 border-cyan-500/20 bg-cyan-500/10 text-cyan-300 text-[10px]"><CheckCircle2 className="h-3 w-3" />Recorded</Badge>}
+              {lastSession.isRecorded && <Badge variant="outline" className="gap-1 border-primary/20 bg-primary/10 text-primary text-[10px]"><CheckCircle2 className="h-3 w-3" />Recorded</Badge>}
             </div>
           </div>
 
@@ -150,7 +150,7 @@ export function PostWorkoutSummary() {
                       <XAxis dataKey="rep" stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} />
                       <YAxis domain={[0, 100]} stroke="#52525b" fontSize={10} tickLine={false} axisLine={false} width={32} />
                       <Tooltip contentStyle={{ background: "rgba(0,0,0,0.8)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "12px", fontSize: "11px", backdropFilter: "blur(12px)" }} formatter={(v) => [`${v ?? "—"}`, "Score"]} labelFormatter={(l) => `Rep ${l}`} />
-                      <Line type="monotone" dataKey="score" stroke="#06b6d4" strokeWidth={2} dot={{ fill: "#06b6d4", r: 3, strokeWidth: 0 }} activeDot={{ r: 5, fill: "#06b6d4", stroke: "#030305", strokeWidth: 2 }} />
+                      <Line type="monotone" dataKey="score" stroke="var(--primary)" strokeWidth={2} dot={{ fill: "var(--primary)", r: 3, strokeWidth: 0 }} activeDot={{ r: 5, fill: "var(--primary)", stroke: "#030305", strokeWidth: 2 }} />
                       {bestRepIndex >= 0 && (
                         <ReferenceDot x={bestRepIndex + 1} y={bestRepScore} r={7} fill="#f59e0b" stroke="#030305" strokeWidth={2} />
                       )}
@@ -176,8 +176,8 @@ export function PostWorkoutSummary() {
             {/* AI Coach Analysis */}
             <div>
               <h3 className="text-sm font-bold text-zinc-400 mb-2.5 flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-cyan-400" />AI Coach Analysis
-                {aiFeedbackPending && <Loader2 className="h-3.5 w-3.5 animate-spin text-cyan-500/70" />}
+                <Sparkles className="h-4 w-4 text-primary" />AI Coach Analysis
+                {aiFeedbackPending && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary/70" />}
               </h3>
               <GlassCard glow className="p-4"><p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-line">{feedback}</p></GlassCard>
             </div>
@@ -187,11 +187,11 @@ export function PostWorkoutSummary() {
               <div>
                 <button
                   onClick={handleExplainClick}
-                  className="flex items-center gap-2 text-sm font-bold text-cyan-400 hover:text-cyan-300 transition-colors mb-3"
+                  className="flex items-center gap-2 text-sm font-bold text-primary hover:brightness-110 transition-colors mb-3"
                 >
                   <MessageCircle className="h-4 w-4" />
                   {showExplanations ? "Hide AI Explanations" : "Explain My Form Issues"}
-                  {loadingAI && <Loader2 className="h-3.5 w-3.5 animate-spin text-cyan-500" />}
+                  {loadingAI && <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" />}
                 </button>
                 <AnimatePresence>
                   {showExplanations && (
@@ -210,7 +210,7 @@ export function PostWorkoutSummary() {
               </div>
             )}
 
-            <button onClick={() => setLastSession(null)} className="w-full rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-400 py-3.5 text-base font-bold text-white transition-all hover:shadow-[0_0_32px_-4px_rgba(6,182,212,0.4)] hover:brightness-110 active:scale-[0.98]">
+            <button onClick={() => setLastSession(null)} className="w-full rounded-2xl bg-primary py-3.5 text-base font-bold text-primary-foreground transition-all hover:shadow-[0_0_32px_-4px_color-mix(in_srgb,var(--primary)_40%,transparent)] hover:brightness-110 active:scale-[0.98]">
               Done
             </button>
           </div>
@@ -248,7 +248,7 @@ function PerfectRepCard({ repNumber, score, reasons, isPerfect }: { repNumber: n
           "h-[2px]",
           isPerfect
             ? "bg-gradient-to-r from-amber-500/80 via-orange-500/60 to-rose-500/40"
-            : "bg-gradient-to-r from-emerald-500/60 via-cyan-500/40 to-transparent"
+            : "bg-gradient-to-r from-emerald-500/60 via-primary/40 to-transparent"
         )} />
         <div className="p-4">
           <div className="flex items-center gap-3 mb-3">
@@ -256,7 +256,7 @@ function PerfectRepCard({ repNumber, score, reasons, isPerfect }: { repNumber: n
               "h-10 w-10 rounded-xl flex items-center justify-center shrink-0",
               isPerfect
                 ? "bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/20"
-                : "bg-gradient-to-br from-emerald-500/15 to-cyan-500/10 border border-emerald-500/15"
+                : "bg-gradient-to-br from-emerald-500/15 to-primary/10 border border-emerald-500/15"
             )}>
               {isPerfect ? <Crown className="h-5 w-5 text-amber-400" /> : <Star className="h-5 w-5 text-emerald-400" />}
             </div>
@@ -307,7 +307,7 @@ function AIExplanationCard({ explanation, index }: { explanation: FormExplanatio
     >
       <GlassCard className="p-0 overflow-hidden">
         {/* Accent top bar */}
-        <div className="h-[2px] bg-gradient-to-r from-cyan-500/60 via-blue-500/40 to-transparent" />
+        <div className="h-[2px] bg-gradient-to-r from-primary/60 via-primary/30 to-transparent" />
 
         <div className="p-4 space-y-3">
           {/* Title */}
@@ -320,7 +320,7 @@ function AIExplanationCard({ explanation, index }: { explanation: FormExplanatio
 
           {/* Explanation */}
           <div className="flex items-start gap-2.5 pl-1">
-            <Lightbulb className="h-3.5 w-3.5 mt-0.5 text-cyan-400 shrink-0" />
+            <Lightbulb className="h-3.5 w-3.5 mt-0.5 text-primary shrink-0" />
             <p className="text-[13px] text-zinc-400 leading-relaxed">{explanation.explanation}</p>
           </div>
 
