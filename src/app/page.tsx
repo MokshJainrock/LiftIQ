@@ -1,262 +1,214 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   BarChart3,
   Brain,
-  Eye,
+  Camera,
   Salad,
   Sparkles,
   Target,
-  Trophy,
-  Volume2,
-  Zap,
 } from "lucide-react";
-import { GlassCard } from "@/components/ui/glass-card";
+import { LiftIQLogo } from "@/components/liftiq/logo";
+import { Card } from "@/components/liftiq/primitives";
 
 const features = [
   {
-    icon: Eye,
-    title: "Real-time pose tracking",
-    description: "Camera-based joint detection with a color-coded skeleton so you can see form quality as you move.",
+    icon: Camera,
+    title: "AI camera coach",
+    body: "Live pose tracking, rep counting, and form scores from your browser camera.",
   },
   {
     icon: Target,
-    title: "Form scoring",
-    description: "Every rep is scored out of 100 on depth, alignment, posture, and consistency.",
-  },
-  {
-    icon: Sparkles,
-    title: "Live coaching cues",
-    description: "Instant corrections like “go lower”, “keep your back straight”, and “don’t let your knees cave in”.",
+    title: "Form that gets scored",
+    body: "Every rep is judged on depth, alignment, and consistency — with cues as you move.",
   },
   {
     icon: Salad,
-    title: "Diet tracking",
-    description: "Log meals and stay on a calorie target built from your profile.",
-  },
-  {
-    icon: Brain,
-    title: "Mind tools",
-    description: "Check-ins, breathing, and journaling so recovery sits next to training.",
+    title: "Diet and recovery",
+    body: "Log meals, check in, and keep training next to nutrition and mind tools.",
   },
   {
     icon: BarChart3,
-    title: "Progress analytics",
-    description: "History, score trends, volume, and streaks in one place.",
-  },
-  {
-    icon: Volume2,
-    title: "Voice coach",
-    description: "Hands-free cues through the browser so you can keep your eyes on the lift.",
-  },
-  {
-    icon: Zap,
-    title: "AI-tracked exercises",
-    description: "Built-in camera exercises plus your own library, weights, reps, and sets.",
+    title: "Progress you can see",
+    body: "Volume, PRs, streaks, and history in the same workspace you train in.",
   },
 ];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
-};
-
-const ctaClass =
-  "inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-7 text-base font-bold text-white bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-400 transition-all hover:shadow-[0_0_32px_-4px_rgba(6,182,212,0.4)] hover:brightness-110";
-
-function Wordmark({ className = "text-lg" }: { className?: string }) {
-  return (
-    <span className={`font-black tracking-tight ${className}`}>
-      Lift
-      <span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">IQ</span>
-    </span>
-  );
-}
-
 export default function LandingPage() {
   return (
-    <div className="noise relative min-h-[100dvh] overflow-hidden bg-[#030305]">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-[-18%] left-[18%] h-[50vh] w-[50vh] rounded-full bg-cyan-500/[0.07] blur-[100px]" />
-        <div className="absolute bottom-[-8%] right-[8%] h-[42vh] w-[42vh] rounded-full bg-blue-500/[0.05] blur-[80px]" />
-      </div>
+    <div className="liq liq-auth-bg relative min-h-[100dvh] overflow-hidden">
+      <div aria-hidden className="liq-grid-lines pointer-events-none absolute inset-0" />
 
-      <header
-        className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between px-5 md:px-8"
-        style={{ paddingTop: "max(1.25rem, var(--safe-top))" }}
-      >
-        <Link href="/" className="flex items-center py-3">
-          <Wordmark />
+      <header className="relative z-10 mx-auto flex w-full max-w-[1200px] items-center justify-between px-5 py-5 md:px-8 md:py-7">
+        <Link href="/" aria-label="Lift IQ home">
+          <LiftIQLogo />
         </Link>
         <Link
           href="/login"
-          className="py-3 text-sm font-medium text-cyan-400 transition-colors hover:text-cyan-300"
+          className="text-[13.5px] font-medium text-[#b6f23a] transition-colors hover:underline"
         >
           Sign in
         </Link>
       </header>
 
-      <main className="relative z-10">
-        <section className="mx-auto max-w-6xl px-5 pb-14 pt-8 md:px-8 md:pb-20 md:pt-12">
-          <motion.div
-            className="mx-auto max-w-3xl text-center"
-            initial="hidden"
-            animate="visible"
-            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-          >
-            <motion.div variants={fadeUp} className="mb-5 flex justify-center">
-              <Image src="/logo.png" alt="LiftIQ" width={112} height={112} className="rounded-2xl" priority />
-            </motion.div>
-            <motion.p
-              variants={fadeUp}
-              className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400"
-            >
-              AI form coach
-            </motion.p>
+      <main className="relative z-10 mx-auto w-full max-w-[1200px] px-5 pb-20 md:px-8">
+        <section className="grid items-center gap-12 pt-6 lg:grid-cols-2 lg:gap-16 lg:pt-10">
+          <div>
+            <p className="liq-eyebrow">AI form coach</p>
             <motion.h1
-              variants={fadeUp}
-              className="text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-[3.5rem] lg:leading-[1.08]"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.2, 0.8, 0.3, 1] }}
+              className="liq-tight mt-4 text-[40px] font-semibold leading-[1.06] liq-t1 sm:text-[52px] xl:text-[56px]"
             >
-              Your camera is
+              Train smarter.
               <br />
-              your coach.
+              Get stronger.
             </motion.h1>
             <motion.p
-              variants={fadeUp}
-              className="mx-auto mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-400 sm:text-base"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, delay: 0.08, ease: [0.2, 0.8, 0.3, 1] }}
+              className="mt-5 max-w-[460px] text-[15px] leading-relaxed liq-t2"
             >
-              LiftIQ tracks your joints in real time, scores every rep, and coaches form,
-              diet, and recovery — from a browser, with just a camera.
+              Intelligent strength training with a live camera coach, diet tracking,
+              and recovery — built around your performance.
             </motion.p>
-            <motion.div
-              variants={fadeUp}
-              className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"
-            >
-              <Link href="/login" className={`${ctaClass} w-full sm:w-auto`}>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/login"
+                className="liq-btn-accent liq-glow inline-flex h-12 items-center justify-center gap-2 rounded-xl px-6 text-[14px] font-semibold"
+              >
                 Get started
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight size={16} />
               </Link>
               <Link
                 href="/v2"
-                className="inline-flex min-h-[48px] w-full items-center justify-center rounded-xl border border-cyan-500/25 bg-cyan-500/[0.06] px-7 text-sm font-semibold text-cyan-200 transition-colors hover:border-cyan-400/40 hover:bg-cyan-500/10 hover:text-white sm:w-auto"
+                className="liq-btn-ghost inline-flex h-12 items-center justify-center rounded-xl px-6 text-[14px] font-medium"
               >
                 Open the app
               </Link>
-            </motion.div>
-          </motion.div>
+            </div>
+
+            <div className="mt-12 flex gap-10">
+              {[
+                { value: "Live", label: "Pose tracking" },
+                { value: "100", label: "Exercise library" },
+                { value: "AI", label: "Form cues" },
+              ].map((s) => (
+                <div key={s.label}>
+                  <p className="liq-num text-[20px] font-semibold liq-t1">{s.value}</p>
+                  <p className="mt-0.5 text-[12px] liq-t3">{s.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
           <motion.div
-            className="mx-auto mt-12 max-w-3xl md:mt-16"
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.5 }}
+            transition={{ duration: 0.45, delay: 0.12, ease: [0.2, 0.8, 0.3, 1] }}
           >
-            <GlassCard elevated glow className="rounded-2xl p-1.5">
-              <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl bg-[#05060a] md:aspect-[16/10]">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(6,182,212,0.16),transparent_62%)]" />
-
+            <Card className="overflow-hidden p-2">
+              <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[12px] bg-[#0c0d10] md:aspect-[5/4]">
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(182,242,58,0.14),transparent_62%)]" />
                 <svg
                   viewBox="0 0 200 300"
-                  className="relative h-[68%] w-auto drop-shadow-[0_0_18px_rgba(34,211,238,0.45)]"
+                  className="relative h-[72%] w-auto drop-shadow-[0_0_22px_rgba(182,242,58,0.35)]"
                   aria-hidden
                 >
-                  <circle cx="100" cy="40" r="20" fill="none" stroke="#22d3ee" strokeWidth="4" />
-                  <line x1="100" y1="60" x2="100" y2="160" stroke="#22d3ee" strokeWidth="4" />
-                  <line x1="100" y1="90" x2="50" y2="130" stroke="#22d3ee" strokeWidth="4" />
-                  <line x1="100" y1="90" x2="150" y2="130" stroke="#22d3ee" strokeWidth="4" />
-                  <line x1="100" y1="160" x2="60" y2="240" stroke="#22d3ee" strokeWidth="4" />
-                  <line x1="100" y1="160" x2="140" y2="240" stroke="#f87171" strokeWidth="4" />
-                  <circle cx="100" cy="90" r="7" fill="#22d3ee" />
-                  <circle cx="50" cy="130" r="7" fill="#22d3ee" />
-                  <circle cx="150" cy="130" r="7" fill="#22d3ee" />
-                  <circle cx="100" cy="160" r="7" fill="#facc15" />
-                  <circle cx="60" cy="240" r="7" fill="#22d3ee" />
-                  <circle cx="140" cy="240" r="7" fill="#f87171" />
+                  <circle cx="100" cy="40" r="20" fill="none" stroke="#b6f23a" strokeWidth="4" />
+                  <line x1="100" y1="60" x2="100" y2="160" stroke="#b6f23a" strokeWidth="4" />
+                  <line x1="100" y1="90" x2="50" y2="130" stroke="#b6f23a" strokeWidth="4" />
+                  <line x1="100" y1="90" x2="150" y2="130" stroke="#b6f23a" strokeWidth="4" />
+                  <line x1="100" y1="160" x2="60" y2="240" stroke="#b6f23a" strokeWidth="4" />
+                  <line x1="100" y1="160" x2="140" y2="240" stroke="#e0655f" strokeWidth="4" />
+                  <circle cx="100" cy="90" r="7" fill="#b6f23a" />
+                  <circle cx="50" cy="130" r="7" fill="#b6f23a" />
+                  <circle cx="150" cy="130" r="7" fill="#b6f23a" />
+                  <circle cx="100" cy="160" r="7" fill="#f5b544" />
+                  <circle cx="60" cy="240" r="7" fill="#b6f23a" />
+                  <circle cx="140" cy="240" r="7" fill="#e0655f" />
                 </svg>
 
-                <div className="absolute left-3 top-3 rounded-xl border border-white/[0.08] bg-[#0a0b10]/90 px-3 py-2 backdrop-blur-sm md:left-4 md:top-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-zinc-400">Score</p>
-                  <p className="text-xl font-black text-cyan-400 md:text-2xl">87</p>
+                <div className="absolute left-3 top-3 rounded-[10px] border border-white/[0.07] bg-[#111318]/90 px-3 py-2">
+                  <p className="liq-eyebrow">Score</p>
+                  <p className="liq-num text-[22px] font-semibold text-[#b6f23a]">87</p>
                 </div>
-                <div className="absolute right-3 top-3 rounded-xl border border-white/[0.08] bg-[#0a0b10]/90 px-3 py-2 backdrop-blur-sm md:right-4 md:top-4">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-zinc-400">Reps</p>
-                  <p className="text-xl font-black text-cyan-400 md:text-2xl">12</p>
+                <div className="absolute right-3 top-3 rounded-[10px] border border-white/[0.07] bg-[#111318]/90 px-3 py-2">
+                  <p className="liq-eyebrow">Reps</p>
+                  <p className="liq-num text-[22px] font-semibold liq-t1">12</p>
                 </div>
-                <div className="absolute bottom-3 left-3 right-3 rounded-xl border border-cyan-500/20 bg-[#0a0b10]/90 px-3 py-2.5 text-center backdrop-blur-sm md:bottom-4 md:left-4 md:right-4">
-                  <span className="text-xs font-semibold text-cyan-300 md:text-sm">Keep your chest up</span>
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-center gap-2 rounded-[10px] border border-[#b6f23a]/20 bg-[#111318]/90 px-3 py-2.5">
+                  <Sparkles size={14} className="text-[#b6f23a]" />
+                  <span className="text-[13px] font-medium text-[#b6f23a]">Keep your chest up</span>
                 </div>
               </div>
-            </GlassCard>
-            <div className="mt-5 flex items-center justify-center gap-6 text-xs text-zinc-400">
+            </Card>
+            <div className="mt-4 flex items-center justify-center gap-6 text-[12px] liq-t3">
               <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-cyan-400" />
+                <span className="h-2 w-2 rounded-full bg-[#b6f23a]" />
                 Good
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-yellow-400" />
+                <span className="h-2 w-2 rounded-full bg-[#f5b544]" />
                 Moderate
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                <span className="h-2 w-2 rounded-full bg-[#e0655f]" />
                 Needs fix
               </span>
             </div>
           </motion.div>
         </section>
 
-        <section className="mx-auto max-w-6xl px-5 pb-16 md:px-8 md:pb-24">
-          <div className="mb-8 text-center md:mb-12">
-            <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">
-              Train smarter with <Wordmark className="text-2xl sm:text-3xl" />
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm text-zinc-400">
-              Form, nutrition, and recovery in the same dark, focused workspace.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map((feature, i) => (
-              <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.04 }}
-              >
-                <GlassCard className="h-full rounded-2xl p-5">
-                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500/10">
-                    <feature.icon className="h-4 w-4 text-cyan-400" />
-                  </div>
-                  <h3 className="text-sm font-semibold text-zinc-100">{feature.title}</h3>
-                  <p className="mt-1.5 text-xs leading-relaxed text-zinc-400">{feature.description}</p>
-                </GlassCard>
-              </motion.div>
+        <section className="mt-20 md:mt-28">
+          <p className="liq-eyebrow">Inside the app</p>
+          <h2 className="liq-tight mt-3 text-[28px] font-semibold liq-t1 md:text-[32px]">
+            Everything you need to train
+          </h2>
+          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature) => (
+              <Card key={feature.title} className="p-5">
+                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#b6f23a]/10">
+                  <feature.icon size={16} className="text-[#b6f23a]" />
+                </div>
+                <h3 className="text-[14px] font-semibold liq-t1">{feature.title}</h3>
+                <p className="mt-1.5 text-[13px] leading-relaxed liq-t2">{feature.body}</p>
+              </Card>
             ))}
           </div>
         </section>
 
-        <section className="mx-auto max-w-xl px-5 pb-20 text-center md:px-8">
-          <GlassCard elevated glow className="rounded-2xl p-8 md:p-10">
-            <Trophy className="mx-auto mb-4 h-8 w-8 text-cyan-400" />
-            <h2 className="text-2xl font-black tracking-tight text-white">Ready to level up your form?</h2>
-            <p className="mt-2 text-sm text-zinc-400">
-              Sign in and start a session. Your data is stored securely.
-            </p>
-            <Link href="/login" className={`${ctaClass} mt-6 w-full`}>
+        <section className="mt-16 md:mt-24">
+          <Card elevated className="flex flex-col items-start justify-between gap-6 p-7 md:flex-row md:items-center md:p-10">
+            <div>
+              <h2 className="liq-tight text-[24px] font-semibold liq-t1 md:text-[28px]">
+                Ready for your next session?
+              </h2>
+              <p className="mt-2 max-w-md text-[14px] liq-t2">
+                Sign in and open Train. Your data is stored securely.
+              </p>
+            </div>
+            <Link
+              href="/login"
+              className="liq-btn-accent inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl px-6 text-[14px] font-semibold"
+            >
               Sign in
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight size={16} />
             </Link>
-          </GlassCard>
+          </Card>
         </section>
       </main>
 
       <footer className="relative z-10 border-t border-white/[0.06] py-6">
-        <div className="mx-auto flex max-w-6xl items-center justify-center gap-2 px-5">
-          <Wordmark className="text-sm" />
-          <span className="text-[11px] text-zinc-500">AI Form Coach</span>
+        <div className="mx-auto flex max-w-[1200px] items-center justify-center gap-3 px-5">
+          <LiftIQLogo compact />
+          <span className="text-[12px] liq-t3">Train smarter. Get stronger.</span>
         </div>
       </footer>
     </div>
