@@ -8,6 +8,7 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth/jwt";
 const PUBLIC_PATH_PREFIXES = ["/login", "/auth/callback", "/api", "/v2"];
 
 function isPublicPath(pathname: string) {
+  if (pathname === "/") return true;
   return PUBLIC_PATH_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
