@@ -24,7 +24,7 @@ export async function proxy(request: NextRequest) {
 
   if (session && pathname === "/login") {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = "/v2";
     return NextResponse.redirect(url);
   }
 

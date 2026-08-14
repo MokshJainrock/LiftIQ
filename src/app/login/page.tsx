@@ -34,7 +34,7 @@ export default function LoginPage() {
       }
       // Full page load so the session cookie is on the request before middleware
       // runs. (A soft router.push can race middleware → bounce back to /login.)
-      window.location.assign("/");
+      window.location.assign("/v2");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Sign in failed");
     } finally {
@@ -58,7 +58,7 @@ export default function LoginPage() {
         return;
       }
       // Signup creates a session immediately — go straight in.
-      window.location.assign("/");
+      window.location.assign("/v2");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Sign up failed");
     } finally {
