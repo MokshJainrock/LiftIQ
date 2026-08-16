@@ -1,9 +1,6 @@
 import { ExerciseConfig, Landmark, JointFeedback } from "@/types";
 import { calculateAngle, POSE_LANDMARKS as L } from "@/lib/pose/angle-utils";
-
-function clampScore(score: number): number {
-  return Math.max(0, Math.min(100, Math.round(score)));
-}
+import { clampScore } from "@/lib/scoring/score-utils";
 
 export const mountainClimberConfig: ExerciseConfig = {
   id: "mountain-climber",

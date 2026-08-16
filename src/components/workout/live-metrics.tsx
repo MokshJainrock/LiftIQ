@@ -26,9 +26,9 @@ export function LiveMetrics() {
     prevScore.current = currentScore;
   }, [currentScore]);
 
-  const score = scoreAvailable ? Math.min(100, Math.max(0, currentScore)) : null;
+  const score = Math.min(100, Math.max(0, currentScore));
   const circ = 2 * Math.PI * 48;
-  const offset = score != null ? circ * (1 - score / 100) : circ;
+  const offset = circ * (1 - score / 100);
 
   useEffect(() => {
     if (!isWorkoutActive || !sessionStartTime) {
@@ -52,21 +52,21 @@ export function LiveMetrics() {
             <circle cx="54" cy="54" r="48" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="5" />
             <circle
               cx="54" cy="54" r="48" fill="none"
-              stroke={score != null ? getStroke(score) : "#52525b"}
+              stroke={getStroke(score)}
               strokeWidth="5"
               strokeLinecap="round"
               strokeDasharray={circ}
               strokeDashoffset={offset}
-              style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%", transition: "stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s", filter: score != null ? `drop-shadow(0 0 6px ${getStroke(score)}44)` : undefined }}
+              style={{ transform: "rotate(-90deg)", transformOrigin: "50% 50%", transition: "stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.5s", filter: `drop-shadow(0 0 6px ${getStroke(score)}44)` }}
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className={cn(
               "text-3xl font-black tabular-nums tracking-tight transition-transform duration-300",
-              score != null ? getScoreColor(score) : "text-zinc-600",
-              scoreFlash && score != null && "scale-110"
+              getScoreColor(score),
+              scoreFlash && "scale-110"
             )}>
-              {score != null ? Math.round(score) : "—"}
+              {Math.round(score)}
             </span>
             <span className="text-[9px] font-semibold text-zinc-600 uppercase tracking-[0.2em] mt-0.5">Score</span>
           </div>
@@ -163,16 +163,16 @@ function BestRepTile() {
 }
 
 function AvgScore() {
-  const { repResults, scoreAvailable } = useWorkoutStore();
-  const scored = repResults.filter((r) => r.scoreReliable !== false && r.score > 0);
+  const { repResults } = useWorkoutStore();
+  const scored = repResults.filter((r) => r.scoreReliable !== false);
   const avg = scored.length > 0 ? Math.round(scored.reduce((s, r) => s + r.score, 0) / scored.length) : 0;
-  if (!scoreAvailable && scored.length === 0) {
+  if (scored.length === 0) {
     return (
       <div>
         <div className="flex items-center gap-1.5 text-[9px] text-zinc-600 uppercase tracking-[0.15em] mb-1.5">
           <TrendingUp className="h-3 w-3" /> Session Average
         </div>
-        <span className="text-sm text-zinc-500">Score unlocks at high confidence</span>
+        <span className="text-sm text-zinc-500">Waiting for first rep</span>
       </div>
     );
   }

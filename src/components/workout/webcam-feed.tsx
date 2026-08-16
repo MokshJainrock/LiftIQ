@@ -304,7 +304,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
     (landmarks: Landmark[]) => {
       latestLandmarksRef.current = { lms: landmarks, t: performance.now() };
       const CORE_LANDMARKS = [11, 12, 13, 14, 23, 24];
-      const MIN_VIS = 0.6;
+      const MIN_VIS = 0.45;
       const coreVisible = CORE_LANDMARKS.filter(
         (idx) => landmarks[idx] && (landmarks[idx].visibility ?? 0) >= MIN_VIS
       ).length;
@@ -409,7 +409,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
         liveJointColorsRef.current = undefined;
         return;
       }
-      if (coreVisible < 4) return;
+      if (coreVisible < 3) return;
 
       const quality = assessTrackingQuality(landmarks, cameraFacing, depthAssistRef.current);
       setSetupChecklist(quality.checklist);
@@ -417,7 +417,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
 
       const result = repDetectorRef.current.update(landmarks);
       const display = displayScore(result.score, quality.tier);
-      setCurrentScore(display ?? 0);
+      setCurrentScore(display);
       setRepCount(result.repCount);
       setCurrentPhase(result.phase);
 
@@ -451,17 +451,18 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
               exercise: exerciseRef.current,
               phase: result.phase,
               repCount: result.repCount,
-              score: display ?? result.score,
+              score: display,
             });
           }
         },
       );
 
       if (result.repCompleted && result.repResult) {
+        const formScore = result.repResult.score;
         const rep = {
           ...result.repResult,
-          scoreReliable: quality.scoreAvailable,
-          score: quality.scoreAvailable ? result.repResult.score : 0,
+          scoreReliable: true,
+          score: formScore,
         };
         addRepResult(rep);
       }
@@ -623,7 +624,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
             ? Math.floor((Date.now() - st.sessionStartTime) / 1000)
             : 0;
           drawRecordingHud(ctx, composite.width, composite.height, {
-            score: st.scoreAvailable ? st.currentScore : null,
+            score: st.currentScore,
             reps: st.repCount,
             phase: st.currentPhase?.trim() || "Ready",
             elapsedSeconds: elapsed,

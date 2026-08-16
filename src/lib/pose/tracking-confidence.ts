@@ -8,7 +8,7 @@ export type TrackingTier = "high" | "medium" | "low";
 export interface TrackingQuality {
   tier: TrackingTier;
   frameTrust: number;
-  /** True only when tier is high — UI should show 0–100 score. */
+  /** True when tracking is good enough to show a live form score. */
   scoreAvailable: boolean;
   /** Short label for HUD ("High confidence", etc.) */
   label: string;
@@ -42,7 +42,7 @@ function shoulderLevel(landmarks: Landmark[]): boolean {
   const rs = landmarks[L.RIGHT_SHOULDER];
   if (!ls || !rs) return false;
   if ((ls.visibility ?? 0) < 0.5 || (rs.visibility ?? 0) < 0.5) return false;
-  return Math.abs(ls.y - rs.y) < 0.08;
+  return Math.abs(ls.y - rs.y) < 0.14;
 }
 
 /**
@@ -68,9 +68,9 @@ export function assessTrackingQuality(
   const fullBody = shouldersOk && hipsOk && anklesOk;
 
   const span = bodySpan(landmarks);
-  const tooClose = span > 0.82;
-  const tooFar = span > 0 && span < 0.35;
-  const goodDistance = span >= 0.45 && span <= 0.78;
+  const tooClose = span > 0.9;
+  const tooFar = span > 0 && span < 0.28;
+  const goodDistance = span >= 0.36 && span <= 0.88;
   const level = shoulderLevel(landmarks);
 
   const checklist: SetupCheckItem[] = [
@@ -118,32 +118,34 @@ export function assessTrackingQuality(
   const checksPassed = checklist.filter((c) => c.id !== "camera" || cameraFacing === "environment").filter((c) => c.ok).length;
   const setupScore = checksPassed / checklist.length;
 
-  // Depth-class hardware slightly lowers the bar for "high" confidence.
-  const highTrust = depthAssist ? 0.58 : 0.62;
-  const highSetup = depthAssist ? 0.55 : 0.6;
+  const highTrust = depthAssist ? 0.52 : 0.55;
+  const highSetup = depthAssist ? 0.45 : 0.5;
 
   let tier: TrackingTier = "low";
-  if (trust >= highTrust && fullBody && goodDistance && level && setupScore >= highSetup) {
+  if (trust >= highTrust && shouldersOk && hipsOk && setupScore >= highSetup) {
     tier = "high";
-  } else if (trust >= 0.48 && shouldersOk && hipsOk) {
+  } else if (trust >= 0.4 && shouldersOk && hipsOk) {
+    tier = "medium";
+  } else if (trust >= 0.32 && (shouldersOk || hipsOk)) {
     tier = "medium";
   }
 
-  const scoreAvailable = tier === "high";
+  // Score whenever we can see the torso — don't wait for perfect gym lighting
+  // and a perfectly level camera. Jumping jacks / burpees rarely stay "high".
+  const scoreAvailable = tier !== "low";
 
   const label =
     tier === "high"
       ? "High confidence"
       : tier === "medium"
-      ? "Medium — limited scoring"
-      : "Low — reps only";
+      ? "Scoring"
+      : "Calibrating…";
 
   return { tier, frameTrust: trust, scoreAvailable, label, checklist };
 }
 
-/** Cap or hide live score based on tier. */
-export function displayScore(rawScore: number, tier: TrackingTier): number | null {
-  if (tier === "low") return null;
-  if (tier === "medium") return Math.min(rawScore, 85);
-  return rawScore;
+/** Live HUD score — always the real form score, never a 0 placeholder. */
+export function displayScore(rawScore: number, _tier?: TrackingTier): number {
+  if (!Number.isFinite(rawScore)) return 0;
+  return Math.max(0, Math.min(100, Math.round(rawScore)));
 }

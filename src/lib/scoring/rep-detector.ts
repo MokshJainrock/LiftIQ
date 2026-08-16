@@ -4,6 +4,7 @@ import { classifyPoseFamily, PoseFamily } from "@/lib/pose/pose-family";
 import { REQUIRED_FAMILY } from "@/lib/exercises/start-validators";
 import { FeedbackAggregator, CueStabilizer, severityRank } from "@/lib/scoring/feedback-aggregator";
 import { frameTrust } from "@/lib/pose/landmark-quality";
+import { averageInRepScores } from "@/lib/scoring/score-utils";
 
 /**
  * Core landmarks every exercise depends on. Used to compute a per-frame
@@ -16,8 +17,14 @@ const CORE_LANDMARKS = [
   L.LEFT_ELBOW, L.RIGHT_ELBOW,
 ];
 
+/** Torso-only set — still visible during jumping jacks / burpees when limbs blur. */
+const TORSO_LANDMARKS = [
+  L.LEFT_SHOULDER, L.RIGHT_SHOULDER,
+  L.LEFT_HIP, L.RIGHT_HIP,
+];
+
 /** Frame-trust threshold below which we don't accept the frame's issues. */
-const MIN_FRAME_TRUST = 0.45;
+const MIN_FRAME_TRUST = 0.32;
 
 const ANGLE_SMOOTHING_WINDOW = 5;
 const HYSTERESIS_BUFFER = 8;
@@ -322,7 +329,9 @@ export class RepDetector {
     // surface a coaching cue. We keep the rep-cycle math (which uses
     // smoothed angles) unaffected so reps still count when the user is
     // partially occluded.
-    const trust = frameTrust(landmarks, CORE_LANDMARKS);
+    const limbTrust = frameTrust(landmarks, CORE_LANDMARKS);
+    const torsoTrust = frameTrust(landmarks, TORSO_LANDMARKS);
+    const trust = Math.max(limbTrust, torsoTrust);
     const frameAccepted = trust >= MIN_FRAME_TRUST;
 
     // Stabilize: an issue/cue must appear in 3-of-last-6 frames before we
@@ -343,7 +352,9 @@ export class RepDetector {
     }
 
     this.scoreAccumulator.push(score);
-    this.trustAccumulator.push(frameAccepted ? trust : 0);
+    // Keep a small weight even on blurry frames so fast reps still average
+    // the real form score instead of collapsing to 0.
+    this.trustAccumulator.push(frameAccepted ? trust : Math.max(0.12, torsoTrust * 0.5));
 
     // ---- Family-drift guard --------------------------------------------
     // If the user has clearly left this exercise's pose family for several
@@ -394,19 +405,10 @@ export class RepDetector {
       // Visibility-weighted average: a frame the model couldn't read well
       // shouldn't drag a clean rep down. If every frame had zero trust we
       // fall back to a plain mean (better than NaN).
-      const totalTrust = this.trustAccumulator.reduce((a, b) => a + b, 0);
-      let avgScore: number;
-      if (totalTrust > 0.01) {
-        let weighted = 0;
-        for (let i = 0; i < this.scoreAccumulator.length; i++) {
-          weighted += this.scoreAccumulator[i] * (this.trustAccumulator[i] ?? 0);
-        }
-        avgScore = Math.round(weighted / totalTrust);
-      } else {
-        avgScore = this.scoreAccumulator.length > 0
-          ? Math.round(this.scoreAccumulator.reduce((a, b) => a + b, 0) / this.scoreAccumulator.length)
-          : score;
-      }
+      const avgScore = averageInRepScores(
+        this.scoreAccumulator.length > 0 ? this.scoreAccumulator : [score],
+        this.trustAccumulator,
+      );
 
       // The rep's issues are exactly the ones the stability vote confirmed
       // during the rep — the same issues the user saw live on screen. A rep

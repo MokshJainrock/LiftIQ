@@ -1,10 +1,7 @@
 import { ExerciseConfig, Landmark, JointFeedback } from "@/types";
 import { POSE_LANDMARKS as L } from "@/lib/pose/angle-utils";
 import { allTrusted, vis, STRICT_TRUST_VIS } from "@/lib/pose/landmark-quality";
-
-function clampScore(score: number): number {
-  return Math.max(0, Math.min(100, Math.round(score)));
-}
+import { clampScore } from "@/lib/scoring/score-utils";
 
 /**
  * Elbow-extension pattern (tricep pushdown, rope pushdown, overhead extension,
