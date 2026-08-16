@@ -708,7 +708,7 @@ export function WebcamFeed({ mobile = false, ghostCoachEnabled, onDismissGhostCo
         "webcam-container relative bg-black overflow-hidden",
         mobile
           ? "w-full h-full rounded-none border-0"
-          : "aspect-video rounded-2xl"
+          : "h-[min(58dvh,440px)] w-full sm:h-auto sm:aspect-video rounded-none sm:rounded-2xl"
       )}
     >
       <video

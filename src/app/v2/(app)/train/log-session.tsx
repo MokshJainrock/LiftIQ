@@ -119,38 +119,38 @@ export function LogSession() {
   return (
     <div className="space-y-5">
       <Reveal>
-        <Card elevated className="p-5 md:p-6">
-          <div className="flex flex-wrap items-start justify-between gap-5">
-            <div>
+        <Card elevated className="p-4 sm:p-5 md:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-start sm:justify-between">
+            <div className="min-w-0">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-2 w-2 items-center justify-center">
                   <span className="h-2 w-2 animate-pulse rounded-full bg-[#b6f23a]" />
                 </span>
                 <p className="liq-eyebrow">Session in progress</p>
               </div>
-              <h2 className="liq-tight mt-2 text-[24px] font-semibold liq-t1 md:text-[28px]">
+              <h2 className="liq-tight mt-2 text-[22px] font-semibold liq-t1 md:text-[28px]">
                 {SESSION.name}
               </h2>
               <p className="mt-1 text-[13px] liq-t2">{SESSION.date}</p>
             </div>
 
-            <div className="flex items-center gap-6">
-              <div className="text-right">
-                <p className="liq-eyebrow flex items-center justify-end gap-1.5">
+            <div className="flex w-full items-center justify-between gap-4 sm:w-auto sm:justify-end sm:gap-6">
+              <div className="text-left sm:text-right">
+                <p className="liq-eyebrow flex items-center gap-1.5 sm:justify-end">
                   <Timer size={12} />
                   Elapsed
                 </p>
-                <p className="liq-num mt-1 text-[28px] font-semibold leading-none liq-t1">
+                <p className="liq-num mt-1 text-[24px] font-semibold leading-none liq-t1 sm:text-[28px]">
                   {fmtElapsed(elapsed)}
                 </p>
               </div>
 
               <div className="flex items-center gap-2">
-                <Button variant="accent">
+                <Button variant="accent" className="min-h-11 px-4">
                   <CheckCircle2 size={15} />
-                  Finish Workout
+                  Finish
                 </Button>
-                <Button variant="ghost" className="w-10 px-0" title="More options">
+                <Button variant="ghost" className="h-11 w-11 px-0" title="More options">
                   <MoreHorizontal size={16} />
                 </Button>
               </div>

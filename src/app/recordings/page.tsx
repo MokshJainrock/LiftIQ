@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/layout/navbar";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -20,12 +21,22 @@ const formatSize = (bytes: number) => bytes < 1024 * 1024 ? `${(bytes / 1024).to
 const scoreBadgeVariant = (s: number) => s >= 85 ? "success" : s >= 65 ? "warning" : "destructive";
 
 export default function RecordingsPage() {
+  const pathname = usePathname();
+  const inV2 = pathname.startsWith("/v2");
   const [recordings, setRecordings] = useState<RecordingMeta[]>([]);
   const [activeVideo, setActiveVideo] = useState<{ meta: RecordingMeta; url: string } | null>(null);
   const [linkedSession, setLinkedSession] = useState<WorkoutSession | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const loadRecordings = async () => { setRecordings(await getAllRecordingsMeta()); };
+  const loadRecordings = async () => {
+    const metas = await getAllRecordingsMeta();
+    const playable: RecordingMeta[] = [];
+    for (const m of metas) {
+      const blob = await getRecordingBlob(m.id, m.storagePath);
+      if (blob && blob.size > 0) playable.push(m);
+    }
+    setRecordings(playable);
+  };
   useEffect(() => {
     queueMicrotask(() => { void loadRecordings(); });
     const onFocus = () => { void loadRecordings(); };
@@ -38,7 +49,11 @@ export default function RecordingsPage() {
   const handlePlay = async (m: RecordingMeta) => {
     if (activeVideo) URL.revokeObjectURL(activeVideo.url);
     const b = await getRecordingBlob(m.id, m.storagePath);
-    if (b) setActiveVideo({ meta: m, url: URL.createObjectURL(b) });
+    if (!b || b.size === 0) {
+      setRecordings((prev) => prev.filter((r) => r.id !== m.id));
+      return;
+    }
+    setActiveVideo({ meta: m, url: URL.createObjectURL(b) });
     const sessions = getSessions();
     const match = sessions.find(s => s.recordingId === m.id || s.id === m.sessionId);
     setLinkedSession(match || null);
@@ -48,12 +63,12 @@ export default function RecordingsPage() {
   const handleDownload = async (m: RecordingMeta) => { const b = await getRecordingBlob(m.id, m.storagePath); if (!b) return; const u = URL.createObjectURL(b); const a = document.createElement("a"); a.href = u; a.download = `LiftIQ-${m.exerciseName}-${new Date(m.createdAt).toISOString().slice(0, 10)}.webm`; a.click(); URL.revokeObjectURL(u); };
 
   return (
-    <div className="min-h-[100dvh] has-bottom-nav md:pb-0">
-      <Navbar />
+    <div className={inV2 ? "" : "min-h-[100dvh] has-bottom-nav md:pb-0"}>
+      {!inV2 && <Navbar />}
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 md:py-10">
-        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-10">
-          <h1 className="text-4xl md:text-5xl font-black tracking-[-0.04em]">Performance Library</h1>
+      <div className={inV2 ? "" : "mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 md:py-10"}>
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-8 md:mb-10">
+          <h1 className="text-3xl font-black tracking-[-0.04em] md:text-5xl">Performance Library</h1>
           <p className="text-zinc-500 mt-2">Review recordings with AI-powered insights</p>
         </motion.div>
 

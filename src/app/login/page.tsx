@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { GlassCard } from "@/components/ui/glass-card";
-import Image from "next/image";
-import { ArrowRight, Mail, Lock, User, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react";
+import { LiftIQLogo, LiftIQMark } from "@/components/liftiq/logo";
 import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
@@ -15,12 +15,10 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleLogin = async () => {
     setLoading(true);
     setError("");
-    setMessage("");
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -32,8 +30,6 @@ export default function LoginPage() {
         setError(data.error || "Sign in failed");
         return;
       }
-      // Full page load so the session cookie is on the request before middleware
-      // runs. (A soft router.push can race middleware → bounce back to /login.)
       window.location.assign("/v2");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Sign in failed");
@@ -45,7 +41,6 @@ export default function LoginPage() {
   const handleSignup = async () => {
     setLoading(true);
     setError("");
-    setMessage("");
     try {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -57,7 +52,6 @@ export default function LoginPage() {
         setError(data.error || "Sign up failed");
         return;
       }
-      // Signup creates a session immediately — go straight in.
       window.location.assign("/v2");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Sign up failed");
@@ -73,138 +67,188 @@ export default function LoginPage() {
   };
 
   const inp =
-    "w-full h-12 rounded-xl bg-white/[0.03] border border-white/[0.06] text-sm text-zinc-100 placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 transition-colors";
+    "h-12 w-full rounded-xl border border-white/[0.07] bg-white/[0.03] text-[14px] liq-t1 placeholder:text-[#4b5058] transition-colors hover:border-white/[0.13] focus:border-[#b6f23a]/40 focus:outline-none";
 
   return (
-    <div className="noise min-h-[100dvh] flex flex-col items-center justify-center px-4 relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute top-[-20%] left-[20%] h-[50vh] w-[50vh] rounded-full bg-cyan-500/[0.06] blur-[100px]" />
-        <div className="absolute bottom-[-10%] right-[10%] h-[40vh] w-[40vh] rounded-full bg-blue-500/[0.04] blur-[80px]" />
-      </div>
+    <div className="liq liq-auth-bg relative flex min-h-[100dvh] flex-col lg:flex-row">
+      <div aria-hidden className="liq-grid-lines pointer-events-none absolute inset-0" />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-sm relative"
-      >
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <Image src="/logo.png" alt="LiftIQ" width={120} height={120} className="rounded-2xl" />
-          </div>
-          <h1 className="text-3xl font-black tracking-tight">
-            Lift<span className="bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">IQ</span>
+      <div className="relative hidden flex-1 flex-col justify-between border-r border-white/[0.06] p-12 lg:flex xl:p-16">
+        <Link href="/">
+          <LiftIQLogo />
+        </Link>
+        <div className="max-w-[520px]">
+          <h1 className="liq-tight text-[46px] font-semibold leading-[1.06] liq-t1 xl:text-[56px]">
+            Train smarter.
+            <br />
+            Get stronger.
           </h1>
-          <p className="text-sm text-zinc-500 mt-1.5">
-            {mode === "login" ? "Welcome back" : "Create your account"}
+          <p className="mt-5 max-w-[440px] text-[15px] leading-relaxed liq-t2">
+            Intelligent strength training built around your performance.
           </p>
         </div>
+        <p className="text-[12px] liq-t3">Your data is stored securely.</p>
+      </div>
 
-        <GlassCard elevated className="p-6 rounded-2xl">
-          <form onSubmit={handleSubmit} className="space-y-4">
+      <div
+        className="relative flex flex-1 items-center justify-center px-5 py-10 lg:max-w-[520px] lg:p-12"
+        style={{ paddingTop: "max(2.5rem, var(--safe-top))", paddingBottom: "max(2.5rem, var(--safe-bottom))" }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: [0.2, 0.8, 0.3, 1] }}
+          className="w-full max-w-[380px]"
+        >
+          <div className="lg:hidden">
+            <Link href="/" aria-label="Lift IQ home">
+              <LiftIQMark size={32} />
+            </Link>
+            <h1 className="liq-tight mt-5 text-[28px] font-semibold leading-tight liq-t1">
+              {mode === "login" ? "Welcome back" : "Create your account"}
+            </h1>
+            <p className="mt-2 text-[14px] liq-t2">
+              {mode === "login"
+                ? "Sign in to continue training."
+                : "A few details and you can start a session."}
+            </p>
+            <div className="my-7 h-px bg-white/[0.07]" />
+          </div>
+
+          <div className="hidden lg:block">
+            <h2 className="liq-tight text-[22px] font-semibold liq-t1">
+              {mode === "login" ? "Sign in" : "Create account"}
+            </h2>
+            <p className="mt-1.5 text-[13.5px] liq-t2">
+              {mode === "login"
+                ? "Continue to your training dashboard."
+                : "Set up your Lift IQ account."}
+            </p>
+          </div>
+
+          <form className="mt-7 space-y-3.5" onSubmit={handleSubmit}>
             {mode === "signup" && (
               <div>
-                <label className="text-[10px] uppercase tracking-[0.15em] text-zinc-500 mb-1.5 block">
-                  Full Name
+                <label htmlFor="fullName" className="liq-eyebrow mb-2 block">
+                  Full name
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
+                  <User size={15} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6b7280]" />
                   <input
+                    id="fullName"
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Your name"
                     required
-                    className={cn(inp, "pl-10 pr-4")}
+                    className={cn(inp, "pl-10 pr-3.5")}
                   />
                 </div>
               </div>
             )}
+
             <div>
-              <label className="text-[10px] uppercase tracking-[0.15em] text-zinc-500 mb-1.5 block">Email</label>
+              <label htmlFor="email" className="liq-eyebrow mb-2 block">
+                Email
+              </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
+                <Mail size={15} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6b7280]" />
                 <input
+                  id="email"
                   type="email"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                   required
-                  className={cn(inp, "pl-10 pr-4")}
+                  className={cn(inp, "pl-10 pr-3.5")}
                 />
               </div>
             </div>
+
             <div>
-              <label className="text-[10px] uppercase tracking-[0.15em] text-zinc-500 mb-1.5 block">Password</label>
+              <label htmlFor="password" className="liq-eyebrow mb-2 block">
+                Password
+              </label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-600" />
+                <Lock size={15} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6b7280]" />
                 <input
+                  id="password"
                   type={showPassword ? "text" : "password"}
+                  autoComplete={mode === "login" ? "current-password" : "new-password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={mode === "signup" ? "Min 6 characters" : "Your password"}
                   required
                   minLength={6}
-                  className={cn(inp, "pl-10 pr-12")}
+                  className={cn(inp, "pl-10 pr-11")}
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-zinc-600 hover:text-zinc-300 transition-colors"
+                  onClick={() => setShowPassword((s) => !s)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-[#6b7280] hover:text-[#f7f7f8]"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
             </div>
+
             {error && (
-              <div className="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-400">
+              <div className="rounded-xl border border-[#e0655f]/25 bg-[#e0655f]/10 px-4 py-3 text-[12.5px] text-[#e0655f]">
                 {error}
               </div>
             )}
-            {message && (
-              <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-3 text-xs text-emerald-400">
-                {message}
-              </div>
-            )}
+
             <button
               type="submit"
               disabled={loading}
-              className="w-full min-h-[48px] rounded-xl text-base font-bold bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-400 text-white transition-all hover:shadow-[0_0_32px_-4px_rgba(6,182,212,0.4)] hover:brightness-110 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="liq-btn-accent liq-glow flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl text-[14px] font-semibold disabled:opacity-50"
             >
               {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <Loader2 size={16} className="animate-spin" />
               ) : (
                 <>
-                  {mode === "login" ? "Sign In" : "Create Account"}
-                  <ArrowRight className="h-4 w-4" />
+                  {mode === "login" ? "Sign in" : "Create account"}
+                  <ArrowRight size={16} />
                 </>
               )}
             </button>
           </form>
-          <div className="mt-6 text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setMode(mode === "login" ? "signup" : "login");
-                setError("");
-                setMessage("");
-              }}
-              className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-            >
-              {mode === "login" ? (
-                <>
-                  Don&apos;t have an account? <span className="text-cyan-400 font-medium">Sign up</span>
-                </>
-              ) : (
-                <>
-                  Already have an account? <span className="text-cyan-400 font-medium">Sign in</span>
-                </>
-              )}
-            </button>
-          </div>
-        </GlassCard>
-        <p className="text-[10px] text-zinc-700 text-center mt-5">Your data is stored securely.</p>
-      </motion.div>
+
+          <p className="mt-6 text-center text-[13px] liq-t3">
+            {mode === "login" ? (
+              <>
+                Don&apos;t have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("signup");
+                    setError("");
+                  }}
+                  className="font-medium text-[#b6f23a] hover:underline"
+                >
+                  Sign up
+                </button>
+              </>
+            ) : (
+              <>
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("login");
+                    setError("");
+                  }}
+                  className="font-medium text-[#b6f23a] hover:underline"
+                >
+                  Sign in
+                </button>
+              </>
+            )}
+          </p>
+        </motion.div>
+      </div>
     </div>
   );
 }

@@ -12,7 +12,7 @@ export function ExerciseCameraPlaceholder({ mobile = false }: ExerciseCameraPlac
     <div
       className={cn(
         "flex flex-col items-center justify-center bg-[#040408] text-center px-6 border border-white/[0.07] rounded-2xl",
-        mobile ? "min-h-[min(50vh,420px)] flex-1" : "aspect-video min-h-[260px] w-full",
+        mobile ? "min-h-[min(50vh,420px)] flex-1" : "h-[min(58dvh,440px)] w-full sm:h-auto sm:aspect-video sm:min-h-[260px]",
       )}
     >
       <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-primary/20 bg-primary/[0.08]">

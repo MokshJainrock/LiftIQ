@@ -82,7 +82,6 @@ export function ExerciseDemo({
       <div className={cn("rounded-xl border border-white/[0.06] bg-[#040408] overflow-hidden", className)}>
         <div className={cn("relative bg-[#050508]", compact ? "h-28" : "h-36 sm:h-44")}>
           <ExerciseDemoPlayer
-            videoSrc={media.videoUrl}
             gifSrc={media.gifUrl}
             posterSrc={poster}
             autoplay

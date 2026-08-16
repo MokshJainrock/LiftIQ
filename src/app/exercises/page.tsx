@@ -2,6 +2,7 @@
 
 import { memo, useMemo, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/layout/navbar";
 import { GlassCard } from "@/components/ui/glass-card";
@@ -36,6 +37,8 @@ const EQUIPMENT_FILTERS: (Equipment | "all")[] = [
 ];
 
 export default function ExercisesPage() {
+  const pathname = usePathname();
+  const inV2 = pathname.startsWith("/v2");
   const [query, setQuery] = useState("");
   const [muscle, setMuscle] = useState<MuscleGroup | "all">("all");
   const [equipment, setEquipment] = useState<Equipment | "all">("all");
@@ -57,11 +60,11 @@ export default function ExercisesPage() {
   }, [results]);
 
   return (
-    <div className="min-h-[100dvh] has-bottom-nav md:pb-0">
-      <Navbar />
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+    <div className={inV2 ? "" : "min-h-[100dvh] has-bottom-nav md:pb-0"}>
+      {!inV2 && <Navbar />}
+      <div className={inV2 ? "" : "mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6 md:py-10"}>
         <div className="mb-6">
-          <h1 className="text-4xl md:text-5xl font-black tracking-[-0.04em]">Exercises</h1>
+          <h1 className="text-3xl font-black tracking-[-0.04em] md:text-5xl">Exercises</h1>
           <p className="text-zinc-500 mt-2">
             {EXERCISE_LIBRARY.length} movements — tap any for demo, steps & form tips
           </p>

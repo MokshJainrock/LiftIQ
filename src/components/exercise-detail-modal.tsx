@@ -124,7 +124,6 @@ export function ExerciseDetailModal({ exercise, onClose }: ExerciseDetailModalPr
                 <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/[0.02] to-transparent pointer-events-none z-10" />
                 <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full">
                   <ExerciseDemoPlayer
-                    videoSrc={gif?.videoUrl}
                     gifSrc={gif?.gifUrl}
                     posterSrc={poster}
                     showControls

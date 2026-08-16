@@ -120,7 +120,6 @@ export function ExerciseGuideModal({ guide, exerciseName, onClose, onEnableGhost
                 <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/[0.02] to-transparent pointer-events-none z-10" />
                 <div className="aspect-[16/10] sm:aspect-[16/9] relative">
                   <ExerciseDemoPlayer
-                    videoSrc={media?.videoUrl}
                     gifSrc={media?.gifUrl}
                     posterSrc={poster}
                     showControls

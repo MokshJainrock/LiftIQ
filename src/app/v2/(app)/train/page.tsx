@@ -181,13 +181,13 @@ export default function TrainPage() {
   return (
     <div className="space-y-5">
       <Reveal>
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
             <p className="liq-eyebrow">Train</p>
-            <h1 className="liq-tight mt-1 text-[26px] font-semibold liq-t1 md:text-[30px]">
+            <h1 className="liq-tight mt-1 text-[24px] font-semibold liq-t1 md:text-[30px]">
               {mode === "camera" ? "AI Camera" : "Log Workout"}
             </h1>
-            <p className="mt-1.5 text-[14px] liq-t2">
+            <p className="mt-1.5 hidden text-[14px] liq-t2 sm:block">
               {mode === "camera"
                 ? "Live pose tracking, form scoring, and rep counting from your camera."
                 : "Log sets, reps, weight, and RPE by hand."}
@@ -195,7 +195,7 @@ export default function TrainPage() {
           </div>
           <div
             role="tablist"
-            className="inline-flex items-center gap-0.5 rounded-[10px] bg-white/[0.04] p-0.5"
+            className="grid w-full grid-cols-2 gap-0.5 rounded-[10px] bg-white/[0.04] p-0.5 sm:w-auto sm:inline-flex"
           >
             {(
               [
@@ -212,7 +212,7 @@ export default function TrainPage() {
                   aria-selected={active}
                   onClick={() => setMode(id)}
                   className={cn(
-                    "rounded-lg px-3 py-1.5 text-[12px] font-medium transition-colors",
+                    "min-h-11 rounded-lg px-3 text-[13px] font-medium transition-colors sm:min-h-0 sm:py-1.5 sm:text-[12px]",
                     active ? "bg-white/[0.08] text-[#f7f7f8]" : "text-[#6b7280] hover:text-[#9ca3af]",
                   )}
                 >
@@ -260,7 +260,7 @@ export default function TrainPage() {
 
           {!toolBusy && (
             <Reveal delay={0.06}>
-              <div className="flex flex-wrap gap-2">
+              <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden [&>*]:shrink-0">
                 {hasGuide && (
                   <Button size="sm" onClick={() => setShowExerciseGuide(true)} title="How to do this exercise">
                     <HelpCircle size={14} /> How To
@@ -311,7 +311,7 @@ export default function TrainPage() {
                 </Card>
               </Reveal>
 
-              <Reveal delay={0.12}>
+              <Reveal delay={0.12} className="hidden md:block">
                 <CoachingCues />
               </Reveal>
 
