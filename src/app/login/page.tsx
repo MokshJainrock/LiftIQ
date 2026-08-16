@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react";
-import { LiftIQLogo, LiftIQMark } from "@/components/liftiq/logo";
+import { LiftIQLogo } from "@/components/liftiq/logo";
 import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
@@ -100,33 +100,20 @@ export default function LoginPage() {
           transition={{ duration: 0.3, ease: [0.2, 0.8, 0.3, 1] }}
           className="w-full max-w-[380px]"
         >
-          <div className="lg:hidden">
-            <Link href="/" aria-label="Lift IQ home">
-              <LiftIQMark size={32} />
-            </Link>
-            <h1 className="liq-tight mt-5 text-[28px] font-semibold leading-tight liq-t1">
-              {mode === "login" ? "Welcome back" : "Create your account"}
-            </h1>
-            <p className="mt-2 text-[14px] liq-t2">
-              {mode === "login"
-                ? "Sign in to continue training."
-                : "A few details and you can start a session."}
-            </p>
-            <div className="my-7 h-px bg-white/[0.07]" />
-          </div>
+          <Link href="/" className="inline-flex" aria-label="Lift IQ home">
+            <LiftIQLogo />
+          </Link>
+          <h1 className="liq-tight mt-6 text-[28px] font-semibold leading-tight liq-t1 lg:text-[22px]">
+            {mode === "login" ? "Welcome back" : "Create your account"}
+          </h1>
+          <p className="mt-2 text-[14px] liq-t2 lg:text-[13.5px]">
+            {mode === "login"
+              ? "Sign in to Lift IQ to continue training."
+              : "Set up your Lift IQ account."}
+          </p>
+          <div className="my-7 h-px bg-white/[0.07] lg:hidden" />
 
-          <div className="hidden lg:block">
-            <h2 className="liq-tight text-[22px] font-semibold liq-t1">
-              {mode === "login" ? "Sign in" : "Create account"}
-            </h2>
-            <p className="mt-1.5 text-[13.5px] liq-t2">
-              {mode === "login"
-                ? "Continue to your training dashboard."
-                : "Set up your Lift IQ account."}
-            </p>
-          </div>
-
-          <form className="mt-7 space-y-3.5" onSubmit={handleSubmit}>
+          <form className="mt-7 space-y-3.5 lg:mt-8" onSubmit={handleSubmit}>
             {mode === "signup" && (
               <div>
                 <label htmlFor="fullName" className="liq-eyebrow mb-2 block">
